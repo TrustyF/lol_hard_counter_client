@@ -163,6 +163,7 @@ function updateChart(f_data) {
 
 onMounted(() => {
   get_players();
+  console.log(curr_api);
 });
 </script>
 
