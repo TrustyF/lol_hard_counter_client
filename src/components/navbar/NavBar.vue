@@ -6,11 +6,11 @@ import { RouterLink } from "vue-router";
 <template>
   <div class="base_nav">
     <div class="links_bar">
-      <h1 class="title">TTT Wall of shame</h1>
+      <h1 class="title">Wall of shame</h1>
       <!--      <RouterLink class="link" to="/">Funny stats</RouterLink>-->
     </div>
     <!--      <img class="nav_img" src="/TTT_backdrop_dark.png" alt="nav backdrop">-->
-    <img class="nav_logo" src="/TTT_square_logo.png" alt="ttt logo">
+    <img class="nav_logo" src="/TTT_square_logo_small.png" alt="ttt logo">
   </div>
 </template>
 
@@ -24,7 +24,7 @@ import { RouterLink } from "vue-router";
 
 .links_bar {
   position: absolute;
-  margin-left: 90px;
+  margin-left: 150px;
   height: 70px;
   /*outline: 1px solid red;*/
   display: flex;
@@ -32,7 +32,8 @@ import { RouterLink } from "vue-router";
 
 .title {
   font-weight: 1000;
-  font-size: 3em;
+  font-size: 2em;
+  margin: auto;
 }
 
 .link {
