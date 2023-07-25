@@ -6,9 +6,9 @@ import VueLazyLoad from "vue3-lazyload";
 import VueApexCharts from "vue3-apexcharts";
 
 const local_api = "http://localhost:5000";
-const server_api = "https://trustyfox.pythonanywhere.com";
+const server_api = "https://ttt-trustyfox.pythonanywhere.com/";
 // const devMode = import.meta.env.DEV;
-const devMode = true;
+const devMode = false;
 
 const app = createApp(App);
 

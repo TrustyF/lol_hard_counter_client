@@ -12,7 +12,7 @@ const rank_mappings = {
 
 let player_data = ref(undefined);
 let date_range = ref(undefined);
-let graph_width = 900;
+let graph_width = "300%";
 let soloChartOptions = ref({
   chart: {
     id: "ranked_solo_chart",
@@ -274,7 +274,7 @@ function get_date_range() {
 
     // Process the returned JSON data
     .then(data => {
-      // console.log("fetch date", data);
+      console.log("fetch date", data);
       date_range.value = data;
       updateDateCategory(data);
     })
@@ -319,6 +319,7 @@ function updateChart(f_data) {
   }));
   formatted_solo_hist = formatted_solo_hist.filter(e => e != null);
   soloHistChartOptions.value.series = formatted_solo_hist;
+  console.log("formatted list", formatted_solo_hist);
 
   let formatted_flex_hist = (histFlex.map(val => {
     if (Object.keys(val["rank_history"]["RANKED_FLEX_SR"]).length < 1) {
@@ -342,6 +343,7 @@ function updateChart(f_data) {
 
 
 function updateDateCategory(f_data) {
+  console.log("categories", f_data);
   soloHistChartOptions.value.xaxis.categories = f_data;
   flexHistChartOptions.value.xaxis.categories = f_data;
 }
@@ -355,40 +357,48 @@ onMounted(() => {
 
 <template>
   <body>
-  <div class="chart_wrapper" v-if="player_data!==undefined && date_range!==undefined">
-    <div>
-      <apexchart
-        type="bar"
-        :width=graph_width
-        :options="soloChartOptions"
-        :series="soloChartOptions.series"
-      ></apexchart>
-    </div>
-    <div>
-      <apexchart
-        type="line"
-        :width=graph_width
-        :options="soloHistChartOptions"
-        :series="soloHistChartOptions.series"
-      ></apexchart>
+  <div v-if="player_data!==undefined && date_range!==undefined">
+
+    <h1 style="padding-left: 20px">Solo Queue</h1>
+    <div class="chart_wrapper">
+      <div>
+        <apexchart
+          type="bar"
+          :width=graph_width
+          :options="soloChartOptions"
+          :series="soloChartOptions.series"
+        ></apexchart>
+      </div>
+      <div>
+        <apexchart
+          type="line"
+          :width=graph_width
+          :options="soloHistChartOptions"
+          :series="soloHistChartOptions.series"
+        ></apexchart>
+      </div>
     </div>
 
-    <div>
-      <apexchart
-        type="bar"
-        :width=graph_width
-        :options="flexChartOptions"
-        :series="flexChartOptions.series"
-      ></apexchart>
+    <h1 style="padding-left: 20px">Flex Queue</h1>
+    <div class="chart_wrapper">
+      <div>
+        <apexchart
+          type="bar"
+          :width=graph_width
+          :options="flexChartOptions"
+          :series="flexChartOptions.series"
+        ></apexchart>
+      </div>
+      <div>
+        <apexchart
+          type="line"
+          :width=graph_width
+          :options="flexHistChartOptions"
+          :series="flexHistChartOptions.series"
+        ></apexchart>
+      </div>
     </div>
-    <div>
-      <apexchart
-        type="line"
-        :width=graph_width
-        :options="flexHistChartOptions"
-        :series="flexHistChartOptions.series"
-      ></apexchart>
-    </div>
+
   </div>
   </body>
 
@@ -397,6 +407,7 @@ onMounted(() => {
 body {
   margin: auto;
   width: 95vw;
+  padding-top: 30px;
   /*outline: 1px solid palegreen;*/
 }
 
