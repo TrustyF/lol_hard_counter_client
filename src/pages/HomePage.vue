@@ -13,15 +13,15 @@ const rank_mappings = {
 // Todo add visible daily change to bar graph, Fix daily graph dates issue (start date doesnt match)
 
 let player_data = ref(undefined);
-let date_range = ref(undefined);
 let graph_width = "100%";
 
 let baseChartOptions = {
   chart: {
     id: "ranked_solo_chart",
     animations: {
-      enabled: true
-    }
+      enabled: false
+    },
+    events: {}
   },
   tooltip: {
     theme: "dark",
@@ -43,7 +43,10 @@ let baseChartOptions = {
   },
   colors: ["#0052b2"],
   legend: {
-    opacity: 1
+    labels: {
+      colors: "#ababab",
+      useSeriesColors: true
+    }
   },
   fill: {
     opacity: 1
@@ -51,16 +54,8 @@ let baseChartOptions = {
   yaxis: {
     labels: {
       rotate: 0,
-      // formatter: (val) => {
-      //   let text_arr = val.split(" ");
-      //   if (text_arr.length < 2) {
-      //     text_arr = text_arr[0].split(/(.{10})/).filter(O => O);
-      //   }
-      //   return text_arr;
-      // },
       style: {
         colors: "#ababab",
-        // fontSize: '10px',
         fontWeight: 1000
 
       }
@@ -89,7 +84,7 @@ let baseChartOptions = {
     }
   },
   grid: {
-    borderColor: "#2a2a2d",
+    borderColor: "#282828",
     xaxis: {
       lines: {
         show: true
@@ -103,8 +98,8 @@ let baseChartOptions = {
   },
   dataLabels: {
     enabled: true,
-    offsetX: 40,
-    // offsetY: -8,
+    offsetX: 30,
+    textAnchor: "start",
     style: {
       fontSize: "12px",
       backgroundColor: "black"
@@ -113,7 +108,6 @@ let baseChartOptions = {
   noData: {
     text: "Loading..."
   }
-
 };
 
 let soloChartOptions = ref(JSON.parse(JSON.stringify(baseChartOptions)));
@@ -122,8 +116,9 @@ soloChartOptions.value["dataLabels"]["formatter"] = (val) => {
     return undefined;
   }
   const num = String(val);
-  const lp = Number(num.slice(-2));
-  return [`${lp} LP`];
+  const tier = Number(num.slice(-4, -3));
+  const div = Number(num.slice(-3, -2));
+  return [`${rank_mappings["tier_values"][tier].charAt(0).toUpperCase() + rank_mappings["tier_values"][tier].slice(1)} ${rank_mappings["division_values"][div]}`];
 };
 soloChartOptions.value["xaxis"]["labels"]["formatter"] = (val) => {
   const num = String(val);
@@ -139,8 +134,9 @@ flexChartOptions.value["dataLabels"]["formatter"] = (val) => {
     return undefined;
   }
   const num = String(val);
-  const lp = Number(num.slice(-2));
-  return [`${lp} LP`];
+  const tier = Number(num.slice(-4, -3));
+  const div = Number(num.slice(-3, -2));
+  return [`${rank_mappings["tier_values"][tier].charAt(0).toUpperCase() + rank_mappings["tier_values"][tier].slice(1)} ${rank_mappings["division_values"][div]}`];
 };
 flexChartOptions.value["xaxis"]["labels"]["formatter"] = (val) => {
   const num = String(val);
@@ -154,7 +150,20 @@ soloHistChartOptions.value["colors"] = [
   "#6de34d", "#ea67d2", "#bbe948", "#a383f2", "#e3d33e", "#f46a54", "#5ade8c",
   "#e09531", "#66ba47", "#aabd46"
 ];
-soloHistChartOptions.value["dataLabels"]["enabled"] = false;
+// soloHistChartOptions.value["dataLabels"]["enabled"] = false;
+soloHistChartOptions.value["dataLabels"]["formatter"] = (val) => {
+  if (val <= 0) {
+    return undefined;
+  }
+  const num = String(val);
+  // const tier = Number(num.slice(-4, -3));
+  const div = Number(num.slice(-3, -2));
+  const lp = Number(num.slice(-2));
+  return [`Tier ${rank_mappings["division_values"][div]} ${lp} lp`];
+};
+soloHistChartOptions.value["dataLabels"]["textAnchor"] = "middle";
+soloHistChartOptions.value["dataLabels"]["offsetY"] = -10;
+soloHistChartOptions.value["dataLabels"]["offsetX"] = 0;
 soloHistChartOptions.value["yaxis"]["labels"]["formatter"] = (val) => {
 
   if (val <= 0) {
@@ -166,7 +175,12 @@ soloHistChartOptions.value["yaxis"]["labels"]["formatter"] = (val) => {
   return `${rank_mappings["tier_values"][tier]}`;
 };
 soloHistChartOptions.value["xaxis"]["type"] = "datetime";
-soloHistChartOptions.value["markers"] = { "size": 5 };
+soloHistChartOptions.value["markers"] = { "size": 2 };
+soloHistChartOptions.value["stroke"] = { "width": 2 };
+soloHistChartOptions.value["grid"]["yaxis"]["lines"]["show"] = true;
+soloHistChartOptions.value["grid"]["xaxis"]["lines"]["show"] = false;
+soloHistChartOptions.value["grid"]["padding"] = { right: 50, left: 50 };
+
 
 let flexHistChartOptions = ref(JSON.parse(JSON.stringify(baseChartOptions)));
 flexHistChartOptions.value["chart"]["id"] = "ranked_flex_hist_chart";
@@ -174,7 +188,20 @@ flexHistChartOptions.value["colors"] = [
   "#6de34d", "#ea67d2", "#bbe948", "#a383f2", "#e3d33e", "#f46a54", "#5ade8c",
   "#e09531", "#66ba47", "#aabd46"
 ];
-flexHistChartOptions.value["dataLabels"]["enabled"] = false;
+// flexHistChartOptions.value["dataLabels"]["enabled"] = false;
+flexHistChartOptions.value["dataLabels"]["formatter"] = (val) => {
+  if (val <= 0) {
+    return undefined;
+  }
+  const num = String(val);
+  // const tier = Number(num.slice(-4, -3));
+  const div = Number(num.slice(-3, -2));
+  const lp = Number(num.slice(-2));
+  return [`Tier ${rank_mappings["division_values"][div]} ${lp} lp`];
+};
+flexHistChartOptions.value["dataLabels"]["textAnchor"] = "middle";
+flexHistChartOptions.value["dataLabels"]["offsetY"] = -10;
+flexHistChartOptions.value["dataLabels"]["offsetX"] = 0;
 flexHistChartOptions.value["yaxis"]["labels"]["formatter"] = (val) => {
 
   if (val <= 0) {
@@ -186,8 +213,17 @@ flexHistChartOptions.value["yaxis"]["labels"]["formatter"] = (val) => {
   return `${rank_mappings["tier_values"][tier]}`;
 };
 flexHistChartOptions.value["xaxis"]["type"] = "datetime";
-flexHistChartOptions.value["markers"] = { "size": 5 };
+flexHistChartOptions.value["markers"] = { "size": 2 };
+flexHistChartOptions.value["stroke"] = { "width": 2 };
+flexHistChartOptions.value["grid"]["yaxis"]["lines"]["show"] = true;
+flexHistChartOptions.value["grid"]["xaxis"]["lines"]["show"] = false;
+flexHistChartOptions.value["grid"]["padding"] = { right: 50, left: 50 };
 
+soloChartOptions.value["chart"]["events"] = {
+  "dataPointMouseEnter": (f_event, f_context, f_config) => {
+    console.log("test");
+  }
+};
 
 // console.log(flexChartOptions.value);
 
@@ -377,9 +413,6 @@ body {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   min-height: 500px;
-
-  /*grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));*/
-  /*justify-content: space-evenly;*/
 
   margin: 15px 10px 15px 10px;
 }
