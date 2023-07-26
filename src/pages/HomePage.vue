@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject, onMounted, toRaw } from "vue";
+import { ref, inject, toRaw, onMounted } from "vue";
 // import ChampionSelector from "@/components/champion/ChampionSelector.vue";
 
 const curr_api = inject("curr_api");
@@ -16,7 +16,7 @@ let player_data = ref(undefined);
 let date_range = ref(undefined);
 let graph_width = "100%";
 
-let soloChartOptions = ref({
+let baseChartOptions = {
   chart: {
     id: "ranked_solo_chart",
     animations: {
@@ -67,265 +67,11 @@ let soloChartOptions = ref({
     }
   },
   xaxis: {
-    type: "category",
-    categories: [],
-    labels: {
-      formatter: (val) => {
-        const num = String(val);
-        const tier = Number(num.slice(-4, -3));
-        return `${rank_mappings["tier_values"][tier]}`;
-      },
-      style: {
-        colors: "#ababab"
-      }
-    }
-  },
-  series: [
-    {
-      name: "SoloQ",
-      data: []
-    }
-  ],
-  plotOptions: {
-    bar: {
-      horizontal: true,
-      dataLabels: {
-        position: "top"
-      }
-    }
-  },
-  grid: {
-    borderColor: "#2a2a2d",
-    xaxis: {
-      lines: {
-        show: true
-      }
-    },
-    yaxis: {
-      lines: {
-        show: false
-      }
-    }
-  },
-  dataLabels: {
-    enabled: true,
-    offsetX: 40,
-    // offsetY: -8,
-    formatter: (val) => {
-      if (val <= 0) {
-        return undefined;
-      }
-
-      const num = String(val);
-      const lp = Number(num.slice(-2));
-      return [`${lp} LP`];
-    },
-    style: {
-      fontSize: "12px",
-      backgroundColor: "black"
-    }
-  },
-  noData: {
-    text: "Loading..."
-  }
-
-});
-
-let flexChartOptions = ref({
-  chart: {
-    id: "ranked_flex_chart",
-    animations: {
-      enabled: true
-    }
-  },
-  tooltip: {
-    theme: "dark",
-    enabled: true,
-    y: {
-      formatter: (val) => {
-
-        if (val <= 0) {
-          return undefined;
-        }
-
-        const num = String(val);
-        const lp = Number(num.slice(-2));
-        const division = Number(num.slice(-3, -2));
-        const tier = Number(num.slice(-4, -3));
-        return [`${rank_mappings["tier_values"][tier]} ${rank_mappings["division_values"][division]} ${lp} LP`];
-      }
-    }
-  },
-  colors: ["#0dab00"],
-  legend: {
-    opacity: 1
-  },
-  fill: {
-    opacity: 1
-  },
-  yaxis: {
-    labels: {
-      rotate: 0,
-      // formatter: (val) => {
-      //   let text_arr = val.split(" ");
-      //   if (text_arr.length < 2) {
-      //     text_arr = text_arr[0].split(/(.{10})/).filter(O => O);
-      //   }
-      //   return text_arr;
-      // },
-      style: {
-        colors: "#ababab",
-        // fontSize: '10px',
-        fontWeight: 1000
-
-      }
-    }
-  },
-  xaxis: {
-    type: "category",
-    categories: [],
-    labels: {
-      formatter: (val) => {
-        const num = String(val);
-        const tier = Number(num.slice(-4, -3));
-        return `${rank_mappings["tier_values"][tier]}`;
-      },
-      style: {
-        colors: "#ababab"
-      }
-    }
-  },
-  series: [
-    {
-      name: "SoloQ",
-      data: []
-    }
-  ],
-  plotOptions: {
-    bar: {
-      horizontal: true,
-      dataLabels: {
-        position: "top"
-      }
-    }
-  },
-  grid: {
-    borderColor: "#2a2a2d",
-    xaxis: {
-      lines: {
-        show: true
-      }
-    },
-    yaxis: {
-      lines: {
-        show: false
-      }
-    }
-  },
-  dataLabels: {
-    enabled: true,
-    offsetX: 40,
-    // offsetY: -8,
-    formatter: (val) => {
-      if (val <= 0) {
-        return undefined;
-      }
-
-      const num = String(val);
-      const lp = Number(num.slice(-2));
-      return [`${lp} LP`];
-    },
-    style: {
-      fontSize: "12px",
-      backgroundColor: "black"
-    }
-  },
-  noData: {
-    text: "Loading..."
-  }
-
-});
-
-let soloHistChartOptions = ref({
-  chart: {
-    id: "ranked_solo_hist_chart",
-    animations: {
-      enabled: true
-    }
-  },
-  tooltip: {
-    theme: "dark",
-    enabled: true,
-    y: {
-      formatter: (val) => {
-
-        if (val <= 0) {
-          return undefined;
-        }
-
-        const num = String(val);
-        const lp = Number(num.slice(-2));
-        const division = Number(num.slice(-3, -2));
-        const tier = Number(num.slice(-4, -3));
-        return [`${rank_mappings["tier_values"][tier]} ${rank_mappings["division_values"][division]} ${lp} LP`];
-      }
-    }
-  },
-  colors: ["#6de34d",
-    "#ea67d2",
-    "#bbe948",
-    "#a383f2",
-    "#e3d33e",
-    "#f46a54",
-    "#5ade8c",
-    "#e09531",
-    "#66ba47",
-    "#aabd46"],
-  fill: {
-    opacity: 1
-  },
-  xaxis: {
-    type: "category",
     categories: [],
     labels: {
       style: {
         colors: "#ababab"
       }
-    }
-  },
-  yaxis: {
-    labels: {
-      rotate: 0,
-      formatter: (val) => {
-
-        if (val <= 0) {
-          return undefined;
-        }
-
-        const num = String(val);
-        const tier = Number(num.slice(-4, -3));
-        return `${rank_mappings["tier_values"][tier]}`;
-      },
-      style: {
-        colors: "#ababab",
-        // fontSize: '10px',
-        fontWeight: 1000
-
-      }
-    }
-  },
-  dataLabels: {
-    enabled: false
-  },
-  legend: {
-    labels: {
-      colors: "#ababab"
-    },
-    onItemHover: {
-      highlightDataSeries: true
-    },
-    onItemClick: {
-      toggleDataSeries: true
     }
   },
   series: [
@@ -355,184 +101,162 @@ let soloHistChartOptions = ref({
       }
     }
   },
-  noData: {
-    text: "Loading..."
-  }
-
-});
-
-let flexHistChartOptions = ref({
-  chart: {
-    id: "ranked_flex_chart",
-    animations: {
-      enabled: true
-    }
-  },
-  tooltip: {
-    theme: "dark",
-    enabled: true,
-    y: {
-      formatter: (val) => {
-
-        if (val <= 0) {
-          return undefined;
-        }
-
-        const num = String(val);
-        const lp = Number(num.slice(-2));
-        const division = Number(num.slice(-3, -2));
-        const tier = Number(num.slice(-4, -3));
-        return [`${rank_mappings["tier_values"][tier]} ${rank_mappings["division_values"][division]} ${lp} LP`];
-      }
-    }
-  },
-  colors: ["#6de34d",
-    "#ea67d2",
-    "#bbe948",
-    "#a383f2",
-    "#e3d33e",
-    "#f46a54",
-    "#5ade8c",
-    "#e09531",
-    "#66ba47",
-    "#aabd46"],
-  fill: {
-    opacity: 1
-  },
-  xaxis: {
-    type: "category",
-    categories: [],
-    labels: {
-      style: {
-        colors: "#ababab"
-      }
-    }
-  },
-  yaxis: {
-    labels: {
-      rotate: 0,
-      formatter: (val) => {
-
-        if (val <= 0) {
-          return undefined;
-        }
-
-        const num = String(val);
-        const tier = Number(num.slice(-4, -3));
-        return `${rank_mappings["tier_values"][tier]}`;
-      },
-      style: {
-        colors: "#ababab",
-        // fontSize: '10px',
-        fontWeight: 1000
-
-      }
-    }
-  },
   dataLabels: {
-    enabled: false
-  },
-  legend: {
-    labels: {
-      colors: "#ababab"
-    },
-    onItemHover: {
-      highlightDataSeries: true
-    },
-    onItemClick: {
-      toggleDataSeries: true
-    }
-  },
-  series: [
-    {
-      name: "",
-      data: []
-    }
-  ],
-  plotOptions: {
-    bar: {
-      horizontal: true,
-      dataLabels: {
-        position: "top"
-      }
-    }
-  },
-  grid: {
-    borderColor: "#2a2a2d",
-    xaxis: {
-      lines: {
-        show: true
-      }
-    },
-    yaxis: {
-      lines: {
-        show: false
-      }
+    enabled: true,
+    offsetX: 40,
+    // offsetY: -8,
+    style: {
+      fontSize: "12px",
+      backgroundColor: "black"
     }
   },
   noData: {
     text: "Loading..."
   }
 
-});
+};
+
+let soloChartOptions = ref(JSON.parse(JSON.stringify(baseChartOptions)));
+soloChartOptions.value["dataLabels"]["formatter"] = (val) => {
+  if (val <= 0) {
+    return undefined;
+  }
+  const num = String(val);
+  const lp = Number(num.slice(-2));
+  return [`${lp} LP`];
+};
+soloChartOptions.value["xaxis"]["labels"]["formatter"] = (val) => {
+  const num = String(val);
+  const tier = Number(num.slice(-4, -3));
+  return `${rank_mappings["tier_values"][tier]}`;
+};
+
+let flexChartOptions = ref(JSON.parse(JSON.stringify(baseChartOptions)));
+flexChartOptions.value["chart"]["id"] = "ranked_flex_chart";
+flexChartOptions.value["colors"] = ["#0dab00"];
+flexChartOptions.value["dataLabels"]["formatter"] = (val) => {
+  if (val <= 0) {
+    return undefined;
+  }
+  const num = String(val);
+  const lp = Number(num.slice(-2));
+  return [`${lp} LP`];
+};
+flexChartOptions.value["xaxis"]["labels"]["formatter"] = (val) => {
+  const num = String(val);
+  const tier = Number(num.slice(-4, -3));
+  return `${rank_mappings["tier_values"][tier]}`;
+};
+
+let soloHistChartOptions = ref(JSON.parse(JSON.stringify(baseChartOptions)));
+soloHistChartOptions.value["chart"]["id"] = "ranked_solo_hist_chart";
+soloHistChartOptions.value["colors"] = [
+  "#6de34d", "#ea67d2", "#bbe948", "#a383f2", "#e3d33e", "#f46a54", "#5ade8c",
+  "#e09531", "#66ba47", "#aabd46"
+];
+soloHistChartOptions.value["dataLabels"]["enabled"] = false;
+soloHistChartOptions.value["yaxis"]["labels"]["formatter"] = (val) => {
+
+  if (val <= 0) {
+    return undefined;
+  }
+
+  const num = String(val);
+  const tier = Number(num.slice(-4, -3));
+  return `${rank_mappings["tier_values"][tier]}`;
+};
+soloHistChartOptions.value["xaxis"]["type"] = "datetime";
+soloHistChartOptions.value["markers"] = { "size": 5 };
+
+let flexHistChartOptions = ref(JSON.parse(JSON.stringify(baseChartOptions)));
+flexHistChartOptions.value["chart"]["id"] = "ranked_flex_hist_chart";
+flexHistChartOptions.value["colors"] = [
+  "#6de34d", "#ea67d2", "#bbe948", "#a383f2", "#e3d33e", "#f46a54", "#5ade8c",
+  "#e09531", "#66ba47", "#aabd46"
+];
+flexHistChartOptions.value["dataLabels"]["enabled"] = false;
+flexHistChartOptions.value["yaxis"]["labels"]["formatter"] = (val) => {
+
+  if (val <= 0) {
+    return undefined;
+  }
+
+  const num = String(val);
+  const tier = Number(num.slice(-4, -3));
+  return `${rank_mappings["tier_values"][tier]}`;
+};
+flexHistChartOptions.value["xaxis"]["type"] = "datetime";
+flexHistChartOptions.value["markers"] = { "size": 5 };
+
 
 // console.log(flexChartOptions.value);
 
-function get_players() {
+async function get_players() {
   const url = new URL(`${curr_api}/player/get_all`);
-  // url.searchParams.set("none", "none");
+  // url.searchParams.set('none','none')
+  let retryLeft = 3;
 
-  fetch(url)
+  while (retryLeft > 0) {
+    await fetch(url)
 
-    // Handle http error
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    })
+      // Handle http error
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
 
-    // Process the returned JSON data
-    .then(data => {
-      console.log("fetch data", data);
-      player_data.value = data;
-      updateChart(data);
-    })
+      // Process the returned JSON data
+      .then(data => {
+        // if (devMode) console.log(data);
+        player_data.value = data;
+        updateChart(data);
+        retryLeft = 0;
+      })
 
-    // Handle any errors that occurred during the fetch
-    .catch(error => {
-      console.error("Error:", error);
-    });
-
-}
-
-function get_date_range() {
-  const url = new URL(`${curr_api}/player/get_date_range`);
-  // url.searchParams.set("none", "none");
-
-  fetch(url)
-
-    // Handle http error
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    })
-
-    // Process the returned JSON data
-    .then(data => {
-      console.log("fetch date", data);
-      date_range.value = data;
-      updateDateCategory(data);
-    })
-
-    // Handle any errors that occurred during the fetch
-    .catch(error => {
-      console.error("Error:", error);
-    });
+      // Handle any errors that occurred during the fetch
+      .catch(error => {
+        console.error("Error:", error);
+      });
+    retryLeft -= 1;
+  }
 
 }
+
+// async function get_date_range() {
+//   const url = new URL(`${curr_api}/player/get_date_range`);
+//   // url.searchParams.set("none", "none");
+//   let retryLeft = 3;
+//
+//   while (retryLeft > 0) {
+//     await fetch(url)
+//
+//       // Handle http error
+//       .then(response => {
+//         if (!response.ok) {
+//           throw new Error(`HTTP error! Status: ${response.status}`);
+//         }
+//         return response.json();
+//       })
+//
+//       // Process the returned JSON data
+//       .then(data => {
+//         console.log("fetch date", data);
+//         date_range.value = data;
+//         updateDateCategory(data);
+//
+//         retryLeft = 0;
+//       })
+//
+//       // Handle any errors that occurred during the fetch
+//       .catch(error => {
+//         console.error("Error:", error);
+//       });
+//
+//     retryLeft -= 1;
+//   }
+// }
 
 function updateChart(f_data) {
   let sortedSolo = f_data.slice();
@@ -554,17 +278,19 @@ function updateChart(f_data) {
     if (Object.keys(val["rank_history"]["RANKED_SOLO_5x5"]).length < 1) {
       return;
     }
-
     let out = { "data": [], "name": "" };
     for (let date in val["rank_history"]["RANKED_SOLO_5x5"]) {
-      out["data"].push({
-        "x": date,
-        "y": val["rank_history"]["RANKED_SOLO_5x5"][date]
-      });
+      let [d, M, y] = date.split(/[/ ]/);
+      out["data"].push([new Date(y, parseInt(M) - 1, d), val["rank_history"]["RANKED_SOLO_5x5"][date]]);
       out["name"] = val["username"];
     }
+    out["data"].sort((a, b) => {
+      return b[0] - a[0];
+    });
     return out;
+
   })).filter(e => e != null);
+  console.log("solo hist", soloHistChartOptions.value.series);
 
   flexHistChartOptions.value.series = histFlex.map(val => {
     if (Object.keys(val["rank_history"]["RANKED_FLEX_SR"]).length < 1) {
@@ -572,34 +298,27 @@ function updateChart(f_data) {
     }
     let out = { "data": [], "name": "" };
     for (let date in val["rank_history"]["RANKED_FLEX_SR"]) {
-      out["data"].push({
-        "x": date,
-        "y": val["rank_history"]["RANKED_FLEX_SR"][date]
-      });
+      let [d, M, y] = date.split(/[/ ]/);
+      out["data"].push([new Date(y, parseInt(M) - 1, d), val["rank_history"]["RANKED_FLEX_SR"][date]]);
       out["name"] = val["username"];
     }
+    out["data"].sort((a, b) => {
+      return b[0] - a[0];
+    });
     return out;
   }).filter(e => e != null);
-}
-
-
-function updateDateCategory(f_data) {
-  soloHistChartOptions.value.xaxis.categories = f_data;
-  flexHistChartOptions.value.xaxis.categories = f_data;
-  console.log("flex", flexHistChartOptions.value);
+  console.log("flex hist", flexHistChartOptions.value.series);
 
 }
 
 onMounted(() => {
   get_players();
-  get_date_range();
-  // console.log(curr_api);
 });
 </script>
 
 <template>
   <body>
-  <div v-if="player_data!==undefined && date_range!==undefined">
+  <div v-if="player_data!==undefined">
 
     <h1 style="padding-left: 20px">Solo Queue</h1>
     <div class="chart_wrapper">
