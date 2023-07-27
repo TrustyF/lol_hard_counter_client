@@ -26,20 +26,6 @@ let baseChartOptions = {
   tooltip: {
     theme: "dark",
     enabled: true,
-    y: {
-      formatter: (val) => {
-
-        if (val <= 0) {
-          return undefined;
-        }
-
-        const num = String(val);
-        const lp = Number(num.slice(-2));
-        const division = Number(num.slice(-3, -2));
-        const tier = Number(num.slice(-4, -3));
-        return [`${rank_mappings["tier_values"][tier]} ${rank_mappings["division_values"][division]} ${lp} LP`];
-      }
-    }
   },
   colors: ["#0052b2"],
   legend: {
@@ -98,7 +84,8 @@ let baseChartOptions = {
   },
   dataLabels: {
     enabled: true,
-    offsetX: 30,
+    offsetX: 25,
+    offsetY: -7,
     textAnchor: "start",
     style: {
       fontSize: "12px",
@@ -118,7 +105,8 @@ soloChartOptions.value["dataLabels"]["formatter"] = (val) => {
   const num = String(val);
   const tier = Number(num.slice(-4, -3));
   const div = Number(num.slice(-3, -2));
-  return [`${rank_mappings["tier_values"][tier].charAt(0).toUpperCase() + rank_mappings["tier_values"][tier].slice(1)} ${rank_mappings["division_values"][div]}`];
+  const lp = Number(num.slice(-2));
+  return [`${rank_mappings["tier_values"][tier].charAt(0).toUpperCase() + rank_mappings["tier_values"][tier].slice(1)} ${rank_mappings["division_values"][div]}`, `${lp} lp`];
 };
 soloChartOptions.value["xaxis"]["labels"]["formatter"] = (val) => {
   const num = String(val);
@@ -136,7 +124,8 @@ flexChartOptions.value["dataLabels"]["formatter"] = (val) => {
   const num = String(val);
   const tier = Number(num.slice(-4, -3));
   const div = Number(num.slice(-3, -2));
-  return [`${rank_mappings["tier_values"][tier].charAt(0).toUpperCase() + rank_mappings["tier_values"][tier].slice(1)} ${rank_mappings["division_values"][div]}`];
+  const lp = Number(num.slice(-2));
+  return [`${rank_mappings["tier_values"][tier].charAt(0).toUpperCase() + rank_mappings["tier_values"][tier].slice(1)} ${rank_mappings["division_values"][div]}`, `${lp} lp`];
 };
 flexChartOptions.value["xaxis"]["labels"]["formatter"] = (val) => {
   const num = String(val);
@@ -219,11 +208,11 @@ flexHistChartOptions.value["grid"]["yaxis"]["lines"]["show"] = true;
 flexHistChartOptions.value["grid"]["xaxis"]["lines"]["show"] = false;
 flexHistChartOptions.value["grid"]["padding"] = { right: 50, left: 50 };
 
-soloChartOptions.value["chart"]["events"] = {
-  "dataPointMouseEnter": (f_event, f_context, f_config) => {
-    console.log("test");
-  }
-};
+// soloChartOptions.value["chart"]["events"] = {
+//   "dataPointMouseEnter": (f_event, f_context, f_config) => {
+//     console.log("test");
+//   }
+// };
 
 // console.log(flexChartOptions.value);
 
