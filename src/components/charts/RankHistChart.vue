@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject, onMounted, toRefs } from "vue";
+import { toRefs } from "vue";
 
 let props = defineProps(["f_chartName", "f_chartData", "f_chartOptions"]);
 
@@ -20,12 +20,11 @@ let baseChartOptions = {
     id: "",
     animations: {
       enabled: true,
-      easing: "easeout",
-      speed: 700,
+      speed: 800,
       animateGradually: {
         enabled: true,
-        delay: 500
-      }
+        delay: 50
+      },
     },
     events: {}
   },
@@ -44,7 +43,6 @@ let baseChartOptions = {
     opacity: 1
   },
   yaxis: {
-    categories: [],
     labels: {
       rotate: 0,
       style: {
@@ -57,13 +55,8 @@ let baseChartOptions = {
   xaxis: {
     categories: [],
     labels: {
-      rotate: 0,
-      // offsetY:10,
-      // offsetX:10,
-      hideOverlappingLabels: false,
-      trim: true,
       style: {
-        colors: "#ababab",
+        colors: "#ababab"
       }
     }
   },
@@ -75,7 +68,7 @@ let baseChartOptions = {
   ],
   plotOptions: {
     bar: {
-      horizontal: false,
+      horizontal: true,
       dataLabels: {
         position: "top"
       }
@@ -85,21 +78,20 @@ let baseChartOptions = {
     borderColor: "#282828",
     xaxis: {
       lines: {
-        show: false
+        show: true
       }
     },
     yaxis: {
       lines: {
-        show: true
+        show: false
       }
     }
   },
   dataLabels: {
     enabled: true,
-    // offsetX: 25,
-    // offsetY: -7,
-    // textAnchor: "start",
-    offsetY: -40,
+    offsetX: 25,
+    offsetY: -7,
+    textAnchor: "start",
     style: {
       fontSize: "12px",
       backgroundColor: "black"
@@ -117,24 +109,46 @@ baseChartOptions["dataLabels"]["formatter"] = (val) => {
     return undefined;
   }
   const num = String(val);
-  const tier = Number(num.slice(-4, -3));
+  // const tier = Number(num.slice(-4, -3));
   const div = Number(num.slice(-3, -2));
   const lp = Number(num.slice(-2));
-  return [`${rank_mappings["tier_values"][tier].charAt(0).toUpperCase() + rank_mappings["tier_values"][tier].slice(1)} ${rank_mappings["division_values"][div]}`, `${lp} lp`];
+  return [`Tier ${rank_mappings["division_values"][div]} ${lp} lp`];
 };
+baseChartOptions["dataLabels"]["textAnchor"] = "middle";
+baseChartOptions["dataLabels"]["offsetY"] = -10;
+baseChartOptions["dataLabels"]["offsetX"] = 0;
 baseChartOptions["yaxis"]["labels"]["formatter"] = (val) => {
+  if (val <= 0) {
+    return undefined;
+  }
   const num = String(val);
   const tier = Number(num.slice(-4, -3));
   return `${rank_mappings["tier_values"][tier]}`;
 };
-baseChartOptions["xaxis"]["labels"]["formatter"] = (val) => {
-  return val.split(" ").slice(-1);
-};
+baseChartOptions["xaxis"]["type"] = "datetime";
+baseChartOptions["markers"] = { "size": 2 };
+baseChartOptions["stroke"] = { "width": 2 };
+baseChartOptions["grid"]["yaxis"]["lines"]["show"] = true;
+baseChartOptions["grid"]["xaxis"]["lines"]["show"] = false;
+baseChartOptions["grid"]["padding"] = { right: 50, left: 50 };
 
 // Set data
-chartData.value.sort((a, b) => b["rank"][chartOptions.value["queue"]]["rank"] > a["rank"][chartOptions.value["queue"]]["rank"]);
-baseChartOptions.series[0].data = (chartData.value.map(val => val["rank"][chartOptions.value["queue"]]["rank"])).filter(e => e != null);
-baseChartOptions.xaxis.categories = (chartData.value.map(val => val["username"])).filter(e => e != null);
+baseChartOptions.series = (chartData.value.map(val => {
+  if (Object.keys(val["rank_history"][chartOptions.value["queue"]]).length < 1) {
+    return;
+  }
+  let out = { "data": [], "name": "" };
+  for (let date in val["rank_history"][chartOptions.value["queue"]]) {
+    let [d, M, y] = date.split(/[/ ]/);
+    out["data"].push([new Date(y, parseInt(M) - 1, d), val["rank_history"][chartOptions.value["queue"]][date]]);
+    out["name"] = val["username"];
+  }
+  out["data"].sort((a, b) => {
+    return b[0] - a[0];
+  });
+  return out;
+
+})).filter(e => e != null);
 
 
 </script>
@@ -142,7 +156,7 @@ baseChartOptions.xaxis.categories = (chartData.value.map(val => val["username"])
 <template>
   <div></div>
   <apexchart
-    type="bar"
+    type="line"
     :height=graph_width
     :options="baseChartOptions"
     :series="baseChartOptions.series"
