@@ -5,12 +5,15 @@ import { RouterLink } from "vue-router";
 
 <template>
   <div class="base_nav">
-    <div class="links_bar">
-      <h1 class="title">Wall of shame</h1>
-      <!--      <RouterLink class="link" to="/">Funny stats</RouterLink>-->
+    <div class="center_nav">
+      <img class="nav_logo" src="/TTT_square_logo_small.png" alt="ttt logo">
+
+      <div class="links_bar">
+        <RouterLink class="link" to="/">Wall of shame</RouterLink>
+        <RouterLink class="link" to="/funnyStats">Funny stats</RouterLink>
+      </div>
+
     </div>
-    <!--      <img class="nav_img" src="/TTT_backdrop_dark.png" alt="nav backdrop">-->
-    <img class="nav_logo" src="/TTT_square_logo_small.png" alt="ttt logo">
   </div>
 </template>
 
@@ -18,40 +21,47 @@ import { RouterLink } from "vue-router";
 .base_nav {
   width: 100%;
   height: 70px;
-  background-color: #2c3e50;
+  background-color: #16395d;
   /*overflow: hidden;*/
 }
 
+.center_nav {
+  margin: auto;
+  /*outline: 2px solid green;*/
+  width: 75vw;
+  /*height: 100%;*/
+
+  display: flex;
+  flex-flow: row nowrap;
+}
+
 .links_bar {
-  position: absolute;
-  margin-left: 150px;
-  height: 70px;
+  /*margin-left: 50px;*/
+  /*height: 100%;*/
   /*outline: 1px solid red;*/
   display: flex;
 }
 
-.title {
-  font-weight: 1000;
-  font-size: 2em;
-  margin: auto;
-}
-
 .link {
-  margin: auto;
-  text-align: center;
-  /*outline: 1px solid red;*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 1.2em;
+
+  /*outline: 1px solid purple;*/
   color: white;
+  /*line-height: 300%;*/
+  /*height: 100%;*/
+  padding: 0 30px 0 30px;
   text-decoration: none;
-  height: 100%;
-  padding: 0 20px 0 20px;
-  font-size: 1.5em;
 
   transition: 0.1s;
 }
 
-.link:hover {
-  /*color: inherit;*/
-  background-color: rgba(255, 255, 255, 0.2);
+.router-link-active, .link:hover {
+  background-color: rgb(5, 38, 72);
+  /*text-decoration: underline;*/
 }
 
 .nav_img {
@@ -60,9 +70,7 @@ import { RouterLink } from "vue-router";
 }
 
 .nav_logo {
-  position: absolute;
-  left: 0;
-  top: 0;
   width: 70px;
+  height: 100%;
 }
 </style>

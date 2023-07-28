@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject, onMounted, toRefs } from "vue";
+import { ref, inject, onMounted, toRefs, watch } from "vue";
 
 let props = defineProps(["f_chartName", "f_chartData", "f_chartOptions"]);
 
@@ -15,7 +15,7 @@ const rank_mappings = {
 };
 
 // Set options
-let baseChartOptions = {
+let baseChartOptions = ref({
   chart: {
     id: "",
     animations: {
@@ -63,7 +63,7 @@ let baseChartOptions = {
       hideOverlappingLabels: false,
       trim: true,
       style: {
-        colors: "#ababab",
+        colors: "#ababab"
       }
     }
   },
@@ -108,11 +108,11 @@ let baseChartOptions = {
   noData: {
     text: "Loading..."
   }
-};
+});
 
-baseChartOptions["chart"]["id"] = chartName.value;
-baseChartOptions["colors"] = chartOptions.value["color"];
-baseChartOptions["dataLabels"]["formatter"] = (val) => {
+baseChartOptions.value["chart"]["id"] = chartName.value;
+baseChartOptions.value["colors"] = chartOptions.value["color"];
+baseChartOptions.value["dataLabels"]["formatter"] = (val) => {
   if (val <= 0) {
     return undefined;
   }
@@ -122,20 +122,34 @@ baseChartOptions["dataLabels"]["formatter"] = (val) => {
   const lp = Number(num.slice(-2));
   return [`${rank_mappings["tier_values"][tier].charAt(0).toUpperCase() + rank_mappings["tier_values"][tier].slice(1)} ${rank_mappings["division_values"][div]}`, `${lp} lp`];
 };
-baseChartOptions["yaxis"]["labels"]["formatter"] = (val) => {
+baseChartOptions.value["yaxis"]["labels"]["formatter"] = (val) => {
   const num = String(val);
   const tier = Number(num.slice(-4, -3));
   return `${rank_mappings["tier_values"][tier]}`;
 };
-baseChartOptions["xaxis"]["labels"]["formatter"] = (val) => {
+baseChartOptions.value["xaxis"]["labels"]["formatter"] = (val) => {
   return val.split(" ").slice(-1);
 };
 
-// Set data
-chartData.value.sort((a, b) => b["rank"][chartOptions.value["queue"]]["rank"] > a["rank"][chartOptions.value["queue"]]["rank"]);
-baseChartOptions.series[0].data = (chartData.value.map(val => val["rank"][chartOptions.value["queue"]]["rank"])).filter(e => e != null);
-baseChartOptions.xaxis.categories = (chartData.value.map(val => val["username"])).filter(e => e != null);
+function update_chart() {
+  // Sort
+  chartData.value.sort((a, b) => b["rank"][chartOptions.value["queue"]]["rank"] > a["rank"][chartOptions.value["queue"]]["rank"]);
 
+  // Set data
+  baseChartOptions.value.series = [{
+    "data":
+      chartData.value.map(val => {
+        return { "y": val["rank"][chartOptions.value["queue"]]["rank"], "x": val["username"] };
+      }).filter(e => e != null)
+  }];
+}
+
+
+watch(chartData, () => {
+  update_chart();
+});
+
+update_chart();
 
 </script>
 

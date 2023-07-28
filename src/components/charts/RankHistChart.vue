@@ -1,5 +1,5 @@
 <script setup>
-import { toRefs } from "vue";
+import { toRefs, ref, watch } from "vue";
 
 let props = defineProps(["f_chartName", "f_chartData", "f_chartOptions"]);
 
@@ -15,7 +15,7 @@ const rank_mappings = {
 };
 
 // Set options
-let baseChartOptions = {
+let baseChartOptions = ref({
   chart: {
     id: "",
     animations: {
@@ -24,7 +24,7 @@ let baseChartOptions = {
       animateGradually: {
         enabled: true,
         delay: 50
-      },
+      }
     },
     events: {}
   },
@@ -100,11 +100,11 @@ let baseChartOptions = {
   noData: {
     text: "Loading..."
   }
-};
+});
 
-baseChartOptions["chart"]["id"] = chartName.value;
-baseChartOptions["colors"] = chartOptions.value["color"];
-baseChartOptions["dataLabels"]["formatter"] = (val) => {
+baseChartOptions.value["chart"]["id"] = chartName.value;
+baseChartOptions.value["colors"] = chartOptions.value["color"];
+baseChartOptions.value["dataLabels"]["formatter"] = (val) => {
   if (val <= 0) {
     return undefined;
   }
@@ -114,10 +114,10 @@ baseChartOptions["dataLabels"]["formatter"] = (val) => {
   const lp = Number(num.slice(-2));
   return [`Tier ${rank_mappings["division_values"][div]} ${lp} lp`];
 };
-baseChartOptions["dataLabels"]["textAnchor"] = "middle";
-baseChartOptions["dataLabels"]["offsetY"] = -10;
-baseChartOptions["dataLabels"]["offsetX"] = 0;
-baseChartOptions["yaxis"]["labels"]["formatter"] = (val) => {
+baseChartOptions.value["dataLabels"]["textAnchor"] = "middle";
+baseChartOptions.value["dataLabels"]["offsetY"] = -10;
+baseChartOptions.value["dataLabels"]["offsetX"] = 0;
+baseChartOptions.value["yaxis"]["labels"]["formatter"] = (val) => {
   if (val <= 0) {
     return undefined;
   }
@@ -125,31 +125,42 @@ baseChartOptions["yaxis"]["labels"]["formatter"] = (val) => {
   const tier = Number(num.slice(-4, -3));
   return `${rank_mappings["tier_values"][tier]}`;
 };
-baseChartOptions["xaxis"]["type"] = "datetime";
-baseChartOptions["markers"] = { "size": 2 };
-baseChartOptions["stroke"] = { "width": 2 };
-baseChartOptions["grid"]["yaxis"]["lines"]["show"] = true;
-baseChartOptions["grid"]["xaxis"]["lines"]["show"] = false;
-baseChartOptions["grid"]["padding"] = { right: 50, left: 50 };
+baseChartOptions.value["xaxis"]["type"] = "datetime";
+baseChartOptions.value["markers"] = { "size": 2 };
+baseChartOptions.value["stroke"] = { "width": 2 };
+baseChartOptions.value["grid"]["yaxis"]["lines"]["show"] = true;
+baseChartOptions.value["grid"]["xaxis"]["lines"]["show"] = false;
+baseChartOptions.value["grid"]["padding"] = { right: 50, left: 50 };
 
+function update_chart() {
+
+  // Set data
 // Set data
-baseChartOptions.series = (chartData.value.map(val => {
-  if (Object.keys(val["rank_history"][chartOptions.value["queue"]]).length < 1) {
-    return;
-  }
-  let out = { "data": [], "name": "" };
-  for (let date in val["rank_history"][chartOptions.value["queue"]]) {
-    let [d, M, y] = date.split(/[/ ]/);
-    out["data"].push([new Date(y, parseInt(M) - 1, d), val["rank_history"][chartOptions.value["queue"]][date]]);
-    out["name"] = val["username"];
-  }
-  out["data"].sort((a, b) => {
-    return b[0] - a[0];
-  });
-  return out;
+  baseChartOptions.value.series = (chartData.value.map(val => {
+    if (Object.keys(val["rank_history"][chartOptions.value["queue"]]).length < 1) {
+      return;
+    }
+    let out = { "data": [], "name": "" };
+    for (let date in val["rank_history"][chartOptions.value["queue"]]) {
+      let [d, M, y] = date.split(/[/ ]/);
+      out["data"].push([new Date(y, parseInt(M) - 1, d), val["rank_history"][chartOptions.value["queue"]][date]]);
+      out["name"] = val["username"];
+    }
+    out["data"].sort((a, b) => {
+      return b[0] - a[0];
+    });
+    return out;
 
-})).filter(e => e != null);
+  })).filter(e => e != null);
+  // console.log(baseChartOptions.value);
+}
 
+
+watch(chartData, () => {
+  update_chart();
+});
+
+update_chart();
 
 </script>
 

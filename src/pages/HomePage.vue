@@ -6,9 +6,13 @@ import RankHistChart from "@/components/charts/RankHistChart.vue";
 
 const curr_api = inject("curr_api");
 
-// Todo add visible daily change to bar graph, Fix daily graph dates issue (start date doesnt match)
+// Todo add visible daily change to bar graph
 
 let player_data = ref(undefined);
+let player_usernames = undefined;
+let player_backup = undefined;
+
+let selected_players = [];
 
 async function get_players() {
   const url = new URL(`${curr_api}/player/get_all`);
@@ -30,6 +34,8 @@ async function get_players() {
       .then(data => {
         // if (devMode) console.log(data);
         player_data.value = data;
+        player_backup = data;
+        player_usernames = data.map(x => x["username"]);
         retryLeft = 0;
       })
 
@@ -42,6 +48,26 @@ async function get_players() {
 
 }
 
+function filter_player(input) {
+  let select_player = input.target.innerText;
+  input.target.style["background-color"] = "#587898";
+
+  if (selected_players.includes(select_player)) {
+    input.target.style["background-color"] = "#2c3e50";
+    selected_players = selected_players.filter(item => item !== select_player);
+  } else {
+    selected_players.push(select_player);
+    console.log(selected_players);
+  }
+
+  if (selected_players.length < 1) {
+    player_data.value = player_backup;
+  } else {
+    player_data.value = player_backup.filter(x => selected_players.includes(x["username"]));
+  }
+
+
+}
 
 onMounted(() => {
   get_players();
@@ -52,7 +78,15 @@ onMounted(() => {
   <body>
   <div v-if="player_data!==undefined">
 
+    <div class="players_buttons">
+      <div v-for="player in player_usernames" :key="player">
+        <button class="player_button" @click="filter_player">{{ player }}</button>
+      </div>
+<!--      <button class="player_button" @click="reset_players">X</button>-->
+    </div>
+
     <h1 style="padding-left: 20px">Solo Queue</h1>
+    <div class="divider"></div>
     <div class="chart_wrapper">
       <div>
         <BarChart f_chartName="ranked_solo_chart"
@@ -74,6 +108,7 @@ onMounted(() => {
     </div>
 
     <h1 style="padding-left: 20px">Flex Queue</h1>
+    <div class="divider"></div>
     <div class="chart_wrapper">
       <div>
         <BarChart f_chartName="ranked_flex_chart"
@@ -98,10 +133,11 @@ onMounted(() => {
   </body>
 
 </template>
+
 <style scoped>
 body {
   margin: auto;
-  width: 95vw;
+  width: 75vw;
   padding-top: 30px;
   /*outline: 1px solid palegreen;*/
 }
@@ -112,6 +148,36 @@ body {
   grid-template-columns: repeat(2, 1fr);
   min-height: 500px;
 
-  margin: 15px 10px 15px 10px;
+  margin: 15px 10px 50px 10px;
+}
+
+.divider {
+  height: 1px;
+  background-color: white;
+}
+
+.players_buttons {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 15px;
+  /*outline: 1px solid red;*/
+  width: 100%;
+  /*justify-content: space-evenly;*/
+  margin: 10px 0 30px 0;
+}
+
+.player_button {
+  background-color: #2c3e50;
+  color: white;
+  cursor: pointer;
+  border: none;
+  /*border-color: #517194;*/
+  padding: 15px;
+  border-radius: 10px;
+  transition: 0.1s;
+}
+
+.player_button:hover {
+  background-color: #587898;
 }
 </style>
