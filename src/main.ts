@@ -12,6 +12,7 @@ const devMode = import.meta.env.DEV;
 
 const selected_players = ref([]);
 const player_usernames = ref(undefined);
+const player_data = ref(undefined);
 
 const app = createApp(App);
 
@@ -19,6 +20,7 @@ app.provide("curr_api", devMode ? local_api : server_api);
 app.provide("devMode", devMode);
 app.provide("selectedPlayers", selected_players);
 app.provide("playerUsernames", player_usernames);
+app.provide("playerData", player_data);
 
 app.use(router);
 app.use(VueLazyLoad, {});

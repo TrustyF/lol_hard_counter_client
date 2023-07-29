@@ -1,10 +1,11 @@
 <script setup>
-import { toRefs, ref, watch, inject } from "vue";
+import { toRefs, ref, watch, inject, toRaw } from "vue";
 
+let playerData = inject("playerData");
 let props = defineProps(["f_chartName", "f_chartData", "f_chartOptions"]);
 
 let chartName = toRefs(props)["f_chartName"];
-let chartData = toRefs(props)["f_chartData"];
+let chartData = toRaw(playerData.value);
 let chartOptions = toRefs(props)["f_chartOptions"];
 
 let selectedPlayers = inject("selectedPlayers");
@@ -137,12 +138,11 @@ baseChartOptions.value["grid"]["padding"] = { right: 50, left: 50 };
 function update_chart() {
   // Filter selected players
   if (selectedPlayers.value.length > 0) {
-    chartData = props['f_chartData'].filter(x => selectedPlayers.value.includes(x["username"]));
+    chartData = playerData.value.filter(x => selectedPlayers.value.includes(x["username"]));
   } else {
-    chartData = props['f_chartData']
+    chartData = playerData.value
   }
   // Set data
-// Set data
   baseChartOptions.value.series = (chartData.map(val => {
     if (Object.keys(val["rank_history"][chartOptions.value["queue"]]).length < 1) {
       return;
@@ -159,9 +159,7 @@ function update_chart() {
     return out;
 
   })).filter(e => e != null);
-  // console.log(baseChartOptions.value);
 }
-
 
 watch(selectedPlayers.value, () => {
   update_chart();
@@ -172,7 +170,6 @@ update_chart();
 </script>
 
 <template>
-  <div></div>
   <apexchart
     type="line"
     :height=graph_width

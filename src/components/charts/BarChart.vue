@@ -1,13 +1,14 @@
 <script setup>
-import { ref, inject, onMounted, toRefs,toRaw, watch } from "vue";
+import { ref, inject, onMounted, toRefs, toRaw, watch } from "vue";
 
-let props = defineProps(["f_chartName", "f_chartData", "f_chartOptions"]);
+let props = defineProps(["f_chartName", "f_chartOptions"]);
+
+let playerData = inject("playerData");
+let selectedPlayers = inject("selectedPlayers");
 
 let chartName = toRefs(props)["f_chartName"];
-let chartData = toRaw(props)["f_chartData"];
+let chartData = toRaw(playerData.value);
 let chartOptions = toRefs(props)["f_chartOptions"];
-
-let selectedPlayers = inject("selectedPlayers");
 
 let graph_width = "100%";
 const rank_mappings = {
@@ -136,9 +137,9 @@ baseChartOptions.value["xaxis"]["labels"]["formatter"] = (val) => {
 function update_chart() {
   // Filter selected players
   if (selectedPlayers.value.length > 0) {
-    chartData = props['f_chartData'].filter(x => selectedPlayers.value.includes(x["username"]));
+    chartData = playerData.value.filter(x => selectedPlayers.value.includes(x["username"]));
   } else {
-    chartData = props['f_chartData']
+    chartData = playerData.value;
   }
   // Sort
   chartData.sort((a, b) => b["rank"][chartOptions.value["queue"]]["rank"] - a["rank"][chartOptions.value["queue"]]["rank"]);
@@ -161,7 +162,6 @@ update_chart();
 </script>
 
 <template>
-  <div></div>
   <apexchart
     type="bar"
     :height=graph_width
