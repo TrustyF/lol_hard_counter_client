@@ -1,11 +1,13 @@
 <script setup>
-import { toRefs, ref, watch } from "vue";
+import { toRefs, ref, watch, inject } from "vue";
 
 let props = defineProps(["f_chartName", "f_chartData", "f_chartOptions"]);
 
 let chartName = toRefs(props)["f_chartName"];
 let chartData = toRefs(props)["f_chartData"];
 let chartOptions = toRefs(props)["f_chartOptions"];
+
+let selectedPlayers = inject("selectedPlayers");
 
 let graph_width = "100%";
 const rank_mappings = {
@@ -133,10 +135,15 @@ baseChartOptions.value["grid"]["xaxis"]["lines"]["show"] = false;
 baseChartOptions.value["grid"]["padding"] = { right: 50, left: 50 };
 
 function update_chart() {
-
+  // Filter selected players
+  if (selectedPlayers.value.length > 0) {
+    chartData = props['f_chartData'].filter(x => selectedPlayers.value.includes(x["username"]));
+  } else {
+    chartData = props['f_chartData']
+  }
   // Set data
 // Set data
-  baseChartOptions.value.series = (chartData.value.map(val => {
+  baseChartOptions.value.series = (chartData.map(val => {
     if (Object.keys(val["rank_history"][chartOptions.value["queue"]]).length < 1) {
       return;
     }
@@ -156,7 +163,7 @@ function update_chart() {
 }
 
 
-watch(chartData, () => {
+watch(selectedPlayers.value, () => {
   update_chart();
 });
 

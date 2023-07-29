@@ -1,11 +1,13 @@
 <script setup>
-import { ref, inject, onMounted, toRefs, watch } from "vue";
+import { ref, inject, onMounted, toRefs,toRaw, watch } from "vue";
 
 let props = defineProps(["f_chartName", "f_chartData", "f_chartOptions"]);
 
 let chartName = toRefs(props)["f_chartName"];
-let chartData = toRefs(props)["f_chartData"];
+let chartData = toRaw(props)["f_chartData"];
 let chartOptions = toRefs(props)["f_chartOptions"];
+
+let selectedPlayers = inject("selectedPlayers");
 
 let graph_width = "100%";
 const rank_mappings = {
@@ -132,20 +134,25 @@ baseChartOptions.value["xaxis"]["labels"]["formatter"] = (val) => {
 };
 
 function update_chart() {
+  // Filter selected players
+  if (selectedPlayers.value.length > 0) {
+    chartData = props['f_chartData'].filter(x => selectedPlayers.value.includes(x["username"]));
+  } else {
+    chartData = props['f_chartData']
+  }
   // Sort
-  chartData.value.sort((a, b) => b["rank"][chartOptions.value["queue"]]["rank"] > a["rank"][chartOptions.value["queue"]]["rank"]);
+  chartData.sort((a, b) => b["rank"][chartOptions.value["queue"]]["rank"] - a["rank"][chartOptions.value["queue"]]["rank"]);
 
   // Set data
   baseChartOptions.value.series = [{
     "data":
-      chartData.value.map(val => {
+      chartData.map(val => {
         return { "y": val["rank"][chartOptions.value["queue"]]["rank"], "x": val["username"] };
       }).filter(e => e != null)
   }];
 }
 
-
-watch(chartData, () => {
+watch(selectedPlayers.value, () => {
   update_chart();
 });
 
