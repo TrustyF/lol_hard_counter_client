@@ -1,14 +1,15 @@
 <script setup>
 import { toRefs, ref, watch, inject, toRaw } from "vue";
 
-let playerData = inject("playerData");
 let props = defineProps(["f_chartName", "f_chartData", "f_chartOptions"]);
+
+let playerData = inject("playerData");
+let selectedPlayers = inject("selectedPlayers");
 
 let chartName = toRefs(props)["f_chartName"];
 let chartData = toRaw(playerData.value);
 let chartOptions = toRefs(props)["f_chartOptions"];
 
-let selectedPlayers = inject("selectedPlayers");
 
 let graph_width = "100%";
 const rank_mappings = {
@@ -69,14 +70,6 @@ let baseChartOptions = ref({
       data: []
     }
   ],
-  plotOptions: {
-    bar: {
-      horizontal: true,
-      dataLabels: {
-        position: "top"
-      }
-    }
-  },
   grid: {
     borderColor: "#282828",
     xaxis: {
@@ -107,7 +100,7 @@ let baseChartOptions = ref({
 
 baseChartOptions.value["chart"]["id"] = chartName.value;
 baseChartOptions.value["colors"] = chartOptions.value["color"];
-baseChartOptions.value["dataLabels"]["formatter"] = (val) => {
+baseChartOptions.value["dataLabels"]["formatter"] = (val,{ seriesIndex, dataPointIndex, w }) => {
   if (val <= 0) {
     return undefined;
   }

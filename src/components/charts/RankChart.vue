@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject, onMounted, toRefs, toRaw, watch } from "vue";
+import { ref, inject, toRefs, toRaw, watch } from "vue";
 
 let props = defineProps(["f_chartName", "f_chartOptions"]);
 
@@ -131,6 +131,7 @@ baseChartOptions.value["yaxis"]["labels"]["formatter"] = (val) => {
   return `${rank_mappings["tier_values"][tier]}`;
 };
 baseChartOptions.value["xaxis"]["labels"]["formatter"] = (val) => {
+  if (typeof val !== 'string'){return null}
   return val.split(" ").slice(-1);
 };
 
