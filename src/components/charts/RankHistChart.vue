@@ -32,6 +32,11 @@ let baseChartOptions = ref({
     },
     events: {}
   },
+  title:{
+    text:"History",
+    align: 'left',
+    floating: false,
+  },
   tooltip: {
     theme: "dark",
     enabled: false
@@ -165,7 +170,7 @@ update_chart();
 <template>
   <apexchart
     type="line"
-    :height=graph_width
+    height="100%"
     :options="baseChartOptions"
     :series="baseChartOptions.series"
   ></apexchart>

@@ -59,7 +59,7 @@ onMounted(() => {
 body {
   margin: auto;
   width: 75vw;
-  padding-top: 30px;
+  padding-top: 20px;
   /*outline: 1px solid palegreen;*/
 }
 </style>

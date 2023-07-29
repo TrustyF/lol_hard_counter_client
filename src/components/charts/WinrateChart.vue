@@ -32,6 +32,11 @@ let baseChartOptions = ref({
     },
     events: {}
   },
+  title:{
+    text:"Winrate",
+    align: 'left',
+    floating: false,
+  },
   tooltip: {
     theme: "dark",
     enabled: false
@@ -42,11 +47,6 @@ let baseChartOptions = ref({
       colors: "#ababab",
       useSeriesColors: true
     }
-  },
-  title:{
-    text:"Elo",
-    align: 'left',
-    floating: false,
   },
   fill: {
     opacity: 1
@@ -77,18 +77,30 @@ let baseChartOptions = ref({
   },
   series: [
     {
+      position:'front',
       name: "",
       data: []
     }
   ],
+  annotations: {
+    position:'back',
+
+    yaxis: [{
+      y: 45,
+      y2: 0,
+      opacity: 0.1,
+      borderColor: '#ff0000',
+      fillColor: '#ff0000',
+      strokeDashArray:0,
+    }]
+  },
   plotOptions: {
     bar: {
       horizontal: false,
       columnWidth: '80%',
       dataLabels: {
-        position: "top",
-
-      },
+        position: "top"
+      }
     }
   },
   grid: {
@@ -109,7 +121,7 @@ let baseChartOptions = ref({
     // offsetX: 25,
     // offsetY: -7,
     // textAnchor: "start",
-    offsetY: 5,
+    offsetY: 10,
     style: {
       fontSize: "12px",
       backgroundColor: "black"
@@ -122,27 +134,23 @@ let baseChartOptions = ref({
 
 baseChartOptions.value["chart"]["id"] = chartName.value;
 baseChartOptions.value["colors"] = chartOptions.value["color"];
-baseChartOptions.value["dataLabels"]["formatter"] = (val) => {
-  if (val <= 0) {
-    return undefined;
-  }
-  const num = String(val);
-  const tier = Number(num.slice(-4, -3));
-  const div = Number(num.slice(-3, -2));
-  const lp = Number(num.slice(-2));
-  return [`${rank_mappings["tier_values"][tier].charAt(0).toUpperCase() + rank_mappings["tier_values"][tier].slice(1)}`, `${rank_mappings["division_values"][div]}`, `${lp} lp`];
-};
-baseChartOptions.value["yaxis"]["labels"]["formatter"] = (val) => {
-  const num = String(val);
-  const tier = Number(num.slice(-4, -3));
-  return `${rank_mappings["tier_values"][tier]}`;
-};
 baseChartOptions.value["xaxis"]["labels"]["formatter"] = (val) => {
   if (typeof val !== "string") {
     return null;
   }
   return val.split(" ").slice(-1);
 };
+baseChartOptions.value["yaxis"]["labels"]["formatter"] = (val) => {
+  return `${val}%`;
+};
+baseChartOptions.value["dataLabels"]["formatter"] = (val, ops) => {
+  if (val <= 0) {
+    return undefined;
+  }
+  // console.log('ops',ops);
+  return [`${val}%`, `${ops.config.series[0].data[ops.dataPointIndex].y[0]} games`];
+};
+
 
 function update_chart() {
   // Filter selected players
@@ -152,31 +160,32 @@ function update_chart() {
     chartData = playerData.value;
   }
   // Sort
-  chartData.sort((a, b) => b["rank"][chartOptions.value["queue"]]["rank"] - a["rank"][chartOptions.value["queue"]]["rank"]);
+  chartData.sort((a, b) => {
+    let queue = chartOptions.value["queue"];
+    let a_w = (a["rank"][queue]["winrate"][0] / (a["rank"][queue]["winrate"][0] + a["rank"][queue]["winrate"][1])) * 100;
+    let b_w = (b["rank"][queue]["winrate"][0] / (b["rank"][queue]["winrate"][0] + b["rank"][queue]["winrate"][1])) * 100;
+    return b_w - a_w;
+  });
 
   // Set data
   baseChartOptions.value.series = [{
     "data":
       chartData.map(val => {
         const queue = chartOptions.value["queue"];
-        const last_rank = val["rank_history"]?.[queue]?.[val["rank_info"]?.[queue]?.["nearest_date"]] || 0;
-        const curr_rank = val["rank"][queue]["rank"];
+        let max_games = (val["rank"][queue]["winrate"][0] + val["rank"][queue]["winrate"][1]);
+        let winrate = Math.round((val["rank"][queue]["winrate"][0] / max_games) * 100);
 
-        if (Number(curr_rank) === 0) {
+        if (Number(winrate) === 0 || Number(max_games) < 10) {
           return null;
         }
+
         return {
-          "y": curr_rank,
-          "x": val["username"],
-          "goals": last_rank !== curr_rank ? [{
-            value: last_rank,
-            strokeColor: last_rank < curr_rank ? "#40ff15" : "#ff1515",
-            strokeSize: 10
-          }] : []
+          "y": [max_games, winrate],
+          "x": val["username"]
         };
       }).filter(e => e != null)
   }];
-  console.log("basechart", baseChartOptions.value.series);
+  // console.log("basechart", baseChartOptions.value.series);
 }
 
 watch(selectedPlayers.value, () => {
