@@ -1,6 +1,6 @@
 <script setup>
 import { ref, inject, onMounted } from "vue";
-import BarChart from "@/components/charts/BarChart.vue";
+import RankChart from "@/components/charts/RankChart.vue";
 import RankHistChart from "@/components/charts/RankHistChart.vue";
 // import ChampionSelector from "@/components/champion/ChampionSelector.vue";
 
@@ -18,12 +18,12 @@ let playerData = inject("playerData");
     <div class="divider"></div>
     <div class="chart_wrapper">
       <div>
-        <BarChart f_chartName="ranked_solo_chart"
+        <RankChart f_chartName="ranked_solo_chart"
                   :f_chartOptions="{
         'queue':'RANKED_SOLO_5x5',
         'color':'#0056ab'
         }">
-        </BarChart>
+        </RankChart>
       </div>
       <div>
         <RankHistChart f_chartName="ranked_solo_hist_chart"
@@ -38,12 +38,12 @@ let playerData = inject("playerData");
     <div class="divider"></div>
     <div class="chart_wrapper">
       <div>
-        <BarChart f_chartName="ranked_flex_chart"
+        <RankChart f_chartName="ranked_flex_chart"
                   :f_chartOptions="{
         'queue':'RANKED_FLEX_SR',
-        'color':'#0dab00'
+        'color':'#6700ab'
         }">
-        </BarChart>
+        </RankChart>
       </div>
       <div>
         <RankHistChart f_chartName="ranked_flex_hist_chart"

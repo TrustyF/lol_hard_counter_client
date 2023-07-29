@@ -101,7 +101,7 @@ let baseChartOptions = ref({
     }
   },
   noData: {
-    text: "Loading..."
+    text: "No data"
   }
 });
 

@@ -109,7 +109,7 @@ let baseChartOptions = ref({
     }
   },
   noData: {
-    text: "Loading..."
+    text: "No data"
   }
 });
 
@@ -148,9 +148,25 @@ function update_chart() {
   baseChartOptions.value.series = [{
     "data":
       chartData.map(val => {
-        return { "y": val["rank"][chartOptions.value["queue"]]["rank"], "x": val["username"] };
+        const queue = chartOptions.value["queue"];
+        const last_rank = val["rank_history"]?.[queue]?.[val["rank_info"]?.[queue]?.["nearest_date"]] || 0;
+        const curr_rank = val["rank"][queue]["rank"];
+
+        if (Number(curr_rank) === 0){
+          return null
+        }
+        return {
+          "y": curr_rank,
+          "x": val["username"],
+          "goals": last_rank !== curr_rank ? [{
+            value: last_rank,
+            strokeColor: last_rank < curr_rank ? "#40ff15" : "#ff1515",
+            strokeSize: 10
+          }] : []
+        };
       }).filter(e => e != null)
   }];
+  console.log("basechart", baseChartOptions.value.series);
 }
 
 watch(selectedPlayers.value, () => {
