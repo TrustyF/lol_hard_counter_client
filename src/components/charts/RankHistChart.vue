@@ -32,10 +32,10 @@ let baseChartOptions = ref({
     },
     events: {}
   },
-  title:{
-    text:"History",
-    align: 'left',
-    floating: false,
+  title: {
+    text: "History",
+    align: "left",
+    floating: false
   },
   tooltip: {
     theme: "dark",
@@ -105,14 +105,14 @@ let baseChartOptions = ref({
 
 baseChartOptions.value["chart"]["id"] = chartName.value;
 baseChartOptions.value["colors"] = chartOptions.value["color"];
-baseChartOptions.value["dataLabels"]["formatter"] = (val,{ seriesIndex, dataPointIndex, w }) => {
+baseChartOptions.value["dataLabels"]["formatter"] = (val) => {
   if (val <= 0) {
     return undefined;
   }
-  const num = String(val);
-  // const tier = Number(num.slice(-4, -3));
-  const div = Number(num.slice(-3, -2));
-  const lp = Number(num.slice(-2));
+  const lp = val % 100;
+  const div = ((val - lp) % 400) / 100;
+  // const tier = (val - lp - ((val - lp) % 400)) / 400;
+
   return [`Tier ${rank_mappings["division_values"][div]} ${lp} lp`];
 };
 baseChartOptions.value["dataLabels"]["textAnchor"] = "middle";
@@ -122,8 +122,10 @@ baseChartOptions.value["yaxis"]["labels"]["formatter"] = (val) => {
   if (val <= 0) {
     return undefined;
   }
-  const num = String(val);
-  const tier = Number(num.slice(-4, -3));
+  const lp = val % 100;
+  // const div = ((val - lp) % 400) / 100;
+  const tier = (val - lp - ((val - lp) % 400)) / 400;
+
   return `${rank_mappings["tier_values"][tier]}`;
 };
 baseChartOptions.value["xaxis"]["type"] = "datetime";
@@ -138,7 +140,7 @@ function update_chart() {
   if (selectedPlayers.value.length > 0) {
     chartData = playerData.value.filter(x => selectedPlayers.value.includes(x["username"]));
   } else {
-    chartData = playerData.value
+    chartData = playerData.value;
   }
   // Set data
   baseChartOptions.value.series = (chartData.map(val => {
@@ -157,6 +159,8 @@ function update_chart() {
     return out;
 
   })).filter(e => e != null);
+  console.log("hist chart", baseChartOptions.value);
+
 }
 
 watch(selectedPlayers.value, () => {

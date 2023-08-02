@@ -126,15 +126,17 @@ baseChartOptions.value["dataLabels"]["formatter"] = (val) => {
   if (val <= 0) {
     return undefined;
   }
-  const num = String(val);
-  const tier = Number(num.slice(-4, -3));
-  const div = Number(num.slice(-3, -2));
-  const lp = Number(num.slice(-2));
+  const lp = val % 100;
+  const div = ((val - lp) % 400) / 100;
+  const tier = (val - lp - ((val - lp) % 400)) / 400;
+
   return [`${rank_mappings["tier_values"][tier].charAt(0).toUpperCase() + rank_mappings["tier_values"][tier].slice(1)}`, `${rank_mappings["division_values"][div]}`, `${lp} lp`];
 };
 baseChartOptions.value["yaxis"]["labels"]["formatter"] = (val) => {
-  const num = String(val);
-  const tier = Number(num.slice(-4, -3));
+  const lp = val % 100;
+  // const div = ((val - lp) % 400) / 100;
+  const tier = (val - lp - ((val - lp) % 400)) / 400;
+
   return `${rank_mappings["tier_values"][tier]}`;
 };
 baseChartOptions.value["xaxis"]["labels"]["formatter"] = (val) => {
