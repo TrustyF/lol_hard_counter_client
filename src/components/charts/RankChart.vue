@@ -175,7 +175,7 @@ function update_chart() {
         };
       }).filter(e => e != null)
   }];
-  console.log("basechart", baseChartOptions.value);
+  // console.log("basechart", baseChartOptions.value);
 }
 
 watch(selectedPlayers.value, () => {

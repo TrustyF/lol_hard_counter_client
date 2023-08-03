@@ -189,7 +189,7 @@ function update_chart() {
     return out;
 
   })).filter(e => e != null);
-  console.log("hist chart", baseChartOptions.value);
+  // console.log("hist chart", baseChartOptions.value);
 
 }
 
