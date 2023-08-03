@@ -39,9 +39,17 @@ let baseChartOptions = ref({
   },
   tooltip: {
     theme: "dark",
-    enabled: false
+    enabled: true,
+    // followCursor: false,
+    intersect: true,
+    shared: false,
+    x: {
+      formatter: undefined
+    },
+    y: {
+      formatter: undefined
+    }
   },
-  colors: ["#0052b2"],
   legend: {
     labels: {
       colors: "#ababab",
@@ -62,6 +70,7 @@ let baseChartOptions = ref({
     }
   },
   xaxis: {
+    type: "datetime",
     categories: [],
     labels: {
       style: {
@@ -79,25 +88,42 @@ let baseChartOptions = ref({
     borderColor: "#282828",
     xaxis: {
       lines: {
-        show: true
+        show: false
       }
     },
     yaxis: {
       lines: {
-        show: false
+        show: true
       }
-    }
+    },
+    padding: { right: 70, left: 10 }
   },
   dataLabels: {
     enabled: true,
-    offsetX: 25,
-    offsetY: -7,
-    textAnchor: "start",
+    offsetX: 0,
+    offsetY: -20,
+    textAnchor: "middle",
     style: {
       fontSize: "12px",
       backgroundColor: "black"
+    },
+    background: {
+      padding: 15,
+      borderRadius: 3,
+      borderWidth: 0,
+      opacity: 1
+    },
+    dropShadow: {
+      enabled: true,
+      top: 0,
+      left: 0,
+      blur: 1.5,
+      color: "#000",
+      opacity: 1
     }
   },
+  markers: { "size": 3 },
+  stroke: { "width": 2 },
   noData: {
     text: "No data"
   }
@@ -105,19 +131,29 @@ let baseChartOptions = ref({
 
 baseChartOptions.value["chart"]["id"] = chartName.value;
 baseChartOptions.value["colors"] = chartOptions.value["color"];
-baseChartOptions.value["dataLabels"]["formatter"] = (val) => {
+baseChartOptions.value["dataLabels"]["formatter"] = (val, opts) => {
   if (val <= 0) {
     return undefined;
   }
+
+  if (opts.dataPointIndex > 0) {
+    return undefined;
+  }
+  // console.log(opts);
+
   const lp = val % 100;
   const div = ((val - lp) % 400) / 100;
-  // const tier = (val - lp - ((val - lp) % 400)) / 400;
+  const tier = (val - lp - ((val - lp) % 400)) / 400;
 
-  return [`Tier ${rank_mappings["division_values"][div]} ${lp} lp`];
+  return [opts.w.globals.initialSeries[opts.seriesIndex]["name"], `${rank_mappings["tier_values"][tier]} ${rank_mappings["division_values"][div]} ${lp} lp`];
 };
-baseChartOptions.value["dataLabels"]["textAnchor"] = "middle";
-baseChartOptions.value["dataLabels"]["offsetY"] = -10;
-baseChartOptions.value["dataLabels"]["offsetX"] = 0;
+baseChartOptions.value["tooltip"]["y"]["formatter"] = (val) => {
+  const lp = val % 100;
+  const div = ((val - lp) % 400) / 100;
+  const tier = (val - lp - ((val - lp) % 400)) / 400;
+
+  return [`${rank_mappings["tier_values"][tier]} ${rank_mappings["division_values"][div]} ${lp} lp`];
+};
 baseChartOptions.value["yaxis"]["labels"]["formatter"] = (val) => {
   if (val <= 0) {
     return undefined;
@@ -128,12 +164,6 @@ baseChartOptions.value["yaxis"]["labels"]["formatter"] = (val) => {
 
   return `${rank_mappings["tier_values"][tier]}`;
 };
-baseChartOptions.value["xaxis"]["type"] = "datetime";
-baseChartOptions.value["markers"] = { "size": 2 };
-baseChartOptions.value["stroke"] = { "width": 2 };
-baseChartOptions.value["grid"]["yaxis"]["lines"]["show"] = true;
-baseChartOptions.value["grid"]["xaxis"]["lines"]["show"] = false;
-baseChartOptions.value["grid"]["padding"] = { right: 50, left: 50 };
 
 function update_chart() {
   // Filter selected players

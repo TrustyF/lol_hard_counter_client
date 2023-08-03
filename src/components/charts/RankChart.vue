@@ -37,7 +37,6 @@ let baseChartOptions = ref({
     theme: "dark",
     enabled: false
   },
-  colors: ["#0052b2"],
   legend: {
     labels: {
       colors: "#ababab",
@@ -50,7 +49,7 @@ let baseChartOptions = ref({
     floating: false
   },
   fill: {
-    opacity: 1
+    opacity: 1,
   },
   yaxis: {
     labels: {
