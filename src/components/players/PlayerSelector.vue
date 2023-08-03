@@ -36,7 +36,7 @@ watch(playerData, () => {
       <div class="button_wrapper">
 
         <button class="player_button" @click="filter_player">
-          <input type="image" class="button_image" :src="`src/assets/profileicon/${player.profile_icon}.png`"
+          <input type="image" class="button_image" :src="`/assets/profileicon/${player.profile_icon}.png`"
                  alt="icon" />
           {{ player.username }}
         </button>

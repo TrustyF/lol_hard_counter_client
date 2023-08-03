@@ -6,7 +6,7 @@ import { RouterLink } from "vue-router";
 <template>
   <div class="base_nav">
     <div class="center_nav">
-      <img class="nav_logo" src="/TTT_square_logo_small.png" alt="ttt logo">
+      <img class="nav_logo" src="/logos/TTT_square_logo_small.png" alt="ttt logo">
 
       <div class="links_bar">
         <RouterLink class="link" to="/">Wall of shame</RouterLink>

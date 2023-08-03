@@ -26,6 +26,6 @@ coverage
 *.njsproj
 *.sln
 *.sw?
-/src/assets/champions/
-/src/assets/tiers/
+/public/assets/champions/
+/public/assets/tiers/
 /src/assets/
