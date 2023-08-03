@@ -1,6 +1,7 @@
 <script setup>
-import { inject } from "vue";
+import { inject, onMounted, watch } from "vue";
 
+let playerData = inject("playerData");
 let selectedPlayers = inject("selectedPlayers");
 let playerUsernames = inject("playerUsernames");
 
@@ -14,7 +15,14 @@ function filter_player(input) {
   } else {
     selectedPlayers.value.push(select_player);
   }
+
+  console.log("players", playerUsernames);
 }
+
+watch(playerData, () => {
+  const sorted = playerData.value.sort((a, b) => b["ranked"]["RANKED_SOLO_5x5"]["rank"] - a["ranked"]["RANKED_SOLO_5x5"]["rank"]);
+  playerUsernames.value = sorted.map(x => x["username"]);
+});
 </script>
 
 <template>
@@ -22,7 +30,6 @@ function filter_player(input) {
     <div v-for="player in playerUsernames" :key="player">
       <button class="player_button" @click="filter_player">{{ player }}</button>
     </div>
-    <!--      <button class="player_button" @click="reset_players">X</button>-->
   </div>
 </template>
 

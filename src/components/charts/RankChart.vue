@@ -154,10 +154,6 @@ function update_chart() {
   // Sort
   chartData.sort((a, b) => b["ranked"][chartOptions.value["queue"]]["rank"] - a["ranked"][chartOptions.value["queue"]]["rank"]);
 
-  if (chartOptions.value["queue"] === "RANKED_SOLO_5x5") {
-    playerUsernames.value = chartData.map(x => x["username"]);
-  }
-
   // Set data
   baseChartOptions.value.series = [{
     "data":
