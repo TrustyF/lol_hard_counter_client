@@ -162,8 +162,8 @@ function update_chart() {
   // Sort
   chartData.sort((a, b) => {
     let queue = chartOptions.value["queue"];
-    let a_w = (a["rank"][queue]["winrate"][0] / (a["rank"][queue]["winrate"][0] + a["rank"][queue]["winrate"][1])) * 100;
-    let b_w = (b["rank"][queue]["winrate"][0] / (b["rank"][queue]["winrate"][0] + b["rank"][queue]["winrate"][1])) * 100;
+    let a_w = (a["ranked"][queue]["winrate"][0] / (a["ranked"][queue]["winrate"][0] + a["ranked"][queue]["winrate"][1])) * 100;
+    let b_w = (b["ranked"][queue]["winrate"][0] / (b["ranked"][queue]["winrate"][0] + b["ranked"][queue]["winrate"][1])) * 100;
     return b_w - a_w;
   });
 
@@ -172,8 +172,8 @@ function update_chart() {
     "data":
       chartData.map(val => {
         const queue = chartOptions.value["queue"];
-        let max_games = (val["rank"][queue]["winrate"][0] + val["rank"][queue]["winrate"][1]);
-        let winrate = Math.round((val["rank"][queue]["winrate"][0] / max_games) * 100);
+        let max_games = (val["ranked"][queue]["winrate"][0] + val["ranked"][queue]["winrate"][1]);
+        let winrate = Math.round((val["ranked"][queue]["winrate"][0] / max_games) * 100);
 
         if (Number(winrate) === 0 || Number(max_games) < 10) {
           return null;

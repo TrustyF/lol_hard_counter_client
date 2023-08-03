@@ -5,6 +5,7 @@ let props = defineProps(["f_chartName", "f_chartOptions"]);
 
 let playerData = inject("playerData");
 let selectedPlayers = inject("selectedPlayers");
+let playerUsernames = inject("playerUsernames");
 
 let chartName = toRefs(props)["f_chartName"];
 let chartData = toRaw(playerData.value);
@@ -43,16 +44,15 @@ let baseChartOptions = ref({
       useSeriesColors: true
     }
   },
-  title:{
-    text:"Elo",
-    align: 'left',
-    floating: false,
+  title: {
+    text: "Elo",
+    align: "left",
+    floating: false
   },
   fill: {
     opacity: 1
   },
   yaxis: {
-    categories: [],
     labels: {
       rotate: 0,
       style: {
@@ -63,7 +63,6 @@ let baseChartOptions = ref({
     }
   },
   xaxis: {
-    categories: [],
     labels: {
       rotate: 0,
       // offsetY:10,
@@ -84,11 +83,11 @@ let baseChartOptions = ref({
   plotOptions: {
     bar: {
       horizontal: false,
-      columnWidth: '80%',
+      columnWidth: "80%",
       dataLabels: {
-        position: "top",
+        position: "top"
 
-      },
+      }
     }
   },
   grid: {
@@ -136,7 +135,6 @@ baseChartOptions.value["yaxis"]["labels"]["formatter"] = (val) => {
   const lp = val % 100;
   // const div = ((val - lp) % 400) / 100;
   const tier = (val - lp - ((val - lp) % 400)) / 400;
-
   return `${rank_mappings["tier_values"][tier]}`;
 };
 baseChartOptions.value["xaxis"]["labels"]["formatter"] = (val) => {
@@ -154,15 +152,19 @@ function update_chart() {
     chartData = playerData.value;
   }
   // Sort
-  chartData.sort((a, b) => b["rank"][chartOptions.value["queue"]]["rank"] - a["rank"][chartOptions.value["queue"]]["rank"]);
+  chartData.sort((a, b) => b["ranked"][chartOptions.value["queue"]]["rank"] - a["ranked"][chartOptions.value["queue"]]["rank"]);
+
+  if (chartOptions.value["queue"] === "RANKED_SOLO_5x5") {
+    playerUsernames.value = chartData.map(x => x["username"]);
+  }
 
   // Set data
   baseChartOptions.value.series = [{
     "data":
       chartData.map(val => {
         const queue = chartOptions.value["queue"];
-        const last_rank = val["rank_history"]?.[queue]?.[val["rank_info"]?.[queue]?.["nearest_date"]] || 0;
-        const curr_rank = val["rank"][queue]["rank"];
+        const last_rank = val["ranked"][queue]['rank_history'][val["ranked"][queue]["nearest_rank_date"]];
+        const curr_rank = val["ranked"][queue]["rank"];
 
         if (Number(curr_rank) === 0) {
           return null;
@@ -178,7 +180,7 @@ function update_chart() {
         };
       }).filter(e => e != null)
   }];
-  console.log("basechart", baseChartOptions.value.series);
+  console.log("basechart", baseChartOptions.value);
 }
 
 watch(selectedPlayers.value, () => {
@@ -199,5 +201,4 @@ update_chart();
 </template>
 
 <style scoped>
-
 </style>

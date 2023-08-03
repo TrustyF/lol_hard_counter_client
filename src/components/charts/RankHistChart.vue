@@ -144,13 +144,13 @@ function update_chart() {
   }
   // Set data
   baseChartOptions.value.series = (chartData.map(val => {
-    if (Object.keys(val["rank_history"][chartOptions.value["queue"]]).length < 1) {
+    if (Object.keys(val["ranked"][chartOptions.value["queue"]]["rank_history"]).length < 1) {
       return;
     }
     let out = { "data": [], "name": "" };
-    for (let date in val["rank_history"][chartOptions.value["queue"]]) {
+    for (let date in val["ranked"][chartOptions.value["queue"]]["rank_history"]) {
       let [d, M, y] = date.split(/[/ ]/);
-      out["data"].push([new Date(y, parseInt(M) - 1, d), val["rank_history"][chartOptions.value["queue"]][date]]);
+      out["data"].push([new Date(y, parseInt(M) - 1, d), val["ranked"][chartOptions.value["queue"]]["rank_history"][date]]);
       out["name"] = val["username"];
     }
     out["data"].sort((a, b) => {

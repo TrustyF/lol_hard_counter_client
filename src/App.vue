@@ -6,7 +6,6 @@ import { inject, onMounted } from "vue";
 
 const curr_api = inject("curr_api");
 const devMode = inject("devMode");
-let playerUsernames = inject("playerUsernames");
 let playerData = inject("playerData");
 
 async function get_players() {
@@ -29,7 +28,6 @@ async function get_players() {
       .then(data => {
         if (devMode) console.log(data);
         playerData.value = data;
-        playerUsernames.value = data.map(x => x["username"]);
         retryLeft = 0;
       })
 
