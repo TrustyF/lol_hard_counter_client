@@ -13,10 +13,12 @@ const rank_mappings = {
 
 function filter_player(input) {
   let select_player = input;
-  document.getElementById(input).style['background-color'] = "#57748f";
+  document.getElementById(input).classList.add("player_hover_background");
 
   if (selectedPlayers.value.includes(select_player)) {
-    document.getElementById(input).style['background-color'] = "#2c3e50";
+    document.getElementById(input).classList.remove("player_hover_background");
+
+
     selectedPlayers.value.splice(selectedPlayers.value.indexOf(select_player), 1);
   } else {
     selectedPlayers.value.push(select_player);
@@ -117,6 +119,10 @@ watch(playerData, () => {
   justify-content: center;
   line-height: 50px;
 
+}
+
+.player_hover_background {
+  background-color: #57748f;
 }
 
 .player_button:hover {

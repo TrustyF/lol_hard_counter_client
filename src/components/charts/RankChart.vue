@@ -49,7 +49,7 @@ let baseChartOptions = ref({
     floating: false
   },
   fill: {
-    opacity: 1,
+    opacity: 1
   },
   yaxis: {
     labels: {
@@ -158,12 +158,13 @@ function update_chart() {
     "data":
       chartData.map(val => {
         const queue = chartOptions.value["queue"];
-        const last_rank = val["ranked"][queue]['rank_history'][val["ranked"][queue]["nearest_rank_date"]];
+        const last_rank = val["ranked"][queue]["rank_history"][val["ranked"][queue]["nearest_rank_date"]];
         const curr_rank = val["ranked"][queue]["rank"];
 
         if (Number(curr_rank) === 0) {
           return null;
         }
+
         return {
           "y": curr_rank,
           "x": val["username"],
