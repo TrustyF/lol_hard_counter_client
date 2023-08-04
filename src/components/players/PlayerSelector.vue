@@ -4,6 +4,7 @@ import { inject, onMounted, watch } from "vue";
 let playerData = inject("playerData");
 let selectedPlayers = inject("selectedPlayers");
 let playerUsernames = inject("playerUsernames");
+const curr_api = inject("curr_api");
 
 const rank_mappings = {
   "tier_values": ["iron", "bronze", "silver", "gold", "platinum", "emerald",
@@ -45,12 +46,12 @@ watch(playerData, () => {
 
 <template>
   <div class="players_buttons">
-    <div class="button_wrapper" v-for="player in playerUsernames" :key="player.username" >
+    <div class="button_wrapper" v-for="player in playerUsernames" :key="player.username">
 
       <button class="player_button" @click="filter_player(player.username)" :id="player.username">
         <input type="image" class="rank_image" :src="`/assets/tiers/${player.rank}.png`"
                alt="rank" />
-        <input type="image" class="button_image" :src="`/assets/profileicon/${player.profile_icon}.png`"
+        <input type="image" class="button_image" :src="`${curr_api}/player/profile_icon?player=${player.username}`"
                alt="icon" />
         <p class="button_text">{{ player.username }}</p>
       </button>

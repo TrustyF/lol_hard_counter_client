@@ -31,3 +31,4 @@ coverage
 /src/assets/
 /public/assets/profileicon/
 /public/assets/
+/.firebase/
