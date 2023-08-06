@@ -10,7 +10,7 @@ import { RouterLink } from "vue-router";
 
       <div class="links_bar">
         <RouterLink class="link" to="/">Wall of shame</RouterLink>
-        <RouterLink class="link new" to="/funnyStats">Funny™ stats</RouterLink>
+        <RouterLink class="link new" to="/funnyStats">Funny stats™</RouterLink>
       </div>
 
     </div>
