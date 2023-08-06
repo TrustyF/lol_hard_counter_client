@@ -14,11 +14,11 @@ let filtered_players = computed(() => {
   return playerData.value.filter(val => val["funny_stats"]["total_matches"] > 10);
 });
 
-function prep(f_data){
-  f_data = f_data.filter(value => value[1]!==0)
+function prep(f_data) {
+  f_data = f_data.filter(value => value[1] !== 0);
   f_data.sort((a, b) => b[1] - a[1]);
   f_data.splice(5);
-  return f_data
+  return f_data;
 }
 
 let mostKills = computed(() => {
@@ -39,54 +39,54 @@ let mostGold = computed(() => {
 });
 
 let mostTowers = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["objectives"]['tower_kills'] / val["funny_stats"]["total_matches"]).toFixed(2)]);
+  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["objectives"]["tower_kills"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
   return prep(out);
 });
 let mostTowersFirst = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["objectives"]['first_tower_kill'] / val["funny_stats"]["total_matches"]).toFixed(2)]);
+  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["objectives"]["first_tower_kill"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
   return prep(out);
 });
 
 let mostTimeAlive = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["time"]['time_spent_alive'] / val["funny_stats"]["total_matches"]).toFixed(2)]);
+  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["time"]["time_spent_alive"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
   return prep(out);
 });
 let mostTimeDead = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["time"]['time_spent_dead'] / val["funny_stats"]["total_matches"]).toFixed(2)]);
+  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["time"]["time_spent_dead"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
   return prep(out);
 });
 let mostTimeCCSelf = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["time"]['time_cc_self'] / val["funny_stats"]["total_matches"]).toFixed(2)]);
+  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["time"]["time_cc_self"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
   return prep(out);
 });
 let mostTimeCCOther = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["time"]['time_cc_other'] / val["funny_stats"]["total_matches"]).toFixed(2)]);
+  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["time"]["time_cc_other"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
   return prep(out);
 });
 
 let mostObjectivesStolen = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["objectives"]['objectives_stolen'])]);
+  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["objectives"]["objectives_stolen"])]);
   return prep(out);
 });
 let mostDragons = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["monsters"]['dragon_kills'])]);
+  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["monsters"]["dragon_kills"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
   return prep(out);
 });
 let mostBarons = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["monsters"]['baron_kills'])]);
+  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["monsters"]["baron_kills"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
   return prep(out);
 });
 
 let mostPinks = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["vision"]['pinks'])]);
+  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["vision"]["pinks"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
   return prep(out);
 });
 let mostWards = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["vision"]['wards'])]);
+  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["vision"]["wards"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
   return prep(out);
 });
 let mostVisionScore = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["vision"]['vision_score'])]);
+  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["vision"]["vision_score"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
   return prep(out);
 });
 
@@ -94,6 +94,12 @@ let mostVisionScore = computed(() => {
 
 <template>
   <div v-if="playerData!==undefined">
+
+    <div style="background-color: #18222c;padding: 10px;border-radius: 5px;width: 15vw;margin-bottom: 10px;position: fixed;right: 10px;bottom: 0">
+      <h1 style="font-size: 1em;font-weight: bold;text-decoration: underline">Info</h1>
+      <p style="font-size: 0.8em">All stats are averages calculated over the total amount of recorded games</p>
+    </div>
+
     <h1 class="title">General</h1>
     <div class="divider"></div>
     <div class="funny_wrapper">
@@ -153,7 +159,7 @@ let mostVisionScore = computed(() => {
       </div>
 
       <div>
-        <p>CC applied 🔒</p>
+        <p>CC time applied 🔒</p>
         <div class="stats_list">
           <PlayerBox v-for="data in mostTimeCCOther" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
                      :username="data[0]"></PlayerBox>
@@ -161,7 +167,7 @@ let mostVisionScore = computed(() => {
       </div>
 
       <div>
-        <p>Morgana cages eaten ☕️️</p>
+        <p>CC time Taken ☕️️</p>
         <div class="stats_list">
           <PlayerBox v-for="data in mostTimeCCSelf" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
                      :username="data[0]"></PlayerBox>
@@ -235,7 +241,7 @@ let mostVisionScore = computed(() => {
     <div class="funny_wrapper">
 
       <div>
-        <p>Towers ♜</p>
+        <p>Towers taken ♜</p>
         <div class="stats_list">
           <PlayerBox v-for="data in mostTowers" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
                      :username="data[0]"></PlayerBox>
@@ -243,7 +249,7 @@ let mostVisionScore = computed(() => {
       </div>
 
       <div>
-        <p>First towers 🩸♜</p>
+        <p>First blood towers 🩸♜</p>
         <div class="stats_list">
           <PlayerBox v-for="data in mostTowersFirst" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
                      :username="data[0]"></PlayerBox>
@@ -263,6 +269,7 @@ p {
 .title {
   padding-left: 20px;
 }
+
 .divider {
   height: 1px;
   background-color: white;

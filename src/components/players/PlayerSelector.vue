@@ -28,6 +28,7 @@ watch(playerData, () => {
 </script>
 
 <template>
+  <img class="click_me" src="public/extras/click_me3.png" alt="click me">
   <div class="players_buttons">
     <div class="button_wrapper" v-for="player in playerUsernames" :key="player.username">
       <PlayerBox :player="player" :tier_enabled="true"></PlayerBox>
@@ -43,6 +44,13 @@ watch(playerData, () => {
   gap: 15px;
   width: 100%;
   margin: 10px 0 30px 0;
+}
+
+.click_me {
+  position: absolute;
+  transform: translate(-90px,0px);
+  width: 150px;
+  filter: invert(1);
 }
 
 </style>
