@@ -6,7 +6,6 @@ import WinrateChart from "@/components/charts/WinrateChart.vue";
 // import ChampionSelector from "@/components/champion/ChampionSelector.vue";
 
 
-// Todo add visible daily change to bar graph
 let playerData = inject("playerData");
 
 
@@ -15,7 +14,7 @@ let playerData = inject("playerData");
 <template>
   <div v-if="playerData!==undefined">
 
-    <h1 style="padding-left: 20px">Solo Queue</h1>
+    <h1 class="title">Solo Queue</h1>
     <div class="divider"></div>
     <div class="chart_wrapper">
       <div>
@@ -72,6 +71,10 @@ let playerData = inject("playerData");
 </template>
 
 <style scoped>
+
+.title {
+  padding-left: 20px;
+}
 
 .chart_wrapper {
   /*outline: 1px solid red;*/

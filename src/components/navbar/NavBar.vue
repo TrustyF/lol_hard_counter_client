@@ -10,7 +10,7 @@ import { RouterLink } from "vue-router";
 
       <div class="links_bar">
         <RouterLink class="link" to="/">Wall of shame</RouterLink>
-        <RouterLink class="link" to="/funnyStats">Funny stats</RouterLink>
+        <RouterLink class="link new" to="/funnyStats">Funny™ stats</RouterLink>
       </div>
 
     </div>
@@ -43,20 +43,31 @@ import { RouterLink } from "vue-router";
 }
 
 .link {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-
   font-size: 1.2em;
 
-  /*outline: 1px solid purple;*/
   color: white;
-  /*line-height: 300%;*/
-  /*height: 100%;*/
   padding: 0 30px 0 30px;
   text-decoration: none;
 
+  min-width: 50px;
+
   transition: 0.1s;
+}
+
+.new::after {
+  position: absolute;
+  content:' ';
+  width: 10px;
+  height: 10px;
+  right: 5%;
+  bottom: 75%;
+  border-radius: 50%;
+  background: gold;
+  box-shadow: 0 0 10px 1px gold;
 }
 
 .router-link-active, .link:hover {
