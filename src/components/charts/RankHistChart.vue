@@ -92,15 +92,21 @@ let baseChartOptions = ref({
     },
     yaxis: {
       lines: {
-        show: true
+        show: false
       }
     },
     padding: { right: 70, left: 10 }
   },
+  plotOptions: {
+    line: {
+      distributes: true
+    }
+  },
   dataLabels: {
+    display: "auto",
     enabled: true,
     offsetX: 0,
-    offsetY: -20,
+    offsetY: -10,
     textAnchor: "middle",
     style: {
       fontSize: "12px",
@@ -144,7 +150,8 @@ baseChartOptions.value["dataLabels"]["formatter"] = (val, opts) => {
   const div = ((val - lp) % 400) / 100;
   const tier = (val - lp - ((val - lp) % 400)) / 400;
 
-  return [opts.w.globals.initialSeries[opts.seriesIndex]["name"], `${rank_mappings["tier_values"][tier]} ${rank_mappings["division_values"][div]} ${lp} lp`];
+  // return [opts.w.globals.initialSeries[opts.seriesIndex]["name"], `${rank_mappings["tier_values"][tier]} ${rank_mappings["division_values"][div]} ${lp} lp`];
+  return [`${rank_mappings["tier_values"][tier]} ${rank_mappings["division_values"][div]} ${lp} lp`];
 };
 baseChartOptions.value["tooltip"]["y"]["formatter"] = (val) => {
   const lp = val % 100;
@@ -201,13 +208,13 @@ update_chart();
 </script>
 
 <template>
-  <apexchart
-    type="line"
-    height="100%"
-    width="100%"
-    :options="baseChartOptions"
-    :series="baseChartOptions.series"
-  ></apexchart>
+    <apexchart
+      type="line"
+      height="100%"
+      width="100%"
+      :options="baseChartOptions"
+      :series="baseChartOptions.series"
+    ></apexchart>
 </template>
 
 <style scoped>

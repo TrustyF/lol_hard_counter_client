@@ -88,7 +88,10 @@ body {
   font-family: 'Farmhouse';
   src: url("public/assets/fonts/Farmhouse.otf") format('truetype');
 }
-
+@font-face {
+  font-family: 'Manita';
+  src: url("public/assets/fonts/Manita.ttf") format('truetype');
+}
 #app {
   background: var(--color-background);
   height: 100%;
