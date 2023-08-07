@@ -21,7 +21,7 @@ import { RouterLink } from "vue-router";
 <style scoped>
 .base_nav {
   width: 100%;
-  height: 70px;
+  /*height: 70px;*/
   background-color: #16395d;
   /*overflow: hidden;*/
 }
@@ -78,4 +78,22 @@ import { RouterLink } from "vue-router";
   width: 70px;
   height: 100%;
 }
+
+@media only screen and (max-width: 760px) {
+  .center_nav {
+    margin: auto;
+    /*outline: 2px solid red;*/
+    width: 100%;
+    /*height: 100%;*/
+
+    display: flex;
+    flex-flow: column nowrap;
+  }
+  .links_bar {
+    display: flex;
+    flex-flow: column nowrap;
+
+  }
+}
+
 </style>

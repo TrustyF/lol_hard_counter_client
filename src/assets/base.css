@@ -88,18 +88,6 @@ body {
   font-family: 'Farmhouse';
   src: url("public/assets/fonts/Farmhouse.otf") format('truetype');
 }
-@font-face {
-  font-family: 'Original_Quotes';
-  src: url("public/assets/fonts/Original Quotes.otf") format('truetype');
-}
-@font-face {
-  font-family: 'Summer_Rise';
-  src: url("public/assets/fonts/Summer Rise.ttf") format('truetype');
-}
-@font-face {
-  font-family: 'justincase';
-  src: url("public/assets/fonts/justincase.otf") format('truetype');
-}
 
 #app {
   background: var(--color-background);

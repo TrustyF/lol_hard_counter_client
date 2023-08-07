@@ -1,11 +1,9 @@
 <script setup>
 import { inject, computed, watch } from "vue";
 import PlayerBox from "@/components/players/PlayerBox.vue";
-import Signlode from "/assets/fonts/Signlode.ttf";
-import Rainstorm from "/assets/fonts/July Rainstorm.ttf";
 
 let playerData = inject("playerData");
-// const curr_api = inject("curr_api");
+const curr_api = inject("curr_api");
 let selectedPlayers = inject("selectedPlayers");
 
 // watch(selectedPlayers.value, () => {
@@ -119,11 +117,11 @@ let mostPentaKills = computed(() => {
     <div class="divider"></div>
 
     <div
-      style=";font-family: 'Farmhouse',sans-serif;width:4vw;height:4vw;position: relative;margin-bottom: 20px;
+      style=";font-family: 'Farmhouse',sans-serif;width:70px;height:70px;position: relative;margin-bottom: 20px;
       transform: rotate(-6deg);background-color: rgb(255,213,0);padding: 10px;border-radius: 50%;display: flex;
       align-items: center;justify-content: center;box-shadow: 0 0 40px #887400">
       <p
-        style="font-size:2vw;font-weight: bold;line-height: 25px;color: red;margin: auto;
+        style="font-size:2em;font-weight: bold;line-height: 25px;color: red;margin: auto;
         text-shadow: rgb(255, 255, 255) 2px 0px 0px, rgb(255, 255, 255) 1.75517px 0.958851px 0px, rgb(255, 255, 255) 1.0806px 1.68294px 0px, rgb(255, 255, 255) 0.141474px 1.99499px 0px, rgb(255, 255, 255) -0.832294px 1.81859px 0px, rgb(255, 255, 255) -1.60229px 1.19694px 0px, rgb(255, 255, 255) -1.97999px 0.28224px 0px, rgb(255, 255, 255) -1.87291px -0.701566px 0px, rgb(255, 255, 255) -1.30729px -1.51361px 0px, rgb(255, 255, 255) -0.421592px -1.95506px 0px, rgb(255, 255, 255) 0.567324px -1.91785px 0px, rgb(255, 255, 255) 1.41734px -1.41108px 0px, rgb(255, 255, 255) 1.92034px -0.558831px 0px;"
         >Now scrollable!</p>
     </div>
