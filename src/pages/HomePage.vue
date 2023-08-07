@@ -24,6 +24,8 @@ let playerData = inject("playerData");
       >Now reactive!</p>
     </div>
 
+<!--    todo fix tooltips overflow page-->
+
     <h1 class="title">Solo Queue</h1>
     <div class="divider"></div>
     <div class="chart_wrapper">

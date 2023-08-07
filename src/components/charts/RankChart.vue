@@ -174,15 +174,17 @@ function update_chart() {
   }];
 
   // set goals
-  baseChartOptions.value.series.forEach((elem) => {
-    if (elem['last_rank'] === undefined || elem['y'] === undefined) {
+  baseChartOptions.value.series[0].data.forEach((elem) => {
+    console.log('goals',elem,elem['last_rank'],elem['y']);
+    if (elem['last_rank'] === null || elem['y'] === null) {
       return undefined;
     }
     if (elem['last_rank'] === elem['y']) {
       return undefined;
     }
+    console.log('test passed');
 
-    elem["data"]["goals"] = [{
+    elem["goals"] = [{
       value: elem['last_rank'],
       strokeColor: elem['last_rank'] < elem['y'] ? "#40ff15" : "#ff1515",
       strokeSize: 10
