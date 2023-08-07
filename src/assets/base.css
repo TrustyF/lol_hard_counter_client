@@ -86,11 +86,11 @@ body {
 
 @font-face {
   font-family: 'Farmhouse';
-  src: url("public/assets/fonts/Farmhouse.otf") format('truetype');
+  src: url("@/assets/fonts/Farmhouse.otf") format('truetype');
 }
 @font-face {
   font-family: 'Manita';
-  src: url("public/assets/fonts/Manita.ttf") format('truetype');
+  src: url("@/assets/fonts/Manita.ttf") format('truetype');
 }
 #app {
   background: var(--color-background);
