@@ -200,6 +200,7 @@ update_chart();
   <apexchart
     type="bar"
     height="50%"
+    width="100%"
     :options="baseChartOptions"
     :series="baseChartOptions.series"
   ></apexchart>

@@ -1,5 +1,5 @@
 <script setup>
-import { inject, onMounted, watch, defineProps } from "vue";
+import { inject, onMounted, watch } from "vue";
 
 defineProps(["player", "username", "text", "tier_enabled"]);
 

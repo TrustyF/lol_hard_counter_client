@@ -15,7 +15,7 @@ let filtered_players = computed(() => {
 });
 
 function prep(f_data) {
-  f_data = f_data.filter(value => value[1] !== 0);
+  f_data = f_data.filter(value => value[1] >= 0.01);
   f_data.sort((a, b) => b[1] - a[1]);
   f_data.splice(5);
   return f_data;
@@ -90,12 +90,29 @@ let mostVisionScore = computed(() => {
   return prep(out);
 });
 
+let mostDoubleKills = computed(() => {
+  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["kills"]["double_kills"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
+  return prep(out);
+});
+let mostTripleKills = computed(() => {
+  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["kills"]["triple_kills"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
+  return prep(out);
+});
+let mostQuadraKills = computed(() => {
+  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["kills"]["quadra_kills"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
+  return prep(out);
+});
+let mostPentaKills = computed(() => {
+  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["kills"]["penta_kills"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
+  return prep(out);
+});
 </script>
 
 <template>
   <div v-if="playerData!==undefined">
 
-    <div style="background-color: #18222c;padding: 10px;border-radius: 5px;width: 15vw;margin-bottom: 10px;position: fixed;right: 10px;bottom: 0">
+    <div
+      style="background-color: #18222c;padding: 20px;border-radius: 5px;width: 10vw;margin-bottom: 10px;position: fixed;right: 10px;bottom: 0">
       <h1 style="font-size: 1em;font-weight: bold;text-decoration: underline">Info</h1>
       <p style="font-size: 0.8em">All stats are averages calculated over the total amount of recorded games</p>
     </div>
@@ -132,6 +149,44 @@ let mostVisionScore = computed(() => {
         <p>Gold 💵</p>
         <div class="stats_list">
           <PlayerBox v-for="data in mostGold" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                     :username="data[0]"></PlayerBox>
+        </div>
+      </div>
+
+    </div>
+
+    <h1 class="title">Multi-kills</h1>
+    <div class="divider"></div>
+    <div class="funny_wrapper">
+
+      <div>
+        <p>Double kills 2️⃣️︎</p>
+        <div class="stats_list">
+          <PlayerBox v-for="data in mostDoubleKills" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                     :username="data[0]"></PlayerBox>
+        </div>
+      </div>
+
+      <div>
+        <p>Triple kills 3️⃣️︎</p>
+        <div class="stats_list">
+          <PlayerBox v-for="data in mostTripleKills" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                     :username="data[0]"></PlayerBox>
+        </div>
+      </div>
+
+      <div>
+        <p>Quadra kills 4️⃣</p>
+        <div class="stats_list">
+          <PlayerBox v-for="data in mostQuadraKills" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                     :username="data[0]"></PlayerBox>
+        </div>
+      </div>
+
+      <div>
+        <p>Penta kills 5️⃣</p>
+        <div class="stats_list">
+          <PlayerBox v-for="data in mostPentaKills" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
                      :username="data[0]"></PlayerBox>
         </div>
       </div>
@@ -236,7 +291,7 @@ let mostVisionScore = computed(() => {
 
     </div>
 
-    <h1 class="title">Jacana row</h1>
+    <h1 class="title">Yorick moment</h1>
     <div class="divider"></div>
     <div class="funny_wrapper">
 

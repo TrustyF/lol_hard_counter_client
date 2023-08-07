@@ -11,7 +11,6 @@ let chartData = toRaw(playerData.value);
 let chartOptions = toRefs(props)["f_chartOptions"];
 
 
-let graph_width = "100%";
 const rank_mappings = {
   "tier_values": ["iron", "bronze", "silver", "gold", "platinum", "emerald",
     "diamond", "master", "grandmaster", "challenger"],
@@ -205,6 +204,7 @@ update_chart();
   <apexchart
     type="line"
     height="100%"
+    width="100%"
     :options="baseChartOptions"
     :series="baseChartOptions.series"
   ></apexchart>

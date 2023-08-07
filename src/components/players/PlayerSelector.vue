@@ -28,7 +28,7 @@ watch(playerData, () => {
 </script>
 
 <template>
-  <img class="click_me" src="public/extras/click_me3.png" alt="click me">
+  <img class="click_me" src="/extras/click_me3.png" alt="click me">
   <div class="players_buttons">
     <div class="button_wrapper" v-for="player in playerUsernames" :key="player.username">
       <PlayerBox :player="player" :tier_enabled="true"></PlayerBox>

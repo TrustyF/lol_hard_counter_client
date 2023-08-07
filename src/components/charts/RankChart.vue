@@ -5,13 +5,12 @@ let props = defineProps(["f_chartName", "f_chartOptions"]);
 
 let playerData = inject("playerData");
 let selectedPlayers = inject("selectedPlayers");
-let playerUsernames = inject("playerUsernames");
+// let playerUsernames = inject("playerUsernames");
 
 let chartName = toRefs(props)["f_chartName"];
 let chartData = toRaw(playerData.value);
 let chartOptions = toRefs(props)["f_chartOptions"];
 
-let graph_width = "100%";
 const rank_mappings = {
   "tier_values": ["iron", "bronze", "silver", "gold", "platinum", "emerald",
     "diamond", "master", "grandmaster", "challenger"],
@@ -158,8 +157,8 @@ function update_chart() {
     "data":
       chartData.map(val => {
         const queue = chartOptions.value["queue"];
-        const last_rank = val["ranked"][queue]["rank_history"][val["ranked"][queue]["nearest_rank_date"]];
         const curr_rank = val["ranked"][queue]["rank"];
+        const last_rank = val["ranked"][queue]["nearest_rank"][1];
 
         if (Number(curr_rank) === 0) {
           return null;
@@ -168,15 +167,30 @@ function update_chart() {
         return {
           "y": curr_rank,
           "x": val["username"],
-          "goals": last_rank !== curr_rank ? [{
-            value: last_rank,
-            strokeColor: last_rank < curr_rank ? "#40ff15" : "#ff1515",
-            strokeSize: 10
-          }] : []
+          "last_rank": last_rank,
+          "goals": []
         };
       }).filter(e => e != null)
   }];
-  // console.log("basechart", baseChartOptions.value);
+
+  // set goals
+  baseChartOptions.value.series.forEach((elem) => {
+    if (elem['last_rank'] === undefined || elem['y'] === undefined) {
+      return undefined;
+    }
+    if (elem['last_rank'] === elem['y']) {
+      return undefined;
+    }
+
+    elem["data"]["goals"] = [{
+      value: elem['last_rank'],
+      strokeColor: elem['last_rank'] < elem['y'] ? "#40ff15" : "#ff1515",
+      strokeSize: 10
+    }];
+
+  });
+
+  console.log("basechart", baseChartOptions.value);
 }
 
 watch(selectedPlayers.value, () => {
@@ -191,6 +205,7 @@ update_chart();
   <apexchart
     type="bar"
     height="50%"
+    width="100%"
     :options="baseChartOptions"
     :series="baseChartOptions.series"
   ></apexchart>

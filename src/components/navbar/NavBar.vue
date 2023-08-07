@@ -10,7 +10,8 @@ import { RouterLink } from "vue-router";
 
       <div class="links_bar">
         <RouterLink class="link" to="/">Wall of shame</RouterLink>
-        <RouterLink class="link new" to="/funnyStats">Funny stats™</RouterLink>
+        <RouterLink class="link" to="/funnyStats">Funny stats™</RouterLink>
+        <RouterLink class="link disabled" to="/copeCorner"><img src="/assets/gifs/cope.webp" alt="copium" style="width: 40px;margin-right: 5px">Cope corner (wip)</RouterLink>
       </div>
 
     </div>
@@ -68,6 +69,11 @@ import { RouterLink } from "vue-router";
   border-radius: 50%;
   background: gold;
   box-shadow: 0 0 10px 1px gold;
+}
+
+.disabled {
+  background-color: #2a2a2a;
+  color: grey;
 }
 
 .router-link-active, .link:hover {
