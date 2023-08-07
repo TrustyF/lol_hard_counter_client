@@ -71,6 +71,8 @@ function filter_player(input) {
 }
 
 .player_button {
+  /*outline: 1px solid red;*/
+
   height: 50px;
   min-width: 150px;
 

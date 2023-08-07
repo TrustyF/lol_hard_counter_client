@@ -59,18 +59,6 @@ import { RouterLink } from "vue-router";
   transition: 0.1s;
 }
 
-.new::after {
-  position: absolute;
-  content:' ';
-  width: 10px;
-  height: 10px;
-  right: 5%;
-  bottom: 75%;
-  border-radius: 50%;
-  background: gold;
-  box-shadow: 0 0 10px 1px gold;
-}
-
 .disabled {
   background-color: #2a2a2a;
   color: grey;

@@ -1,6 +1,8 @@
 <script setup>
 import { inject, computed, watch } from "vue";
 import PlayerBox from "@/components/players/PlayerBox.vue";
+import Signlode from "/assets/fonts/Signlode.ttf";
+import Rainstorm from "/assets/fonts/July Rainstorm.ttf";
 
 let playerData = inject("playerData");
 // const curr_api = inject("curr_api");
@@ -17,7 +19,7 @@ let filtered_players = computed(() => {
 function prep(f_data) {
   f_data = f_data.filter(value => value[1] >= 0.01);
   f_data.sort((a, b) => b[1] - a[1]);
-  f_data.splice(5);
+  // f_data.splice(5);
   return f_data;
 }
 
@@ -111,83 +113,106 @@ let mostPentaKills = computed(() => {
 <template>
   <div v-if="playerData!==undefined">
 
-    <div
-      style="background-color: #18222c;padding: 20px;border-radius: 5px;width: 10vw;margin-bottom: 10px;position: fixed;right: 10px;bottom: 0">
-      <h1 style="font-size: 1em;font-weight: bold;text-decoration: underline">Info</h1>
-      <p style="font-size: 0.8em">All stats are averages calculated over the total amount of recorded games</p>
-    </div>
+
 
     <h1 class="title">General</h1>
     <div class="divider"></div>
+
+    <div
+      style=";font-family: 'Farmhouse',sans-serif;width:4vw;height:4vw;position: relative;margin-bottom: 20px;
+      transform: rotate(-6deg);background-color: rgb(255,213,0);padding: 10px;border-radius: 50%;display: flex;
+      align-items: center;justify-content: center;box-shadow: 0 0 40px #887400">
+      <p
+        style="font-size:2vw;font-weight: bold;line-height: 25px;color: red;margin: auto;
+        text-shadow: rgb(255, 255, 255) 2px 0px 0px, rgb(255, 255, 255) 1.75517px 0.958851px 0px, rgb(255, 255, 255) 1.0806px 1.68294px 0px, rgb(255, 255, 255) 0.141474px 1.99499px 0px, rgb(255, 255, 255) -0.832294px 1.81859px 0px, rgb(255, 255, 255) -1.60229px 1.19694px 0px, rgb(255, 255, 255) -1.97999px 0.28224px 0px, rgb(255, 255, 255) -1.87291px -0.701566px 0px, rgb(255, 255, 255) -1.30729px -1.51361px 0px, rgb(255, 255, 255) -0.421592px -1.95506px 0px, rgb(255, 255, 255) 0.567324px -1.91785px 0px, rgb(255, 255, 255) 1.41734px -1.41108px 0px, rgb(255, 255, 255) 1.92034px -0.558831px 0px;"
+        >Now scrollable!</p>
+    </div>
+
     <div class="funny_wrapper">
 
-      <div>
-        <p>Kills ⚔️︎</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostKills" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">Kills ⚔️︎</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostKills" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
-      <div>
-        <p>Deaths ☠️</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostDeaths" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">Deaths ☠️</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostDeaths" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
-      <div>
-        <p>Assists 🤝</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostAssists" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">Assists 🤝</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostAssists" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
-      <div>
-        <p>Gold 💵</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostGold" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">Gold 💵</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostGold" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
     </div>
 
-    <h1 class="title">Multi-kills</h1>
+    <h1 class="title new">Multi-kills</h1>
     <div class="divider"></div>
     <div class="funny_wrapper">
 
-      <div>
-        <p>Double kills 2️⃣️︎</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostDoubleKills" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">Double kills 2️⃣️︎</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostDoubleKills" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
-      <div>
-        <p>Triple kills 3️⃣️︎</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostTripleKills" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">Triple kills 3️⃣️︎</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostTripleKills" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
-      <div>
-        <p>Quadra kills 4️⃣</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostQuadraKills" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">Quadra kills 4️⃣</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostQuadraKills" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
-      <div>
-        <p>Penta kills 5️⃣</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostPentaKills" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">Penta kills 5️⃣</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostPentaKills" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
@@ -197,35 +222,43 @@ let mostPentaKills = computed(() => {
     <div class="divider"></div>
     <div class="funny_wrapper">
 
-      <div>
-        <p>Time alive 🕊️⏳</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostTimeAlive" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">Time alive 🕊️⏳</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostTimeAlive" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
-      <div>
-        <p>Time grey screen ⚰️️⏳</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostTimeDead" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">Time grey screen ⚰️️⏳</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostTimeDead" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
-      <div>
-        <p>CC time applied 🔒</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostTimeCCOther" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">CC time applied 🔒</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostTimeCCOther" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
-      <div>
-        <p>CC time Taken ☕️️</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostTimeCCSelf" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">CC time Taken ☕️️</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostTimeCCSelf" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
@@ -235,27 +268,33 @@ let mostPentaKills = computed(() => {
     <div class="divider"></div>
     <div class="funny_wrapper">
 
-      <div>
-        <p>Objectives stolen 👺</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostObjectivesStolen" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">Objectives stolen 👺</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostObjectivesStolen" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
-      <div>
-        <p>Dragons killed 🐉</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostDragons" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">Dragons killed 🐉</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostDragons" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
-      <div>
-        <p>Barons killed 🐍</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostBarons" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">Barons killed 🐍</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostBarons" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
@@ -265,27 +304,33 @@ let mostPentaKills = computed(() => {
     <div class="divider"></div>
     <div class="funny_wrapper">
 
-      <div>
-        <p>Vision score 👁️</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostVisionScore" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">Vision score 👁️</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostVisionScore" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
-      <div>
-        <p>Wards placed 🔭</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostWards" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">Wards placed 🔭</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostWards" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
-      <div>
-        <p>Pinks placed 🔮</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostPinks" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">Pinks placed 🔮</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostPinks" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
@@ -295,19 +340,23 @@ let mostPentaKills = computed(() => {
     <div class="divider"></div>
     <div class="funny_wrapper">
 
-      <div>
-        <p>Towers taken ♜</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostTowers" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">Towers taken ♜</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostTowers" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
-      <div>
-        <p>First blood towers 🩸♜</p>
-        <div class="stats_list">
-          <PlayerBox v-for="data in mostTowersFirst" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
-                     :username="data[0]"></PlayerBox>
+      <div class="stat_column">
+        <p class="column_heading">First blood towers 🩸♜</p>
+        <div class="stats_scroll_box">
+          <div class="stats_list">
+            <PlayerBox v-for="data in mostTowersFirst" :key="data[0]" :text="`${data[1]} - ${data[0]}`"
+                       :username="data[0]"></PlayerBox>
+          </div>
         </div>
       </div>
 
@@ -322,7 +371,19 @@ p {
 }
 
 .title {
+  position: relative;
   padding-left: 20px;
+  width: fit-content;
+}
+
+.stat_column {
+}
+
+.stat_column::-webkit-scrollbar {
+  display: none;
+}
+
+.column_heading {
 }
 
 .divider {
@@ -338,9 +399,24 @@ p {
   margin-bottom: 20px;
 }
 
+.stats_scroll_box {
+  min-width: 250px;
+  background-color: #111111;
+  padding: 20px 20px 20px 20px;
+  border-radius: 10px;
+
+  height: 350px;
+  overflow-y: scroll;
+  /*overflow-x: hidden;*/
+  scrollbar-width: none;
+
+}
+
 .stats_list {
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column nowrap;
+  /*grid-template-columns: repeat(auto-fill, auto);*/
+  justify-content: start;
   gap: 10px;
 }
 </style>

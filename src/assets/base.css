@@ -72,6 +72,34 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.new::after {
+  position: absolute;
+  content:' ';
+  width: 10px;
+  height: 10px;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  background: gold;
+  box-shadow: 0 0 10px 1px gold;
+}
+
+@font-face {
+  font-family: 'Farmhouse';
+  src: url("public/assets/fonts/Farmhouse.otf") format('truetype');
+}
+@font-face {
+  font-family: 'Original_Quotes';
+  src: url("public/assets/fonts/Original Quotes.otf") format('truetype');
+}
+@font-face {
+  font-family: 'Summer_Rise';
+  src: url("public/assets/fonts/Summer Rise.ttf") format('truetype');
+}
+@font-face {
+  font-family: 'justincase';
+  src: url("public/assets/fonts/justincase.otf") format('truetype');
+}
 
 #app {
   background: var(--color-background);
