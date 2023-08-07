@@ -24,7 +24,7 @@ let playerData = inject("playerData");
       >Now reactive!</p>
     </div>
 
-<!--    todo fix tooltips overflow page-->
+<!--    todo fix tooltips overflow page, lp gain slope, fix refresh bug-->
 
     <h1 class="title">Solo Queue</h1>
     <div class="divider"></div>

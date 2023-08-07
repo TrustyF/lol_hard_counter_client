@@ -409,6 +409,9 @@ p {
   scrollbar-width: none;
 
 }
+.stats_scroll_box::-webkit-scrollbar {
+  display: none;
+}
 
 .stats_list {
   display: flex;
