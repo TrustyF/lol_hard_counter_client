@@ -46,15 +46,21 @@ onMounted(() => {
 </script>
 
 <template>
-  <NavBar></NavBar>
-  <body>
-  <player-selector></player-selector>
-  <RouterView />
-  </body>
+  <div class="main">
+    <NavBar></NavBar>
+    <div class="body">
+      <player-selector></player-selector>
+      <RouterView />
+    </div>
+  </div>
 </template>
 
 <style scoped>
-body {
+.main {
+  width: 100%;
+  overflow: hidden;
+}
+.body {
   margin: auto;
   width: 75vw;
   padding-top: 20px;

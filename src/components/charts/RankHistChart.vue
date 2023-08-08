@@ -103,8 +103,8 @@ let baseChartOptions = ref({
     }
   },
   dataLabels: {
-    display: "auto",
-    enabled: true,
+    // display: "auto",
+    enabled: false,
     offsetX: 0,
     offsetY: -10,
     textAnchor: "middle",

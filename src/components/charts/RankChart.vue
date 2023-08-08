@@ -149,6 +149,7 @@ function update_chart() {
   } else {
     chartData = playerData.value;
   }
+
   // Sort
   chartData.sort((a, b) => b["ranked"][chartOptions.value["queue"]]["rank"] - a["ranked"][chartOptions.value["queue"]]["rank"]);
 
@@ -160,7 +161,9 @@ function update_chart() {
         const curr_rank = val["ranked"][queue]["rank"];
         const last_rank = val["ranked"][queue]["nearest_rank"][1];
 
-        if (Number(curr_rank) === 0) {
+        // console.log('curr rank',curr_rank);
+
+        if (Number(curr_rank) === 0 || curr_rank===null) {
           return null;
         }
 

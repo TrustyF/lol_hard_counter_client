@@ -77,8 +77,8 @@ body {
   content:' ';
   width: 10px;
   height: 10px;
-  left: 0;
-  top: 0;
+  left: 10px;
+  top: 5%;
   border-radius: 50%;
   background: gold;
   box-shadow: 0 0 10px 1px gold;
