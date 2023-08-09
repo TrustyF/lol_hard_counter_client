@@ -1,11 +1,28 @@
 <script setup>
-import { inject, onMounted, watch } from "vue";
+import { inject, onMounted, watch, computed } from "vue";
 
-defineProps(["player", "username", "text", "tier_enabled", "difference"]);
+let props = defineProps(["player", "text", "tier_enabled", "value_format"]);
 
 const curr_api = inject("curr_api");
 let selectedPlayers = inject("selectedPlayers");
 
+let username = computed(() => props["text"][0]);
+let value = computed(() => {
+  let val = props["text"][1];
+
+  if (props["value_format"] === "float") {
+    return parseFloat(val).toFixed(1);
+  }
+  if (props["value_format"] === "percentage") {
+    console.log(props['value_format']);
+    return parseFloat(val).toFixed(1) + "%";
+  }
+  else {
+    return parseInt(val);
+  }
+
+});
+let difference = computed(() => props["text"][2]);
 
 function filter_player(input) {
   let select_player = input;
@@ -33,11 +50,12 @@ function filter_player(input) {
   </button>
 
   <button v-if="text!==undefined"
-          :class="selectedPlayers.includes(username) ? 'player_button player_highlight'  : selectedPlayers.length < 1 ? 'player_button' : 'player_button player_disable'"
+          :class="selectedPlayers.includes(username) ? 'player_button hoverable player_highlight'  : selectedPlayers.length < 1 ? 'player_button hoverable' : 'player_button player_disable'"
+          @click="filter_player(username)"
           :id="text">
     <img class="button_image" :src="`${curr_api}/player/profile_icon?player=${username}`"
          alt="icon" />
-    <p class="button_text">{{ text }}</p>
+    <p class="button_text">{{ value + " - " + username }}</p>
 
     <div v-if="difference !== 0">
       <p :class="difference > 0 ? 'difference_text green' : 'difference_text red'" v-if="difference!==undefined">
@@ -57,7 +75,7 @@ function filter_player(input) {
   height: 50px;
   min-width: 150px;
 
-  /*overflow: hidden;*/
+  overflow: hidden;
   position: relative;
   background-color: #2c3e50;
 
