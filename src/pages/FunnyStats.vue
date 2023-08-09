@@ -228,12 +228,6 @@ function map_stats() {
           "image": "/assets/stat_icons/dodge.svg"
         }
       ],
-      "Multi-kills": [
-        { "heading": "Double kills", "value": mostDoubleKills.value, "value_format": "int", "image": undefined },
-        { "heading": "Triple kills", "value": mostTripleKills.value, "value_format": "int", "image": undefined },
-        { "heading": "Quadra kills", "value": mostQuadraKills.value, "value_format": "int", "image": undefined },
-        { "heading": "Penta kills", "value": mostPentaKills.value, "value_format": "int", "image": undefined }
-      ],
       "Time row": [
         {
           "heading": "Time alive",
@@ -254,7 +248,7 @@ function map_stats() {
           "scaling": "% game time",
           "value": mostTimeCCOther.value,
           "value_format": "percentage",
-          "image": undefined
+          "image": "/assets/stat_icons/Keyword_Deep.svg"
         },
         {
           "heading": "CC Taken",
@@ -265,25 +259,11 @@ function map_stats() {
 
         }
       ],
-      "Objectives": [
-        {
-          "heading": "Objectives stolen",
-          "value": mostObjectivesStolen.value,
-          "value_format": "int",
-          "image": undefined
-        },
-        {
-          "heading": "Dragons killed",
-          "value": mostDragons.value,
-          "value_format": "int",
-          "image": undefined
-        },
-        {
-          "heading": "Barons killed",
-          "value": mostBarons.value,
-          "value_format": "int",
-          "image": undefined
-        }
+      "Multi-kills": [
+        { "heading": "Double kills Ⅱ", "value": mostDoubleKills.value, "value_format": "int", "image": undefined },
+        { "heading": "Triple kills Ⅲ", "value": mostTripleKills.value, "value_format": "int", "image": undefined },
+        { "heading": "Quadra kills Ⅳ", "value": mostQuadraKills.value, "value_format": "int", "image": undefined },
+        { "heading": "Penta kills Ⅴ", "value": mostPentaKills.value, "value_format": "int", "image": undefined }
       ],
       "Vision": [
         {
@@ -305,23 +285,43 @@ function map_stats() {
           "scaling": "/ game",
           "value": mostPinks.value,
           "value_format": "float",
-          "image": "/assets/stat_icons/vision_deny.svg"
+          "image": "/assets/stat_icons/Need_Vision_ping.svg"
         }
       ],
       "Toxicity": [
         {
-          "heading": "? ping",
+          "heading": "",
           "scaling": "/ game",
           "value": mostMissingPing.value,
           "value_format": "float",
-          "image": undefined
+          "image": "/assets/stat_icons/missing_ping.svg"
         },
         {
-          "heading": "Bait (kys) ping",
+          "heading": "",
           "scaling": "/ game",
           "value": mostBaitPing.value,
           "value_format": "float",
-          "image": undefined
+          "image": "/assets/stat_icons/bait_ping.svg"
+        }
+      ],
+      "Objectives": [
+        {
+          "heading": "Objectives stolen",
+          "value": mostObjectivesStolen.value,
+          "value_format": "int",
+          "image": "/assets/stat_icons/smite.svg"
+        },
+        {
+          "heading": "Dragons killed",
+          "value": mostDragons.value,
+          "value_format": "int",
+          "image": "/assets/stat_icons/drake.svg"
+        },
+        {
+          "heading": "Barons killed",
+          "value": mostBarons.value,
+          "value_format": "int",
+          "image": "/assets/stat_icons/Nashor.svg"
         }
       ],
       "Where tower ?": [
