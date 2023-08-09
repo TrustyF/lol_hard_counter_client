@@ -355,24 +355,24 @@ map_stats();
 <template>
   <div v-if="playerData!==undefined">
 
-    <div
-      style=";font-family: 'Farmhouse',sans-serif;width:70px;height:70px;position: absolute;
-              transform: rotate(-6deg) translate(-120px);background-color: rgb(255,213,0);padding: 10px;border-radius: 50%;display: flex;flex-flow: row wrap;
-              align-items: center;justify-content: center;box-shadow: 0 0 40px #887400">
-      <p
-        style="font-size:2em;font-weight: bold;line-height: 30px;color: red;margin: 0;
-                text-shadow: rgb(255, 255, 255) 2px 0px 0px, rgb(255, 255, 255) 1.75517px 0.958851px 0px, rgb(255, 255, 255) 1.0806px 1.68294px 0px, rgb(255, 255, 255) 0.141474px 1.99499px 0px, rgb(255, 255, 255) -0.832294px 1.81859px 0px, rgb(255, 255, 255) -1.60229px 1.19694px 0px, rgb(255, 255, 255) -1.97999px 0.28224px 0px, rgb(255, 255, 255) -1.87291px -0.701566px 0px, rgb(255, 255, 255) -1.30729px -1.51361px 0px, rgb(255, 255, 255) -0.421592px -1.95506px 0px, rgb(255, 255, 255) 0.567324px -1.91785px 0px, rgb(255, 255, 255) 1.41734px -1.41108px 0px, rgb(255, 255, 255) 1.92034px -0.558831px 0px;"
-      >Tracks changes!</p>
-    </div>
-    <p style="font-size: 0.8em;position: absolute;transform:translate(-150px,100px);">Refreshes once a day</p>
-    <p style="font-size: 0.8em;position: absolute;transform:translate(-150px,120px);">(example values used)</p>
+<!--    <div-->
+<!--      style=";font-family: 'Farmhouse',sans-serif;width:70px;height:70px;position: absolute;-->
+<!--              transform: rotate(-6deg) translate(-120px);background-color: rgb(255,213,0);padding: 10px;border-radius: 50%;display: flex;flex-flow: row wrap;-->
+<!--              align-items: center;justify-content: center;box-shadow: 0 0 40px #887400">-->
+<!--      <p-->
+<!--        style="font-size:2em;font-weight: bold;line-height: 30px;color: red;margin: 0;-->
+<!--                text-shadow: rgb(255, 255, 255) 2px 0px 0px, rgb(255, 255, 255) 1.75517px 0.958851px 0px, rgb(255, 255, 255) 1.0806px 1.68294px 0px, rgb(255, 255, 255) 0.141474px 1.99499px 0px, rgb(255, 255, 255) -0.832294px 1.81859px 0px, rgb(255, 255, 255) -1.60229px 1.19694px 0px, rgb(255, 255, 255) -1.97999px 0.28224px 0px, rgb(255, 255, 255) -1.87291px -0.701566px 0px, rgb(255, 255, 255) -1.30729px -1.51361px 0px, rgb(255, 255, 255) -0.421592px -1.95506px 0px, rgb(255, 255, 255) 0.567324px -1.91785px 0px, rgb(255, 255, 255) 1.41734px -1.41108px 0px, rgb(255, 255, 255) 1.92034px -0.558831px 0px;"-->
+<!--      >Tracks changes!</p>-->
+<!--    </div>-->
+<!--    <p style="font-size: 0.8em;position: absolute;transform:translate(-150px,100px);">Refreshes once a day</p>-->
+<!--    <p style="font-size: 0.8em;position: absolute;transform:translate(-150px,120px);">(example values used)</p>-->
 
     <div v-for="heading in Object.keys(stats_mapping)" :key="heading">
       <h1 class="title">{{ heading }}</h1>
       <div class="divider"></div>
       <div class="funny_wrapper">
         <div v-for="col in stats_mapping[heading]" :key="col['heading']">
-          <div class="stat_column">
+          <div :class="col['value'].map(val => Math.abs(val[2])).reduce((a, b) => a + b, 0) > 0 ? 'stat_column new_text' : 'stat_column'">
             <div class="column_heading">
               <p class="heading_text">{{ col["heading"] }}</p>
               <img v-if="col['image']!==undefined" :src="col['image']" alt="stat_image" class="stats_image">
@@ -407,6 +407,7 @@ p {
 }
 
 .stat_column {
+  position: relative;
 }
 
 .stat_column::-webkit-scrollbar {
@@ -414,6 +415,7 @@ p {
 }
 
 .column_heading {
+  position: relative;
   display: flex;
   flex-flow: row wrap;
   gap: 5px;
