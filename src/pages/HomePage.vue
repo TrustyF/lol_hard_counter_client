@@ -14,7 +14,7 @@ let playerData = inject("playerData");
 <template>
   <div v-if="playerData!==undefined">
 
-<!--    todo lp gain slope, fix refresh bug-->
+<!--    todo lp gain slope, Add funny stats difference-->
 
     <h1 class="title">Solo Queue</h1>
     <div class="divider"></div>
@@ -48,6 +48,7 @@ let playerData = inject("playerData");
           >Hide players here</p>
           <img src="/extras/Arrow_white.png" alt="arrow" style="width: 30px;transform: scaleX(-1)">
         </div>
+
       </div>
     </div>
 

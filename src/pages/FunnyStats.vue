@@ -1,15 +1,11 @@
 <script setup>
-import { inject, computed, watch } from "vue";
+import { inject, computed, watch, onMounted } from "vue";
 import PlayerBox from "@/components/players/PlayerBox.vue";
 
 let playerData = inject("playerData");
 const curr_api = inject("curr_api");
 let selectedPlayers = inject("selectedPlayers");
-const divider = "-"
-
-// watch(selectedPlayers.value, () => {
-//   update_chart();
-// });
+const divider = "-";
 
 let filtered_players = computed(() => {
   return playerData.value.filter(val => val["funny_stats"]["total_matches"] > 10);
@@ -22,404 +18,257 @@ function prep(f_data) {
   return f_data;
 }
 
+function calc_diff(f_raw, f_diff) {
+  return f_raw.map(val => {
+    let username = val[0];
+    let new_usernames = f_raw.map(entry => entry[0]);
+    let old_usernames = f_diff.map(entry => entry[0]);
+    val.push(old_usernames.indexOf(username) - new_usernames.indexOf(username));
+    return val;
+  });
+}
+
 let mostKills = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["kills"]["kda"][0] / val["funny_stats"]["total_matches"]).toFixed(2)]);
-  return prep(out);
+  let stat = "kills";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["kda"][0] / val["funny_stats"]["total_matches"]).toFixed(2)]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["kda"][0] / val["funny_stats"]["difference"]["data"]["total_matches"]).toFixed(2)]));
+  return calc_diff(raw, diff);
 });
 let mostDeaths = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["kills"]["kda"][1] / val["funny_stats"]["total_matches"]).toFixed(2)]);
-  return prep(out);
+  let stat = "kills";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["kda"][1] / val["funny_stats"]["total_matches"]).toFixed(2)]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["kda"][1] / val["funny_stats"]["difference"]["data"]["total_matches"]).toFixed(2)]));
+  return calc_diff(raw, diff);
 });
 let mostAssists = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["kills"]["kda"][2] / val["funny_stats"]["total_matches"]).toFixed(2)]);
-  return prep(out);
+  let stat = "kills";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["kda"][2] / val["funny_stats"]["total_matches"]).toFixed(2)]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["kda"][2] / val["funny_stats"]["difference"]["data"]["total_matches"]).toFixed(2)]));
+  return calc_diff(raw, diff);
 });
 let mostGold = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["gold"] / val["funny_stats"]["time"]["total_time_played"] * 60).toFixed(2)]);
-  return prep(out);
-});
-
-let mostTowers = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["objectives"]["tower_kills"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
-  return prep(out);
-});
-let mostTowersFirst = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["objectives"]["first_tower_kill"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
-  return prep(out);
+  let stat = "gold";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat] / val["funny_stats"]["time"]["total_time_played"] * 60).toFixed(2)]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat] / val["funny_stats"]["difference"]["data"]["time"]["total_time_played"] * 60).toFixed(2)]));
+  return calc_diff(raw, diff);
 });
 
 let mostTimeAlive = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["time"]["time_spent_alive"] / val["funny_stats"]["time"]["total_time_played"] * 100).toFixed(2)]);
-  return prep(out);
+  let stat = "time";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["time_spent_alive"] / val["funny_stats"]["time"]["total_time_played"] * 100).toFixed(2)]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["time_spent_alive"] / val["funny_stats"]["difference"]["data"]["time"]["total_time_played"] * 100).toFixed(2)]));
+  return calc_diff(raw, diff);
 });
 let mostTimeDead = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["time"]["time_spent_dead"] / val["funny_stats"]["time"]["total_time_played"] * 100).toFixed(2)]);
-  return prep(out);
+  let stat = "time";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["time_spent_dead"] / val["funny_stats"]["time"]["total_time_played"] * 100).toFixed(2)]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["time_spent_dead"] / val["funny_stats"]["difference"]["data"]["time"]["total_time_played"] * 100).toFixed(2)]));
+  return calc_diff(raw, diff);
 });
 let mostTimeCCSelf = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["time"]["time_cc_self"] / val["funny_stats"]["time"]["total_time_played"] * 100).toFixed(2)]);
-  return prep(out);
+  let stat = "time";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["time_cc_self"] / val["funny_stats"]["time"]["total_time_played"] * 100).toFixed(2)]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["time_cc_self"] / val["funny_stats"]["difference"]["data"]["time"]["total_time_played"] * 100).toFixed(2)]));
+  return calc_diff(raw, diff);
 });
 let mostTimeCCOther = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["time"]["time_cc_other"] / val["funny_stats"]["time"]["total_time_played"] * 100).toFixed(2)]);
-  return prep(out);
+  let stat = "time";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["time_cc_other"] / val["funny_stats"]["time"]["total_time_played"] * 100).toFixed(2)]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["time_cc_other"] / val["funny_stats"]["difference"]["data"]["time"]["total_time_played"] * 100).toFixed(2)]));
+  return calc_diff(raw, diff);
 });
 
-let mostObjectivesStolen = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["objectives"]["objectives_stolen"])]);
-  return prep(out);
+let mostTowers = computed(() => {
+  let stat = "objectives";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["tower_kills"] / val["funny_stats"]["total_matches"]).toFixed(2)]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["tower_kills"] / val["funny_stats"]["difference"]["data"]["total_matches"]).toFixed(2)]));
+  return calc_diff(raw, diff);
 });
+let mostTowersFirst = computed(() => {
+  let stat = "objectives";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["first_tower_kill"] / val["funny_stats"]["total_matches"]).toFixed(2)]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["first_tower_kill"] / val["funny_stats"]["difference"]["data"]["total_matches"]).toFixed(2)]));
+  return calc_diff(raw, diff);
+});
+let mostObjectivesStolen = computed(() => {
+  let stat = "objectives";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["objectives_stolen"])]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["objectives_stolen"])]));
+  return calc_diff(raw, diff);
+});
+
 let mostDragons = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["monsters"]["dragon_kills"])]);
-  return prep(out);
+  let stat = "monsters";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["dragon_kills"])]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["dragon_kills"])]));
+  return calc_diff(raw, diff);
 });
 let mostBarons = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["monsters"]["baron_kills"])]);
-  return prep(out);
+  let stat = "monsters";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["baron_kills"])]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["baron_kills"])]));
+  return calc_diff(raw, diff);
+});
+let mostCS = computed(() => {
+  let stat = "monsters";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["creep_kills"] / val["funny_stats"]["time"]["total_time_played"] * 60).toFixed(2)]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["creep_kills"] / val["funny_stats"]["difference"]["data"]["time"]["total_time_played"] * 60).toFixed(2)]));
+  return calc_diff(raw, diff);
 });
 
 let mostPinks = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["vision"]["pinks"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
-  return prep(out);
+  let stat = "vision";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["pinks"] / val["funny_stats"]["total_matches"]).toFixed(2)]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["pinks"] / val["funny_stats"]["difference"]["data"]["total_matches"]).toFixed(2)]));
+  return calc_diff(raw, diff);
 });
 let mostWards = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["vision"]["wards"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
-  return prep(out);
+  let stat = "vision";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["wards"] / val["funny_stats"]["total_matches"]).toFixed(2)]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["wards"] / val["funny_stats"]["difference"]["data"]["total_matches"]).toFixed(2)]));
+  return calc_diff(raw, diff);
 });
 let mostVisionScore = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["vision"]["vision_score"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
-  return prep(out);
+  let stat = "vision";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["vision_score"] / val["funny_stats"]["total_matches"]).toFixed(2)]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["vision_score"] / val["funny_stats"]["difference"]["data"]["total_matches"]).toFixed(2)]));
+  return calc_diff(raw, diff);
 });
 
 let mostDoubleKills = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["kills"]["double_kills"])]);
-  return prep(out);
+  let stat = "kills";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["double_kills"])]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["double_kills"])]));
+  return calc_diff(raw, diff);
 });
 let mostTripleKills = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["kills"]["triple_kills"])]);
-  return prep(out);
+  let stat = "kills";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["triple_kills"])]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["triple_kills"])]));
+  return calc_diff(raw, diff);
 });
 let mostQuadraKills = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["kills"]["quadra_kills"])]);
-  return prep(out);
+  let stat = "kills";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["quadra_kills"])]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["quadra_kills"])]));
+  return calc_diff(raw, diff);
 });
 let mostPentaKills = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["kills"]["penta_kills"])]);
-  return prep(out);
+  let stat = "kills";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["penta_kills"])]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["penta_kills"])]));
+  return calc_diff(raw, diff);
 });
 
 let mostMissingPing = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["pings"]["missing"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
-  return prep(out);
+  let stat = "pings";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["missing"] / val["funny_stats"]["total_matches"]).toFixed(2)]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["missing"] / val["funny_stats"]["difference"]["data"]["total_matches"]).toFixed(2)]));
+  return calc_diff(raw, diff);
 });
 let mostBaitPing = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["pings"]["bait"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
-  return prep(out);
+  let stat = "pings";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["bait"] / val["funny_stats"]["total_matches"]).toFixed(2)]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["bait"] / val["funny_stats"]["difference"]["data"]["total_matches"]).toFixed(2)]));
+  return calc_diff(raw, diff);
 });
 
 let mostSkillsDodged = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["other"]["skill_shots_dodged"] / val["funny_stats"]["total_matches"]).toFixed(2)]);
-  return prep(out);
+  let stat = "other";
+  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["skill_shots_dodged"] / val["funny_stats"]["total_matches"]).toFixed(2)]));
+  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["skill_shots_dodged"] / val["funny_stats"]["difference"]["data"]["total_matches"]).toFixed(2)]));
+  return calc_diff(raw, diff);
 });
-let mostCS = computed(() => {
-  let out = filtered_players.value.map(val => [val.username, (val["funny_stats"]["monsters"]["creep_kills"] / val["funny_stats"]["time"]["total_time_played"] * 60).toFixed(2)]);
-  return prep(out);
+
+let stats_mapping = {};
+
+function map_stats(){
+  if (playerData.value !== undefined) {
+    stats_mapping = {
+      "General": [
+        ["Kills / game ⚔️︎", mostKills.value],
+        ["Deaths / game ☠️", mostDeaths.value],
+        ["Assists / game 🤝", mostAssists.value],
+        ["Gold / min 💵", mostGold.value],
+        ["CS / min 🧙", mostCS.value],
+        ["Skillshots dodged / game 🦶", mostSkillsDodged.value]
+      ],
+      "Multi-kills": [
+        ["Double kills 2️⃣️", mostDoubleKills.value],
+        ["Triple kills 3️⃣️", mostTripleKills.value],
+        ["Quadra kills 4️⃣️", mostQuadraKills.value],
+        ["Penta kills 5️⃣️", mostPentaKills.value]
+      ],
+      "Time row": [
+        ["% Game time alive 🕊️", mostTimeAlive.value],
+        ["% Game time grey screen ⚰️️️", mostTimeDead.value],
+        ["% Game time CC applied 🔒️", mostTimeCCSelf.value],
+        ["% Game time CC Taken ☕️️", mostTimeCCOther.value]
+      ],
+      "Objectives": [
+        ["Objectives stolen 👺", mostObjectivesStolen.value],
+        ["Dragons killed 🐉", mostDragons.value],
+        ["Barons killed 🐍", mostBarons.value]
+      ],
+      "Vision": [
+        ["Vision score / game 👁️", mostVisionScore.value],
+        ["Wards placed / game 🔭", mostWards.value],
+        ["Pinks placed / game 🔮", mostPinks.value]
+      ],
+      "Toxicity": [
+        ["❓ ping / game ️", mostMissingPing.value],
+        ["⚓(bait) ping / game ️", mostBaitPing.value]
+      ],
+      "Where tower ?": [
+        ["Towers taken / game ♜", mostTowers.value],
+        ["First blood towers / game 🩸♜", mostTowersFirst.value]
+      ]
+    };
+  }
+}
+
+watch(playerData, () => {
+  map_stats()
 });
+
+map_stats()
+
 </script>
 
 <template>
   <div v-if="playerData!==undefined">
 
-<!--    <div-->
-<!--      style=";font-family: 'Farmhouse',sans-serif;width:70px;height:70px;position: relative;margin-bottom: 20px;-->
-<!--      transform: rotate(-6deg);background-color: rgb(255,213,0);padding: 10px;border-radius: 50%;display: flex;-->
-<!--      align-items: center;justify-content: center;box-shadow: 0 0 40px #887400">-->
-<!--      <p-->
-<!--        style="font-size:2em;font-weight: bold;line-height: 25px;color: red;margin: auto;-->
-<!--        text-shadow: rgb(255, 255, 255) 2px 0px 0px, rgb(255, 255, 255) 1.75517px 0.958851px 0px, rgb(255, 255, 255) 1.0806px 1.68294px 0px, rgb(255, 255, 255) 0.141474px 1.99499px 0px, rgb(255, 255, 255) -0.832294px 1.81859px 0px, rgb(255, 255, 255) -1.60229px 1.19694px 0px, rgb(255, 255, 255) -1.97999px 0.28224px 0px, rgb(255, 255, 255) -1.87291px -0.701566px 0px, rgb(255, 255, 255) -1.30729px -1.51361px 0px, rgb(255, 255, 255) -0.421592px -1.95506px 0px, rgb(255, 255, 255) 0.567324px -1.91785px 0px, rgb(255, 255, 255) 1.41734px -1.41108px 0px, rgb(255, 255, 255) 1.92034px -0.558831px 0px;"-->
-<!--      >Now scrollable!</p>-->
-<!--    </div>-->
+        <div
+          style=";font-family: 'Farmhouse',sans-serif;width:70px;height:70px;position: absolute;
+              transform: rotate(-6deg) translate(-120px);background-color: rgb(255,213,0);padding: 10px;border-radius: 50%;display: flex;flex-flow: row wrap;
+              align-items: center;justify-content: center;box-shadow: 0 0 40px #887400">
+          <p
+            style="font-size:2em;font-weight: bold;line-height: 30px;color: red;margin: 0;
+                text-shadow: rgb(255, 255, 255) 2px 0px 0px, rgb(255, 255, 255) 1.75517px 0.958851px 0px, rgb(255, 255, 255) 1.0806px 1.68294px 0px, rgb(255, 255, 255) 0.141474px 1.99499px 0px, rgb(255, 255, 255) -0.832294px 1.81859px 0px, rgb(255, 255, 255) -1.60229px 1.19694px 0px, rgb(255, 255, 255) -1.97999px 0.28224px 0px, rgb(255, 255, 255) -1.87291px -0.701566px 0px, rgb(255, 255, 255) -1.30729px -1.51361px 0px, rgb(255, 255, 255) -0.421592px -1.95506px 0px, rgb(255, 255, 255) 0.567324px -1.91785px 0px, rgb(255, 255, 255) 1.41734px -1.41108px 0px, rgb(255, 255, 255) 1.92034px -0.558831px 0px;"
+          >Tracks changes!</p>
+        </div>
+        <p style="font-size: 0.8em;position: absolute;transform:translate(-150px,100px);">Refreshes once a day</p>
+        <p style="font-size: 0.8em;position: absolute;transform:translate(-150px,120px);">(example values used)</p>
 
-    <h1 class="title">General</h1>
-    <div class="divider"></div>
-    <div class="funny_wrapper">
-
-      <div class="stat_column">
-        <p class="column_heading">Kills / game ⚔️︎</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostKills" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
+    <div v-for="heading in Object.keys(stats_mapping)" :key="heading">
+      <h1 class="title">{{ heading }}</h1>
+      <div class="divider"></div>
+      <div class="funny_wrapper">
+        <div v-for="col in stats_mapping[heading]" :key="col[0]">
+          <div class="stat_column">
+            <p class="column_heading">{{ col[0] }}</p>
+            <div class="stats_scroll_box">
+              <div class="stats_list">
+                <PlayerBox v-for="data in col[1]"
+                           :key="data[0]"
+                           :text="`${data[1]} ${divider} ${data[0]}`"
+                           :difference="data[2]"
+                           :username="data[0]"></PlayerBox>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      <div class="stat_column">
-        <p class="column_heading">Deaths / game ☠️</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostDeaths" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-      <div class="stat_column">
-        <p class="column_heading">Assists / game 🤝</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostAssists" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-      <div class="stat_column">
-        <p class="column_heading">Gold / min 💵</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostGold" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-      <div class="stat_column">
-        <p class="column_heading new">CS / min 🧙</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostCS" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-      <div class="stat_column">
-        <p class="column_heading new">Skillshots dodged / game 🦶</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostSkillsDodged" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <h1 class="title">Multi-kills</h1>
-    <div class="divider"></div>
-    <div class="funny_wrapper">
-
-      <div class="stat_column">
-        <p class="column_heading">Double kills 2️⃣️︎</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostDoubleKills" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-      <div class="stat_column">
-        <p class="column_heading">Triple kills 3️⃣️︎</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostTripleKills" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-      <div class="stat_column">
-        <p class="column_heading">Quadra kills 4️⃣</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostQuadraKills" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-      <div class="stat_column">
-        <p class="column_heading">Penta kills 5️⃣</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostPentaKills" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <h1 class="title new">Time row</h1>
-    <div class="divider"></div>
-    <div class="funny_wrapper">
-
-      <div class="stat_column">
-        <p class="column_heading">% Game time alive 🕊️</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostTimeAlive" :key="data[0]" :text="`${data[1]} % ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-      <div class="stat_column">
-        <p class="column_heading">% Game time grey screen ⚰️️</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostTimeDead" :key="data[0]" :text="`${data[1]} % ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-      <div class="stat_column">
-        <p class="column_heading">% Game time CC applied 🔒</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostTimeCCOther" :key="data[0]" :text="`${data[1]} % ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-      <div class="stat_column">
-        <p class="column_heading">% Game time CC Taken ☕️️</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostTimeCCSelf" :key="data[0]" :text="`${data[1]} % ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <h1 class="title">Objectives</h1>
-    <div class="divider"></div>
-    <div class="funny_wrapper">
-
-      <div class="stat_column">
-        <p class="column_heading">Objectives stolen 👺</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostObjectivesStolen" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-      <div class="stat_column">
-        <p class="column_heading">Dragons killed 🐉</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostDragons" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-      <div class="stat_column">
-        <p class="column_heading">Barons killed 🐍</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostBarons" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <h1 class="title">Vision</h1>
-    <div class="divider"></div>
-    <div class="funny_wrapper">
-
-      <div class="stat_column">
-        <p class="column_heading">Vision score / game 👁️</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostVisionScore" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-      <div class="stat_column">
-        <p class="column_heading">Wards placed / game 🔭</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostWards" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-      <div class="stat_column">
-        <p class="column_heading">Pinks placed / game 🔮</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostPinks" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <h1 class="title new">Toxic</h1>
-    <div class="divider"></div>
-    <div class="funny_wrapper">
-
-      <div class="stat_column">
-        <p class="column_heading">❓ ping / game ️</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostMissingPing" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-      <div class="stat_column">
-        <p class="column_heading">🪝 ping / game ️</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostBaitPing" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <h1 class="title">Yorick moment</h1>
-    <div class="divider"></div>
-    <div class="funny_wrapper">
-
-      <div class="stat_column">
-        <p class="column_heading">Towers taken / game ♜</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostTowers" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
-      <div class="stat_column">
-        <p class="column_heading">First blood towers / game 🩸♜</p>
-        <div class="stats_scroll_box">
-          <div class="stats_list">
-            <PlayerBox v-for="data in mostTowersFirst" :key="data[0]" :text="`${data[1]} ${divider} ${data[0]}`"
-                       :username="data[0]"></PlayerBox>
-          </div>
-        </div>
-      </div>
-
     </div>
 
   </div>
@@ -465,6 +314,7 @@ p {
 }
 
 .stats_scroll_box {
+  position: relative;
   min-width: 250px;
   background-color: #111111;
   padding: 20px;
