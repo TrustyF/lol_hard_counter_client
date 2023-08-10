@@ -9,7 +9,7 @@ let playerData = inject("playerData");
 
 let filtered_players = computed(() => {
   let max_matches = 30;
-  let out = JSON.parse(JSON.stringify(playerData.value));
+  let out = JSON.parse(JSON.stringify(playerData.value.filter(value => value["match_history"]["total_matches"] > 10)));
 
   out.forEach(player => {
     if (player["match_history"]["total_matches"] > max_matches) {
@@ -77,6 +77,12 @@ let mostGold = computed(() => {
   let stat = ["gold"];
   let raw = prep(filtered_players.value.map(player => [player.username, over_tot_games(sum(player["funny_stats"].map(val => over_min(val[stat[0]], val))), player)]));
   let diff = prep(filtered_players.value.map(player => [player.username, over_tot_games(sum(player["funny_stats"].filter(val => !player["funny_stats_diff"]["data"].includes(val["match"]["match_id"])).map(val => over_min(val[stat[0]], val))), player)]));
+  return calc_diff(raw, diff);
+});
+let mostFirstBlood = computed(() => {
+  let stat = ["kills", "first_blood"];
+  let raw = prep(filtered_players.value.map(player => [player.username, over_tot_games(sum(player["funny_stats"].map(val => val[stat[0]][stat[1]])), player)]));
+  let diff = prep(filtered_players.value.map(player => [player.username, over_tot_games(sum(player["funny_stats"].filter(val => !player["funny_stats_diff"]["data"].includes(val["match"]["match_id"])).map(val => val[stat[0]][stat[1]])), player)]));
   return calc_diff(raw, diff);
 });
 
@@ -233,6 +239,13 @@ function map_stats() {
           "value": mostAssists.value,
           "value_format": "float",
           "image": "/assets/stat_icons/assist.svg"
+        },
+        {
+          "heading": "First blood",
+          "scaling": "/ game",
+          "value": mostFirstBlood.value,
+          "value_format": "float",
+          "image": "/assets/stat_icons/firstblood.svg"
         },
         {
           "heading": "Gold",
@@ -395,10 +408,16 @@ map_stats();
     <!--    </div>-->
     <!--    <p style="font-size: 0.8em;position: absolute;transform:translate(-150px,100px);">Refreshes once a day</p>-->
     <!--    <p style="font-size: 0.8em;position: absolute;transform:translate(-150px,120px);">(example values used)</p>-->
+
     <ChangeLog
       title="changes"
       image="pepedance.webp"
-      :changes="['Funny stats™ is now calculated on the last 30 games','Rank changes will be updated hourly and notified with a badge','removed player selector, your can now select from the list directly']"
+      :changes="[
+      'Funny stats™ is now calculated on the last 30 games (10 games minimum)',
+      'Position changes will be notified with a badge',
+      'Removed player selector, your can now select from the list directly',
+      'Added first blood column'
+      ]"
       :close="true"
     ></ChangeLog>
 
@@ -463,11 +482,12 @@ p {
   position: relative;
   display: flex;
   flex-flow: row wrap;
+  height: 25px;
   gap: 5px;
   margin-bottom: 5px;
   /*outline: 1px solid green;*/
   justify-content: center;
-  height: fit-content;
+  /*height: fit-content;*/
 }
 
 .divider {
@@ -507,14 +527,16 @@ p {
 .stats_image {
   object-fit: scale-down;
   height: 20px;
-  /*width: 25px;*/
+  width: 20px;
   margin: auto 0 auto 0;
   /*border-radius: 5px;*/
   /*outline: 1px solid red;*/
 }
 
 .heading_text {
+  position: relative;
   margin: 0;
+  transform: translate(0, 1px);
   /*outline: 1px solid red;*/
 }
 

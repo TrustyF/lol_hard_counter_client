@@ -51,6 +51,7 @@ let baseChartOptions = ref({
     opacity: 1
   },
   yaxis: {
+    tickAmount:7,
     labels: {
       rotate: 0,
       style: {

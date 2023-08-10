@@ -59,6 +59,7 @@ let baseChartOptions = ref({
     opacity: 1
   },
   yaxis: {
+    tickAmount:6,
     labels: {
       rotate: 0,
       style: {
@@ -71,6 +72,7 @@ let baseChartOptions = ref({
   xaxis: {
     type: "datetime",
     categories: [],
+    tickPlacement: 'on',
     labels: {
       style: {
         colors: "#ababab"
@@ -92,14 +94,14 @@ let baseChartOptions = ref({
     },
     yaxis: {
       lines: {
-        show: false
+        show: true
       }
     },
     padding: { right: 70, left: 10 }
   },
   plotOptions: {
     line: {
-      distributes: true
+      distributes: false
     }
   },
   dataLabels: {
@@ -137,21 +139,21 @@ let baseChartOptions = ref({
 baseChartOptions.value["chart"]["id"] = chartName.value;
 baseChartOptions.value["colors"] = chartOptions.value["color"];
 baseChartOptions.value["dataLabels"]["formatter"] = (val, opts) => {
-  if (val <= 0) {
-    return undefined;
-  }
-
-  if (opts.dataPointIndex > 0) {
-    return undefined;
-  }
-  // console.log(opts);
 
   const lp = val % 100;
   const div = ((val - lp) % 400) / 100;
   const tier = (val - lp - ((val - lp) % 400)) / 400;
 
-  return [opts.w['globals']['initialSeries'][opts['seriesIndex']]["name"]];
-  // return [`${rank_mappings["tier_values"][tier]} ${rank_mappings["division_values"][div]} ${lp} lp`];
+  // console.log(opts);
+
+  if (val <= 0) {
+    return undefined;
+  }
+
+  if (opts['dataPointIndex']===0) {
+    return [opts.w['globals']['initialSeries'][opts['seriesIndex']]["name"]];
+    // return [`${rank_mappings["tier_values"][tier]} ${rank_mappings["division_values"][div]} ${lp} lp`];
+  }
 };
 baseChartOptions.value["tooltip"]["y"]["formatter"] = (val) => {
   const lp = val % 100;

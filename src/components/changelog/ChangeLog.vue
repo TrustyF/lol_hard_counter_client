@@ -59,7 +59,7 @@ function hide() {
 
 .container {
   padding: 5px;
-  background-color: #2c3e50;
+  background-color: #193a29;
   width: fit-content;
   border-radius: 10px;
   display: flex;
@@ -84,7 +84,7 @@ function hide() {
   position: absolute;
   right: 0;
   top: 0;
-  border-radius: 50%;
+  border-radius: 4px;
   width: 20px;
   height: 20px;
   text-align: center;
@@ -93,10 +93,13 @@ function hide() {
   font-family: Farmhouse, sans-serif;
   font-weight: lighter;
   font-size: 1em;
-  /*background-color: #2c3e50;*/
+  background-color: #2c3e50;
   cursor: pointer;
   user-select: none;
   /*outline: 1px solid red;*/
+}
+.close_button:hover{
+  background-color: #456483;
 }
 
 
