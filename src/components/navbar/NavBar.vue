@@ -12,6 +12,7 @@ import { RouterLink } from "vue-router";
         <RouterLink class="link" to="/">Wall of shame</RouterLink>
         <RouterLink class="link" to="/funnyStats">Funny stats™</RouterLink>
         <RouterLink class="link disabled" to="/copeCorner"><img src="/assets/gifs/cope.webp" alt="copium" style="width: 40px;margin-right: 5px">Cope corner (wip)</RouterLink>
+        <RouterLink class="link " to="/changes">Changes</RouterLink>
       </div>
 
     </div>

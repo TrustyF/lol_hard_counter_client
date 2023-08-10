@@ -104,7 +104,7 @@ let baseChartOptions = ref({
   },
   dataLabels: {
     // display: "auto",
-    enabled: false,
+    enabled: true,
     offsetX: 0,
     offsetY: -10,
     textAnchor: "middle",
@@ -150,8 +150,8 @@ baseChartOptions.value["dataLabels"]["formatter"] = (val, opts) => {
   const div = ((val - lp) % 400) / 100;
   const tier = (val - lp - ((val - lp) % 400)) / 400;
 
-  // return [opts.w.globals.initialSeries[opts.seriesIndex]["name"], `${rank_mappings["tier_values"][tier]} ${rank_mappings["division_values"][div]} ${lp} lp`];
-  return [`${rank_mappings["tier_values"][tier]} ${rank_mappings["division_values"][div]} ${lp} lp`];
+  return [opts.w['globals']['initialSeries'][opts['seriesIndex']]["name"]];
+  // return [`${rank_mappings["tier_values"][tier]} ${rank_mappings["division_values"][div]} ${lp} lp`];
 };
 baseChartOptions.value["tooltip"]["y"]["formatter"] = (val) => {
   const lp = val % 100;

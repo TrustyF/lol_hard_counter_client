@@ -10,21 +10,30 @@ const rank_mappings = {
     "diamond", "master", "grandmaster", "challenger"],
   "division_values": ["IV", "III", "II", "I"]
 };
+let sorted;
+
+function update_player() {
+  if (playerData.value !== undefined) {
+    sorted = playerData.value.sort((a, b) => b["ranked"]["RANKED_SOLO_5x5"]["rank"] - a["ranked"]["RANKED_SOLO_5x5"]["rank"]);
+    playerUsernames.value = sorted.map(x => {
+      let val = x["ranked"]["RANKED_SOLO_5x5"]["rank"];
+      let lp = val % 100;
+      // const div = ((val - lp) % 400) / 100;
+      let tier = (val - lp - ((val - lp) % 400)) / 400;
+      return {
+        "username": x["username"],
+        "profile_icon": x["profile_icon"],
+        "rank": tier === 0 ? "unranked" : rank_mappings["tier_values"][tier]
+      };
+    });
+  }
+}
 
 watch(playerData, () => {
-  const sorted = playerData.value.sort((a, b) => b["ranked"]["RANKED_SOLO_5x5"]["rank"] - a["ranked"]["RANKED_SOLO_5x5"]["rank"]);
-  playerUsernames.value = sorted.map(x => {
-    let val = x["ranked"]["RANKED_SOLO_5x5"]["rank"];
-    let lp = val % 100;
-    // const div = ((val - lp) % 400) / 100;
-    let tier = (val - lp - ((val - lp) % 400)) / 400;
-    return {
-      "username": x["username"],
-      "profile_icon": x["profile_icon"],
-      "rank": tier === 0 ? "unranked" : rank_mappings["tier_values"][tier]
-    };
-  });
+  update_player();
 });
+
+update_player();
 </script>
 
 <template>
@@ -48,7 +57,7 @@ watch(playerData, () => {
 
 .click_me {
   position: absolute;
-  transform: translate(-90px,0px);
+  transform: translate(-90px, 0px);
   width: 150px;
   filter: invert(1);
 }

@@ -178,14 +178,13 @@ function update_chart() {
 
   // set goals
   baseChartOptions.value.series[0].data.forEach((elem) => {
-    console.log('goals',elem,elem['last_rank'],elem['y']);
+    // console.log('goals',elem,elem['last_rank'],elem['y']);
     if (elem['last_rank'] === null || elem['y'] === null) {
       return undefined;
     }
     if (elem['last_rank'] === elem['y']) {
       return undefined;
     }
-    console.log('test passed');
 
     elem["goals"] = [{
       value: elem['last_rank'],
@@ -195,7 +194,7 @@ function update_chart() {
 
   });
 
-  console.log("basechart", baseChartOptions.value);
+  // console.log("basechart", baseChartOptions.value);
 }
 
 watch(selectedPlayers.value, () => {

@@ -14,7 +14,6 @@ let value = computed(() => {
     return parseFloat(val).toFixed(1);
   }
   if (props["value_format"] === "percentage") {
-    console.log(props['value_format']);
     return parseFloat(val).toFixed(1) + "%";
   }
   else {
