@@ -1,7 +1,6 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import NavBar from "@/components/navbar/NavBar.vue";
-import PlayerSelector from "@/components/players/PlayerSelector.vue";
 import { inject, onMounted } from "vue";
 
 const curr_api = inject("curr_api");
@@ -49,7 +48,6 @@ onMounted(() => {
   <div class="main">
     <NavBar></NavBar>
     <div class="body">
-      <player-selector></player-selector>
       <RouterView />
     </div>
   </div>

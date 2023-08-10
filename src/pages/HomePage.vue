@@ -4,6 +4,8 @@ import RankChart from "@/components/charts/RankChart.vue";
 import RankHistChart from "@/components/charts/RankHistChart.vue";
 import WinrateChart from "@/components/charts/WinrateChart.vue";
 // import ChampionSelector from "@/components/champion/ChampionSelector.vue";
+import PlayerSelector from "@/components/players/PlayerSelector.vue";
+
 
 
 let playerData = inject("playerData");
@@ -12,9 +14,11 @@ let playerData = inject("playerData");
 </script>
 
 <template>
+  <PlayerSelector></PlayerSelector>
+
   <div v-if="playerData!==undefined">
 
-<!--    todo lp gain slope, Add funny stats difference-->
+<!--    todo lp gain slope-->
 
     <h1 class="title">Solo Queue</h1>
     <div class="divider"></div>

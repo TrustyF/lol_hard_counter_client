@@ -7,13 +7,12 @@ let playerData = inject("playerData");
 // let selectedPlayers = inject("selectedPlayers");
 
 let filtered_players = computed(() => {
-  return playerData.value.filter(val => val["funny_stats"]["total_matches"] > 10);
+  return playerData.value.filter(user => user["match_history"]["total_matches"] > 1);
 });
 
 function prep(f_data) {
   f_data = f_data.filter(value => value[1] > 0);
   f_data.sort((a, b) => b[1] - a[1]);
-  // f_data.splice(5);
   return f_data;
 }
 
@@ -27,28 +26,41 @@ function calc_diff(f_raw, f_diff) {
   });
 }
 
+function sum(f_data) {
+  return f_data.reduce((a, b) => a + b, 0);
+}
+
+function over_tot_games(f_data, f_player) {
+
+  return f_data / f_player["match_history"]["total_matches"];
+}
+
+function over_min(f_data, f_data2, f_player) {
+  return ((f_data / f_data2["match"]["match_time"]) * 60) / f_player["match_history"]["total_matches"];
+}
+
 let mostKills = computed(() => {
-  let stat = "kills";
-  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["kda"][0] / val["funny_stats"]["total_matches"])]));
-  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["kda"][0] / val["funny_stats"]["difference"]["data"]["total_matches"])]));
+  let stat = ["kills", "kda", 0];
+  let raw = prep(filtered_players.value.map(player => [player.username, over_tot_games(sum(player["funny_stats"].map(val => val[stat[0]][stat[1]][stat[2]])), player)]));
+  let diff = prep(filtered_players.value.map(player => [player.username, over_tot_games(sum(player["funny_stats"].filter(val => !player["funny_stats_diff"]["data"].includes(val["match"]["match_id"])).map(val => val[stat[0]][stat[1]][stat[2]])), player)]));
   return calc_diff(raw, diff);
 });
 let mostDeaths = computed(() => {
-  let stat = "kills";
-  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["kda"][1] / val["funny_stats"]["total_matches"])]));
-  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["kda"][1] / val["funny_stats"]["difference"]["data"]["total_matches"])]));
+  let stat = ["kills", "kda", 1];
+  let raw = prep(filtered_players.value.map(player => [player.username, over_tot_games(sum(player["funny_stats"].map(val => val[stat[0]][stat[1]][stat[2]])), player)]));
+  let diff = prep(filtered_players.value.map(player => [player.username, over_tot_games(sum(player["funny_stats"].filter(val => !player["funny_stats_diff"]["data"].includes(val["match"]["match_id"])).map(val => val[stat[0]][stat[1]][stat[2]])), player)]));
   return calc_diff(raw, diff);
 });
 let mostAssists = computed(() => {
-  let stat = "kills";
-  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat]["kda"][2] / val["funny_stats"]["total_matches"])]));
-  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat]["kda"][2] / val["funny_stats"]["difference"]["data"]["total_matches"])]));
+  let stat = ["kills", "kda", 2];
+  let raw = prep(filtered_players.value.map(player => [player.username, over_tot_games(sum(player["funny_stats"].map(val => val[stat[0]][stat[1]][stat[2]])), player)]));
+  let diff = prep(filtered_players.value.map(player => [player.username, over_tot_games(sum(player["funny_stats"].filter(val => !player["funny_stats_diff"]["data"].includes(val["match"]["match_id"])).map(val => val[stat[0]][stat[1]][stat[2]])), player)]));
   return calc_diff(raw, diff);
 });
 let mostGold = computed(() => {
-  let stat = "gold";
-  let raw = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"][stat] / val["funny_stats"]["time"]["total_time_played"] * 60)]));
-  let diff = prep(filtered_players.value.map(val => [val.username, (val["funny_stats"]["difference"]["data"][stat] / val["funny_stats"]["difference"]["data"]["time"]["total_time_played"] * 60)]));
+  let stat = ["gold"];
+  let raw = prep(filtered_players.value.map(player => [player.username, sum(player["funny_stats"].map(val => (val[stat[0]])))]));
+  let diff = prep(filtered_players.value.map(player => [player.username, sum(player["funny_stats"].filter(val => !player["funny_stats_diff"]["data"].includes(val["match"]["match_id"])).map(val => val[stat[0]]))]));
   return calc_diff(raw, diff);
 });
 
@@ -212,134 +224,134 @@ function map_stats() {
           "value": mostGold.value,
           "value_format": "float",
           "image": "/assets/stat_icons/coin.svg"
-        },
-        {
-          "heading": "CS",
-          "scaling": "/ min",
-          "value": mostCS.value,
-          "value_format": "float",
-          "image": "/assets/stat_icons/Minion.webp"
-        },
-        {
-          "heading": "Skillshots dodged",
-          "scaling": "/ game",
-          "value": mostSkillsDodged.value,
-          "value_format": "float",
-          "image": "/assets/stat_icons/dodge.svg"
         }
-      ],
-      "Time row": [
-        {
-          "heading": "Time alive",
-          "scaling": "% game time",
-          "value": mostTimeAlive.value,
-          "value_format": "percentage",
-          "image": "/assets/stat_icons/dove.svg"
-        },
-        {
-          "heading": "Time grey screen",
-          "scaling": "% game time",
-          "value": mostTimeDead.value,
-          "value_format": "percentage",
-          "image": "/assets/stat_icons/coffin.svg"
-        },
-        {
-          "heading": "CC Applied",
-          "scaling": "% game time",
-          "value": mostTimeCCOther.value,
-          "value_format": "percentage",
-          "image": "/assets/stat_icons/Keyword_Deep.svg"
-        },
-        {
-          "heading": "CC Taken",
-          "scaling": "% game time",
-          "value": mostTimeCCSelf.value,
-          "value_format": "percentage",
-          "image": "/assets/stat_icons/Keyword_Stun.svg"
-
-        }
-      ],
-      "Multi-kills": [
-        { "heading": "Double kills Ⅱ", "value": mostDoubleKills.value, "value_format": "int", "image": undefined },
-        { "heading": "Triple kills Ⅲ", "value": mostTripleKills.value, "value_format": "int", "image": undefined },
-        { "heading": "Quadra kills Ⅳ", "value": mostQuadraKills.value, "value_format": "int", "image": undefined },
-        { "heading": "Penta kills Ⅴ", "value": mostPentaKills.value, "value_format": "int", "image": undefined }
-      ],
-      "Vision": [
-        {
-          "heading": "Vision score",
-          "scaling": "/ game",
-          "value": mostVisionScore.value,
-          "value_format": "float",
-          "image": "/assets/stat_icons/vision.svg"
-        },
-        {
-          "heading": "Wards placed",
-          "scaling": "/ game",
-          "value": mostWards.value,
-          "value_format": "float",
-          "image": "/assets/stat_icons/ward.svg"
-        },
-        {
-          "heading": "Pinks placed",
-          "scaling": "/ game",
-          "value": mostPinks.value,
-          "value_format": "float",
-          "image": "/assets/stat_icons/Need_Vision_ping.svg"
-        }
-      ],
-      "Toxicity": [
-        {
-          "heading": "",
-          "scaling": "/ game",
-          "value": mostMissingPing.value,
-          "value_format": "float",
-          "image": "/assets/stat_icons/missing_ping.svg"
-        },
-        {
-          "heading": "",
-          "scaling": "/ game",
-          "value": mostBaitPing.value,
-          "value_format": "float",
-          "image": "/assets/stat_icons/bait_ping.svg"
-        }
-      ],
-      "Objectives": [
-        {
-          "heading": "Objectives stolen",
-          "value": mostObjectivesStolen.value,
-          "value_format": "int",
-          "image": "/assets/stat_icons/smite.svg"
-        },
-        {
-          "heading": "Dragons killed",
-          "value": mostDragons.value,
-          "value_format": "int",
-          "image": "/assets/stat_icons/drake.svg"
-        },
-        {
-          "heading": "Barons killed",
-          "value": mostBarons.value,
-          "value_format": "int",
-          "image": "/assets/stat_icons/Nashor.svg"
-        }
-      ],
-      "Where tower ?": [
-        {
-          "heading": "Towers taken",
-          "scaling": "/ game",
-          "value": mostTowers.value,
-          "value_format": "float",
-          "image": "/assets/stat_icons/Keyword_Tough.svg"
-        },
-        {
-          "heading": "First blood towers",
-          "scaling": "/ game",
-          "value": mostTowersFirst.value,
-          "value_format": "float",
-          "image": "/assets/stat_icons/tower_first_blood.svg"
-        }
+        // {
+        //   "heading": "CS",
+        //   "scaling": "/ min",
+        //   "value": mostCS.value,
+        //   "value_format": "float",
+        //   "image": "/assets/stat_icons/Minion.webp"
+        // },
+        // {
+        //   "heading": "Skillshots dodged",
+        //   "scaling": "/ game",
+        //   "value": mostSkillsDodged.value,
+        //   "value_format": "float",
+        //   "image": "/assets/stat_icons/dodge.svg"
+        // }
       ]
+      // "Time row": [
+      //   {
+      //     "heading": "Time alive",
+      //     "scaling": "% game time",
+      //     "value": mostTimeAlive.value,
+      //     "value_format": "percentage",
+      //     "image": "/assets/stat_icons/dove.svg"
+      //   },
+      //   {
+      //     "heading": "Time grey screen",
+      //     "scaling": "% game time",
+      //     "value": mostTimeDead.value,
+      //     "value_format": "percentage",
+      //     "image": "/assets/stat_icons/coffin.svg"
+      //   },
+      //   {
+      //     "heading": "CC Applied",
+      //     "scaling": "% game time",
+      //     "value": mostTimeCCOther.value,
+      //     "value_format": "percentage",
+      //     "image": "/assets/stat_icons/Keyword_Deep.svg"
+      //   },
+      //   {
+      //     "heading": "CC Taken",
+      //     "scaling": "% game time",
+      //     "value": mostTimeCCSelf.value,
+      //     "value_format": "percentage",
+      //     "image": "/assets/stat_icons/Keyword_Stun.svg"
+      //
+      //   }
+      // ],
+      // "Multi-kills": [
+      //   { "heading": "Double kills Ⅱ", "value": mostDoubleKills.value, "value_format": "int", "image": undefined },
+      //   { "heading": "Triple kills Ⅲ", "value": mostTripleKills.value, "value_format": "int", "image": undefined },
+      //   { "heading": "Quadra kills Ⅳ", "value": mostQuadraKills.value, "value_format": "int", "image": undefined },
+      //   { "heading": "Penta kills Ⅴ", "value": mostPentaKills.value, "value_format": "int", "image": undefined }
+      // ],
+      // "Vision": [
+      //   {
+      //     "heading": "Vision score",
+      //     "scaling": "/ game",
+      //     "value": mostVisionScore.value,
+      //     "value_format": "float",
+      //     "image": "/assets/stat_icons/vision.svg"
+      //   },
+      //   {
+      //     "heading": "Wards placed",
+      //     "scaling": "/ game",
+      //     "value": mostWards.value,
+      //     "value_format": "float",
+      //     "image": "/assets/stat_icons/ward.svg"
+      //   },
+      //   {
+      //     "heading": "Pinks placed",
+      //     "scaling": "/ game",
+      //     "value": mostPinks.value,
+      //     "value_format": "float",
+      //     "image": "/assets/stat_icons/Need_Vision_ping.svg"
+      //   }
+      // ],
+      // "Toxicity": [
+      //   {
+      //     "heading": "",
+      //     "scaling": "/ game",
+      //     "value": mostMissingPing.value,
+      //     "value_format": "float",
+      //     "image": "/assets/stat_icons/missing_ping.svg"
+      //   },
+      //   {
+      //     "heading": "",
+      //     "scaling": "/ game",
+      //     "value": mostBaitPing.value,
+      //     "value_format": "float",
+      //     "image": "/assets/stat_icons/bait_ping.svg"
+      //   }
+      // ],
+      // "Objectives": [
+      //   {
+      //     "heading": "Objectives stolen",
+      //     "value": mostObjectivesStolen.value,
+      //     "value_format": "int",
+      //     "image": "/assets/stat_icons/smite.svg"
+      //   },
+      //   {
+      //     "heading": "Dragons killed",
+      //     "value": mostDragons.value,
+      //     "value_format": "int",
+      //     "image": "/assets/stat_icons/drake.svg"
+      //   },
+      //   {
+      //     "heading": "Barons killed",
+      //     "value": mostBarons.value,
+      //     "value_format": "int",
+      //     "image": "/assets/stat_icons/Nashor.svg"
+      //   }
+      // ],
+      // "Where tower ?": [
+      //   {
+      //     "heading": "Towers taken",
+      //     "scaling": "/ game",
+      //     "value": mostTowers.value,
+      //     "value_format": "float",
+      //     "image": "/assets/stat_icons/Keyword_Tough.svg"
+      //   },
+      //   {
+      //     "heading": "First blood towers",
+      //     "scaling": "/ game",
+      //     "value": mostTowersFirst.value,
+      //     "value_format": "float",
+      //     "image": "/assets/stat_icons/tower_first_blood.svg"
+      //   }
+      // ]
     };
   }
 }
@@ -355,24 +367,25 @@ map_stats();
 <template>
   <div v-if="playerData!==undefined">
 
-<!--    <div-->
-<!--      style=";font-family: 'Farmhouse',sans-serif;width:70px;height:70px;position: absolute;-->
-<!--              transform: rotate(-6deg) translate(-120px);background-color: rgb(255,213,0);padding: 10px;border-radius: 50%;display: flex;flex-flow: row wrap;-->
-<!--              align-items: center;justify-content: center;box-shadow: 0 0 40px #887400">-->
-<!--      <p-->
-<!--        style="font-size:2em;font-weight: bold;line-height: 30px;color: red;margin: 0;-->
-<!--                text-shadow: rgb(255, 255, 255) 2px 0px 0px, rgb(255, 255, 255) 1.75517px 0.958851px 0px, rgb(255, 255, 255) 1.0806px 1.68294px 0px, rgb(255, 255, 255) 0.141474px 1.99499px 0px, rgb(255, 255, 255) -0.832294px 1.81859px 0px, rgb(255, 255, 255) -1.60229px 1.19694px 0px, rgb(255, 255, 255) -1.97999px 0.28224px 0px, rgb(255, 255, 255) -1.87291px -0.701566px 0px, rgb(255, 255, 255) -1.30729px -1.51361px 0px, rgb(255, 255, 255) -0.421592px -1.95506px 0px, rgb(255, 255, 255) 0.567324px -1.91785px 0px, rgb(255, 255, 255) 1.41734px -1.41108px 0px, rgb(255, 255, 255) 1.92034px -0.558831px 0px;"-->
-<!--      >Tracks changes!</p>-->
-<!--    </div>-->
-<!--    <p style="font-size: 0.8em;position: absolute;transform:translate(-150px,100px);">Refreshes once a day</p>-->
-<!--    <p style="font-size: 0.8em;position: absolute;transform:translate(-150px,120px);">(example values used)</p>-->
+    <!--    <div-->
+    <!--      style=";font-family: 'Farmhouse',sans-serif;width:70px;height:70px;position: absolute;-->
+    <!--              transform: rotate(-6deg) translate(-120px);background-color: rgb(255,213,0);padding: 10px;border-radius: 50%;display: flex;flex-flow: row wrap;-->
+    <!--              align-items: center;justify-content: center;box-shadow: 0 0 40px #887400">-->
+    <!--      <p-->
+    <!--        style="font-size:2em;font-weight: bold;line-height: 30px;color: red;margin: 0;-->
+    <!--                text-shadow: rgb(255, 255, 255) 2px 0px 0px, rgb(255, 255, 255) 1.75517px 0.958851px 0px, rgb(255, 255, 255) 1.0806px 1.68294px 0px, rgb(255, 255, 255) 0.141474px 1.99499px 0px, rgb(255, 255, 255) -0.832294px 1.81859px 0px, rgb(255, 255, 255) -1.60229px 1.19694px 0px, rgb(255, 255, 255) -1.97999px 0.28224px 0px, rgb(255, 255, 255) -1.87291px -0.701566px 0px, rgb(255, 255, 255) -1.30729px -1.51361px 0px, rgb(255, 255, 255) -0.421592px -1.95506px 0px, rgb(255, 255, 255) 0.567324px -1.91785px 0px, rgb(255, 255, 255) 1.41734px -1.41108px 0px, rgb(255, 255, 255) 1.92034px -0.558831px 0px;"-->
+    <!--      >Tracks changes!</p>-->
+    <!--    </div>-->
+    <!--    <p style="font-size: 0.8em;position: absolute;transform:translate(-150px,100px);">Refreshes once a day</p>-->
+    <!--    <p style="font-size: 0.8em;position: absolute;transform:translate(-150px,120px);">(example values used)</p>-->
 
     <div v-for="heading in Object.keys(stats_mapping)" :key="heading">
       <h1 class="title">{{ heading }}</h1>
       <div class="divider"></div>
       <div class="funny_wrapper">
         <div v-for="col in stats_mapping[heading]" :key="col['heading']">
-          <div :class="col['value'].map(val => Math.abs(val[2])).reduce((a, b) => a + b, 0) > 0 ? 'stat_column new_text' : 'stat_column'">
+          <div
+            :class="col['value'].map(val => Math.abs(val[2])).reduce((a, b) => a + b, 0) > 0 ? 'stat_column new_text' : 'stat_column'">
             <div class="column_heading">
               <p class="heading_text">{{ col["heading"] }}</p>
               <img v-if="col['image']!==undefined" :src="col['image']" alt="stat_image" class="stats_image">
