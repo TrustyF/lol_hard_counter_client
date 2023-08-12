@@ -122,6 +122,9 @@ function filter_player(input) {
   background: linear-gradient(-90deg, rgba(87,116,143,1) 20%, rgba(17,26,34,1) 90%);
   cursor: pointer;
 }
+.player_hover_background {
+  background: linear-gradient(-90deg, rgba(87,116,143,1) 20%, rgba(17,26,34,1) 90%);
+}
 
 .button_image {
   position: relative;
