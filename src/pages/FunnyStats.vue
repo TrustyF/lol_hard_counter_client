@@ -13,7 +13,7 @@ function calc_diff(player_arr) {
   // console.log('player arr',player_arr);
 
   //remove 0 values
-  player_arr = player_arr.filter(value => value[1] > 0)
+  player_arr = player_arr.filter(value => value[1] !== 0);
 
   let new_sort_games = player_arr.slice().sort((a, b) => b[1] - a[1]);
   let old_sort_games = player_arr.slice().sort((a, b) => b[2] - a[2]);
@@ -61,6 +61,11 @@ function calc_stats(player, category, stat, range, special_case = false) {
       stat_last_30 = sum(last_30.map(value => value["player_stats"][category][stat] * 100)) / last_30.length;
       stat_prev_30 = sum(prev_30.map(value => value["player_stats"][category][stat] * 100)) / prev_30.length;
     }
+    if (stat === "objectivesStolen") {
+      stat_last_30 = sum(last_30.map(value => value["player_stats"][category][stat] - value["player_stats"]["challenges"]["epicMonsterStolenWithoutSmite"]));
+      stat_prev_30 = sum(prev_30.map(value => value["player_stats"][category][stat] - value["player_stats"]["challenges"]["epicMonsterStolenWithoutSmite"]));
+    }
+
     return [player.username, stat_last_30, stat_prev_30];
   }
 
@@ -252,7 +257,7 @@ let mostTowersFirst = computed(() => {
 
 //Objectives
 let mostObjectivesStolen = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "objectivesStolen", "total"));
+  let out = filtered_players.value.map(player => calc_stats(player, "stats", "objectivesStolen", "total", true));
   out = calc_diff(out);
   return out;
 });
@@ -345,107 +350,108 @@ function map_stats() {
           "scaling": "/ game",
           "value": mostKills.value,
           "value_format": "float",
-          "image": "/assets/stat_icons/Keyword_Quick_Attack.svg"
+          "images": ["/assets/stat_icons/Keyword_Quick_Attack.svg"]
         },
         {
           "heading": "Deaths",
           "scaling": "/ game",
           "value": mostDeaths.value,
           "value_format": "float",
-          "image": "/assets/stat_icons/skull.svg"
+          "images": ["/assets/stat_icons/skull.svg"]
         },
         {
           "heading": "Assists",
           "scaling": "/ game",
           "value": mostAssists.value,
           "value_format": "float",
-          "image": "/assets/stat_icons/assist.svg"
+          "images": ["/assets/stat_icons/assist.svg"]
         },
         {
           "heading": "First blood",
           "scaling": "/ game",
           "value": mostFirstBlood.value,
           "value_format": "float",
-          "image": "/assets/stat_icons/firstblood.svg"
+          "images": ["/assets/stat_icons/firstblood.svg"]
         },
         {
           "heading": "Gold",
           "scaling": "/ min",
           "value": mostGold.value,
           "value_format": "float",
-          "image": "/assets/stat_icons/coin.svg"
+          "images": ["/assets/stat_icons/coin.svg"]
         },
         {
           "heading": "CS",
           "scaling": "/ min",
           "value": mostCS.value,
           "value_format": "float",
-          "image": "/assets/stat_icons/Minion.webp"
+          "images": ["/assets/stat_icons/minion.svg"]
         },
         {
           "heading": "Skillshots dodged",
           "scaling": "/ game",
           "value": mostSkillsDodged.value,
           "value_format": "float",
-          "image": "/assets/stat_icons/dodge.svg"
+          "images": ["/assets/stat_icons/dodge.svg"]
         }
       ],
       "Damage": [
         {
-          "heading": "Damage taken",
-          "scaling": "/ minute",
-          "value": mostDamageTaken.value,
-          "value_format": "float"
-          // "image": "/assets/stat_icons/Keyword_Quick_Attack.svg"
-        },
-        {
           "heading": "Damage dealt",
           "scaling": "/ minute",
           "value": mostDamageDealt.value,
-          "value_format": "float"
-          // "image": "/assets/stat_icons/Keyword_Quick_Attack.svg"
+          "value_format": "float",
+          "images": ["/assets/stat_icons/Critical_strike.svg"]
         },
         {
           "heading": "Damage dealt to champions",
           "scaling": "/ minute",
           "value": mostDamageDealtChampions.value,
-          "value_format": "float"
-          // "image": "/assets/stat_icons/Keyword_Quick_Attack.svg"
+          "value_format": "float",
+          "images": ["/assets/stat_icons/Critical_strike.svg", "/assets/stat_icons/Champion.svg"]
         },
         {
           "heading": "Team damage share",
           "scaling": "/ game",
           "value": mostTeamDamagePercentage.value,
-          "value_format": "percentage"
-          // "image": "/assets/stat_icons/Keyword_Quick_Attack.svg"
+          "value_format": "percentage",
+          "images": ["/assets/stat_icons/Critical_strike.svg", "/assets/stat_icons/Keyword_Landmark.svg"]
         },
+        {
+          "heading": "Damage taken",
+          "scaling": "/ minute",
+          "value": mostDamageTaken.value,
+          "value_format": "float",
+          "images": ["/assets/stat_icons/Keyword_Block.svg"]
+        },
+
         {
           "heading": "Damage mitigated",
           "scaling": "/ minute",
           "value": mostDamageMitigated.value,
-          "value_format": "float"
-          // "image": "/assets/stat_icons/Keyword_Quick_Attack.svg"
+          "value_format": "float",
+          "images": ["/assets/stat_icons/Keyword_Barrier.svg"]
         },
         {
           "heading": "Healing self",
           "scaling": "/ minute",
           "value": mostHealing.value,
-          "value_format": "float"
-          // "image": "/assets/stat_icons/Keyword_Quick_Attack.svg"
+          "value_format": "float",
+          "images": ["/assets/stat_icons/Healing.svg"]
         },
         {
           "heading": "Healing others",
           "scaling": "/ minute",
           "value": mostHealingOthers.value,
-          "value_format": "float"
-          // "image": "/assets/stat_icons/Keyword_Quick_Attack.svg"
+          "value_format": "float",
+          "images": ["/assets/stat_icons/Keyword_Fated.svg"]
         },
         {
           "heading": "Shielding others",
           "scaling": "/ minute",
           "value": mostShieldingOthers.value,
-          "value_format": "float"
-          // "image": "/assets/stat_icons/Keyword_Quick_Attack.svg"
+          "value_format": "float",
+          "images": ["/assets/stat_icons/Keyword_SpellShield.svg"]
         }
       ],
       "Lane diff": [
@@ -453,22 +459,22 @@ function map_stats() {
           "heading": "More CS than opponent",
           "scaling": "/ game",
           "value": mostCSOpponentDiff.value,
-          "value_format": "float"
-          // "image": "/assets/stat_icons/Keyword_Quick_Attack.svg"
+          "value_format": "float",
+          "images": ["/assets/stat_icons/Minion_icon.png", "/assets/stat_icons/Keyword_Strongest.svg"]
         },
         {
           "heading": "More levels than opponent",
           "scaling": "/ game",
           "value": mostLevelsOpponentDiff.value,
-          "value_format": "float"
-          // "image": "/assets/stat_icons/Keyword_Quick_Attack.svg"
+          "value_format": "float",
+          "images": ["/assets/stat_icons/Keyword_Level_Up.svg", "/assets/stat_icons/Keyword_Strongest.svg"]
         },
         {
           "heading": "More vision than opponent",
           "scaling": "/ game",
           "value": mostVisionOpponentDiff.value,
-          "value_format": "float"
-          // "image": "/assets/stat_icons/Keyword_Quick_Attack.svg"
+          "value_format": "float2",
+          "images": ["/assets/stat_icons/Need_Vision_ping.svg", "/assets/stat_icons/Keyword_Strongest.svg"]
         }
       ],
       "Time row": [
@@ -477,36 +483,36 @@ function map_stats() {
           "scaling": "% game time",
           "value": mostTimeAlive.value,
           "value_format": "percentage",
-          "image": "/assets/stat_icons/dove.svg"
+          "images": ["/assets/stat_icons/dove.svg"]
         },
         {
           "heading": "Time grey screen",
           "scaling": "% game time",
           "value": mostTimeDead.value,
           "value_format": "percentage",
-          "image": "/assets/stat_icons/coffin.svg"
+          "images": ["/assets/stat_icons/coffin.svg"]
         },
         {
           "heading": "CC Applied",
           "scaling": "% game time",
           "value": mostTimeCCDealt.value,
           "value_format": "percentage",
-          "image": "/assets/stat_icons/Keyword_Deep.svg"
+          "images": ["/assets/stat_icons/Keyword_Deep.svg"]
         },
         {
           "heading": "CC Taken",
           "scaling": "% game time",
           "value": mostTimeCCTaken.value,
           "value_format": "percentage",
-          "image": "/assets/stat_icons/Keyword_Stun.svg"
+          "images": ["/assets/stat_icons/Keyword_Stun.svg"]
 
         }
       ],
       "Multi-kills": [
-        { "heading": "Double kills Ⅱ", "value": mostDoubleKills.value, "value_format": "int", "image": undefined },
-        { "heading": "Triple kills Ⅲ", "value": mostTripleKills.value, "value_format": "int", "image": undefined },
-        { "heading": "Quadra kills Ⅳ", "value": mostQuadraKills.value, "value_format": "int", "image": undefined },
-        { "heading": "Penta kills Ⅴ", "value": mostPentaKills.value, "value_format": "int", "image": undefined }
+        { "heading": "Double kills Ⅱ", "value": mostDoubleKills.value, "value_format": "int", "images": undefined },
+        { "heading": "Triple kills Ⅲ", "value": mostTripleKills.value, "value_format": "int", "images": undefined },
+        { "heading": "Quadra kills Ⅳ", "value": mostQuadraKills.value, "value_format": "int", "images": undefined },
+        { "heading": "Penta kills Ⅴ", "value": mostPentaKills.value, "value_format": "int", "images": undefined }
       ],
       "Vision": [
         {
@@ -514,21 +520,21 @@ function map_stats() {
           "scaling": "/ game",
           "value": mostVisionScore.value,
           "value_format": "float",
-          "image": "/assets/stat_icons/vision.svg"
+          "images": ["/assets/stat_icons/Enemy_Vision_ping.svg"]
         },
         {
           "heading": "Wards placed",
           "scaling": "/ game",
           "value": mostWards.value,
           "value_format": "float",
-          "image": "/assets/stat_icons/ward.svg"
+          "images": ["/assets/stat_icons/ward.svg"]
         },
         {
           "heading": "Pinks placed",
           "scaling": "/ game",
           "value": mostPinks.value,
           "value_format": "float",
-          "image": "/assets/stat_icons/Need_Vision_ping.svg"
+          "images": ["/assets/stat_icons/Need_Vision_ping.svg"]
         }
       ],
       "Toxicity": [
@@ -536,15 +542,15 @@ function map_stats() {
           "heading": "wtf ping",
           "scaling": "/ game",
           "value": mostMissingPing.value,
-          "value_format": "float",
-          "image": "/assets/stat_icons/missing_ping.svg"
+          "value_format": "float2",
+          "images": ["/assets/stat_icons/missing_ping.svg"]
         },
         {
           "heading": "kys ping",
           "scaling": "/ game",
           "value": mostBaitPing.value,
-          "value_format": "float",
-          "image": "/assets/stat_icons/bait_ping.svg"
+          "value_format": "float2",
+          "images": ["/assets/stat_icons/bait_ping.svg"]
         }
       ],
       "Objectives": [
@@ -552,37 +558,37 @@ function map_stats() {
           "heading": "Objectives stolen",
           "value": mostObjectivesStolen.value,
           "value_format": "int",
-          "image": "/assets/stat_icons/smite.svg"
+          "images": ["/assets/stat_icons/smite.svg"]
         },
         {
           "heading": "Objectives stolen no smite",
           "value": mostObjectivesStolenNoSmite.value,
-          "value_format": "int"
-          // "image": "/assets/stat_icons/smite.svg"
+          "value_format": "int",
+          "images": ["/assets/stat_icons/no_smite.svg"]
         },
         {
           "heading": "Heralds killed",
           "value": mostHerald.value,
-          "value_format": "int"
-          // "image": "/assets/stat_icons/drake.svg"
+          "value_format": "int",
+          "images": ["/assets/stat_icons/Eye_of_the_Herald.svg"]
         },
         {
           "heading": "Dragons killed",
           "value": mostDragons.value,
           "value_format": "int",
-          "image": "/assets/stat_icons/drake.svg"
+          "images": ["/assets/stat_icons/Infernal_Soul.svg"]
         },
         {
           "heading": "Elders killed",
           "value": mostElders.value,
-          "value_format": "int"
-          // "image": "/assets/stat_icons/drake.svg"
+          "value_format": "int",
+          "images": ["/assets/stat_icons/Elder.svg"]
         },
         {
           "heading": "Barons killed",
           "value": mostBarons.value,
           "value_format": "int",
-          "image": "/assets/stat_icons/Nashor.svg"
+          "images": ["/assets/stat_icons/Nashor.svg"]
         }
       ],
       "Where tower ?": [
@@ -591,21 +597,21 @@ function map_stats() {
           "scaling": "/ game",
           "value": mostTowers.value,
           "value_format": "float",
-          "image": "/assets/stat_icons/Keyword_Tough.svg"
+          "images": ["/assets/stat_icons/Keyword_Tough.svg"]
         },
         {
           "heading": "First blood towers",
           "scaling": "/ game",
           "value": mostTowersFirst.value,
           "value_format": "float",
-          "image": "/assets/stat_icons/tower_first_blood.svg"
+          "images": ["/assets/stat_icons/firstblood.svg", "/assets/stat_icons/Keyword_Tough.svg"]
         },
         {
           "heading": "Damage dealt to towers",
           "scaling": "/ minute",
           "value": mostTowerDamage.value,
-          "value_format": "float"
-          // "image": "/assets/stat_icons/tower_first_blood.svg"
+          "value_format": "float",
+          "images": ["/assets/stat_icons/Critical_strike.svg", "/assets/stat_icons/Keyword_Tough.svg"]
         }
       ]
     };
@@ -624,17 +630,18 @@ map_stats();
 
   <div v-if="playerData!==undefined">
 
-    <!--    <ChangeLog-->
-    <!--      title="changes"-->
-    <!--      image="pepedance.webp"-->
-    <!--      :changes="[-->
-    <!--      'Funny stats™ is now calculated on the last 30 games (10 games minimum)',-->
-    <!--      'Position changes will be notified with a badge',-->
-    <!--      'Removed player selector, your can now select from the list directly',-->
-    <!--      'Added first blood column'-->
-    <!--      ]"-->
-    <!--      :close="true"-->
-    <!--    ></ChangeLog>-->
+    <ChangeLog
+      title="changes"
+      image="pepedance.webp"
+      :changes="[
+        'Funny stats™ ranks are now comparing the last 30 game against the 30 games before that for better accuracy',
+          'Added DAMAGE category',
+          'Added LANE DIFF category',
+          'Added more objectives to OBJECTIVES',
+          'Fixed cc stats'
+          ]"
+      :close="true"
+    ></ChangeLog>
 
     <img class="click_me" src="/extras/click_me3.png" alt="click me">
 
@@ -646,8 +653,10 @@ map_stats();
           <div
             class="stat_column">
             <div class="column_heading">
+              <div class="stats_image_wrapper" v-if="col['images']!==undefined">
+                <img v-for="im in col['images']" :src="im" :key="im" alt="stat_image" class="stats_image">
+              </div>
               <p class="heading_text">{{ col["heading"] }}</p>
-              <img v-if="col['image']!==undefined" :src="col['image']" alt="stat_image" class="stats_image">
               <p class="heading_scaling">{{ col["scaling"] }}</p>
             </div>
             <div class="stats_scroll_box">
@@ -669,6 +678,7 @@ map_stats();
 </template>
 
 <style scoped>
+
 p {
   margin-bottom: 5px;
 }
@@ -716,7 +726,7 @@ p {
   display: flex;
   flex-flow: row wrap;
   /*justify-content: space-between;*/
-  gap: 20px;
+  gap: 30px;
   margin-bottom: 40px;
   width: 100%;
   /*outline: 1px solid red;*/
@@ -729,10 +739,11 @@ p {
   padding: 20px;
   border-radius: 10px;
 
-  height: 360px;
+  height: 400px;
   overflow-y: scroll;
   /*overflow-x: hidden;*/
   scrollbar-width: none;
+  box-shadow: inset 0px 0px 5px #000000;
 
 }
 
@@ -745,8 +756,15 @@ p {
   height: 20px;
   width: 20px;
   margin: auto 0 auto 0;
+  filter: invert();
   /*border-radius: 5px;*/
   /*outline: 1px solid red;*/
+}
+
+.stats_image_wrapper {
+  display: flex;
+  gap: 5px;
+  margin: 0 0 auto 0;
 }
 
 .heading_text {

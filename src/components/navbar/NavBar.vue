@@ -10,9 +10,9 @@ import { RouterLink } from "vue-router";
 
       <div class="links_bar">
         <RouterLink class="link" to="/">Wall of shame</RouterLink>
-        <RouterLink class="link" to="/funnyStats">Funny stats™</RouterLink>
+        <RouterLink class="link new" to="/funnyStats">Funny stats™</RouterLink>
         <RouterLink class="link disabled" to="/copeCorner"><img src="/assets/gifs/cope.webp" alt="copium" style="width: 40px;margin-right: 5px">Cope corner (wip)</RouterLink>
-        <RouterLink class="link " to="/changes">Changes</RouterLink>
+        <RouterLink class="link new" to="/changes">Changes</RouterLink>
       </div>
 
     </div>
@@ -52,6 +52,7 @@ import { RouterLink } from "vue-router";
   font-size: 1.2em;
 
   color: white;
+  /*filter: drop-shadow( 2px -2px 2px #2d4f70);*/
   padding: 0 30px 0 30px;
   text-decoration: none;
 
@@ -65,9 +66,14 @@ import { RouterLink } from "vue-router";
   color: grey;
 }
 
-.router-link-active, .link:hover {
-  background-color: rgb(5, 38, 72);
+.router-link-active {
+  background-color: rgb(3, 30, 58);
+  /*box-shadow: inset -2px 2px 4px #04172a;*/
   /*text-decoration: underline;*/
+}
+
+.link:hover{
+  background-color: rgb(32, 81, 131);
 }
 
 .nav_img {

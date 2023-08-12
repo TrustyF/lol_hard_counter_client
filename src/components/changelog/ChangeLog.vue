@@ -27,6 +27,7 @@ function hide() {
   margin: 0 0 20px 0;
   /*outline: 1px solid red;*/
   width: fit-content;
+  max-width: 400px;
   height: fit-content;
   position: relative;
   transition: 100ms;

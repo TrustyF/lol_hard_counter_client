@@ -11,7 +11,13 @@ let value = computed(() => {
   let val = props["text"][1];
 
   if (props["value_format"] === "float") {
+    return parseFloat(val).toFixed(1);
+  }
+  if (props["value_format"] === "float2") {
     return parseFloat(val).toFixed(2);
+  }
+  if (props["value_format"] === "float3") {
+    return parseFloat(val).toFixed(3);
   }
   if (props["value_format"] === "percentage") {
     return parseFloat(val).toFixed(1) + "%";
@@ -53,7 +59,7 @@ function filter_player(input) {
           @click="filter_player(username)"
           :id="text">
 
-    <div v-if="difference !== 0" class="difference_box">
+    <div v-if="difference !== 0" :class=" difference < 0 ? 'difference_box red_shadow' : 'difference_box green_shadow'">
       <img v-if="difference !== 0"
            :src="difference < 0 ? '/assets/ui/arrow_down_single.png' : '/assets/ui/arrow_up_single.png'" alt="arrow"
            :class="difference > 0 ? 'arrow_green' : 'arrow_red'">
@@ -65,7 +71,12 @@ function filter_player(input) {
     <img class="button_image" :src="`${curr_api}/player/profile_icon?player=${username}`"
          alt="icon" />
 
-    <p class="button_text">{{ value + " - " + username }}</p>
+    <div style="display: flex;gap: 10px">
+      <p class="button_text">{{ value }}</p>
+      <p class="button_text">-</p>
+      <p class="button_text">{{ username }}</p>
+    </div>
+
 
   </button>
 
@@ -81,17 +92,23 @@ function filter_player(input) {
 
   overflow: hidden;
   position: relative;
+
+  /*background: rgba(44,62,80,1);*/
   /*background-color: #2c3e50;*/
-  background-color: #222f3d;
+
+  background: linear-gradient(-90deg, rgba(44,62,80,1) 40%, rgba(17,26,34,1) 80%);
+  filter: drop-shadow(3px 3px 3px black);
+  box-shadow: inset 1px 1px 1px #5a7b9b;
+
 
   display: flex;
   flex-flow: row nowrap;
   color: white;
 
-  gap: 10px;
+  gap: 15px;
   padding: 0 15px 0 0;
 
-  border-radius: 10px;
+  border-radius: 11px;
   border: none;
   transition: 0.1s;
 
@@ -100,13 +117,19 @@ function filter_player(input) {
 
   /*line-height: 50px;*/
 }
+.player_button:hover {
+  /*background-color: #57748f;*/
+  background: linear-gradient(-90deg, rgba(87,116,143,1) 20%, rgba(17,26,34,1) 90%);
+  cursor: pointer;
+}
 
 .button_image {
   position: relative;
   height: 50px;
   width: 50px;
-  border-radius: 9px;
+  border-radius:  0 9px 9px 0;
   margin: auto 0 auto 0;
+  /*filter: drop-shadow(2px 0 1px #08121a);*/
   background: #000;
 }
 
@@ -126,6 +149,11 @@ function filter_player(input) {
   text-shadow: 1px 1px 5px black, 1px 1px 10px black;
   white-space: nowrap;
   /*outline: 1px solid green;*/
+}
+
+.username_text {
+  color: #6a7e93;
+  transition: 0.1s;
 }
 
 .rank_text {
@@ -151,66 +179,69 @@ function filter_player(input) {
   padding: 2px;
   height: 50px;
   width: 50px;
-  /*background-color: rgba(0,0,0,0.8);*/
   /*outline: 1px solid purple;*/
 }
 
 .difference_text {
   /*outline: 1px solid purple;*/
   margin: 0;
-  font-size: 0.9em;
+  font-size: 1.1em;
   font-weight: bold;
   color: white;
 }
 
 .arrow_green {
-  width: 5px;
-  height: 5px;
+  width: 7px;
+  height: 7px;
   margin: 0;
-  transform: translate(0, -5px);
+  transform: translate(0, -4px);
   z-index: 20;
   /*top: -5px;*/
   /*left: 10px;*/
-  filter: drop-shadow(1px 0px 1px black) drop-shadow(0px 0px 3px black);
+  filter: drop-shadow(0px 0px 1px black) drop-shadow(-1px 1px 2px black) drop-shadow(-1px 2px 3px black);
 }
 
 .arrow_red {
-  width: 5px;
-  height: 5px;
+  width: 7px;
+  height: 7px;
   margin: 0;
-  transform: translate(0, -5px);
+  transform: translate(0, -4px);
   z-index: 20;
   /*bottom: -7px;*/
   /*left: 10px;*/
-  filter: drop-shadow(1px 0px 1px black) drop-shadow(0px 0px 3px black);
+  filter: drop-shadow(0px 0px 1px black) drop-shadow(-1px 1px 2px black) drop-shadow(-1px 2px 3px black);
+}
+
+.green_shadow {
+  /*color: #00bd00;*/
+  filter: drop-shadow(1px 0px 1px black) drop-shadow(-3px 0px 5px #00ff00) drop-shadow(-3px 3px 4px #00ff00);
+}
+
+.red_shadow {
+  /*color: #ff0000;*/
+  filter: drop-shadow(1px 0px 1px black) drop-shadow(-3px 0px 5px #ff0000) drop-shadow(-3px 3px 4px #ff0000);
+
 }
 
 .green {
-  color: #00bd00;
-  filter: drop-shadow(1px 0px 1px black) drop-shadow(0px 0px 3px black) drop-shadow(0px 0px 7px black) drop-shadow(0px 3px 3px black) drop-shadow(-5px 3px 4px black) drop-shadow(-5px 5px 6px #00bd00);
+  color: #bfffbf;
+  filter: drop-shadow(0px 0px 1px black) drop-shadow(-1px 1px 2px black) drop-shadow(-1px 2px 3px black);
 }
 
 .red {
-  color: #ff0000;
-  filter: drop-shadow(1px 0px 1px black) drop-shadow(0px 0px 3px black) drop-shadow(0px 0px 7px black) drop-shadow(0px 3px 3px black) drop-shadow(-5px 3px 4px black) drop-shadow(-5px 5px 6px #ff0000);
+  color: #ffbfbf;
+  filter: drop-shadow(0px 0px 1px black) drop-shadow(-1px 1px 2px black) drop-shadow(-1px 2px 3px black);
 }
 
 .player_highlight {
-  background-color: #3b5900;
+  /*background: #3b5900;*/
+  background: linear-gradient(-90deg, rgba(59,89,0,1) 20%, rgba(17,26,34,1) 90%);
 }
 
 .player_disable {
-  background-color: #192128;
+  /*background: #192128;*/
+  background: linear-gradient(-90deg, rgba(25,33,40,1) 20%, rgba(17,26,34,1) 90%);
   color: grey;
-}
-
-.player_hover_background {
-  background-color: #57748f;
-}
-
-.player_button:hover.hoverable {
-  background-color: #57748f;
-  cursor: pointer;
 }
 
 </style>
