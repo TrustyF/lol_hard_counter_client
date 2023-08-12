@@ -622,6 +622,8 @@ watch(playerData, () => {
   map_stats();
 });
 
+//todo add clear information popup
+
 map_stats();
 
 </script>

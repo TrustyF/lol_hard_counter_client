@@ -74,7 +74,7 @@ function filter_player(input) {
     <div style="display: flex;gap: 10px">
       <p class="button_text">{{ value }}</p>
       <p class="button_text">-</p>
-      <p class="button_text">{{ username }}</p>
+      <p class="button_text username_text">{{ username }}</p>
     </div>
 
 
@@ -152,8 +152,9 @@ function filter_player(input) {
 }
 
 .username_text {
-  color: #6a7e93;
-  transition: 0.1s;
+  /*color: #6a7e93;*/
+  /*transition: 0.1s;*/
+  margin-right: 5px;
 }
 
 .rank_text {
@@ -168,14 +169,14 @@ function filter_player(input) {
 
 .difference_box {
   position: absolute;
-  left: 0;
-  top: 0;
+  right: 3px;
+  top: -2px;
   z-index: 2;
   display: flex;
   flex-flow: row nowrap;
   gap: 2px;
   align-items: end;
-  justify-content: start;
+  justify-content: end;
   padding: 2px;
   height: 50px;
   width: 50px;
@@ -214,12 +215,12 @@ function filter_player(input) {
 
 .green_shadow {
   /*color: #00bd00;*/
-  filter: drop-shadow(1px 0px 1px black) drop-shadow(-3px 0px 5px #00ff00) drop-shadow(-3px 3px 4px #00ff00);
+  filter: drop-shadow(1px 0px 1px black) drop-shadow(3px 0px 5px #00ff00) drop-shadow(3px 3px 6px #00ff00);
 }
 
 .red_shadow {
   /*color: #ff0000;*/
-  filter: drop-shadow(1px 0px 1px black) drop-shadow(-3px 0px 5px #ff0000) drop-shadow(-3px 3px 4px #ff0000);
+  filter: drop-shadow(1px 0px 1px black) drop-shadow(3px 0px 5px #ff0000) drop-shadow(3px 3px 6px #ff0000);
 
 }
 
