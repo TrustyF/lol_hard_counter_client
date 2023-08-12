@@ -9,6 +9,7 @@ let all_changes = [
 ];
 let all_suggestions = [
   "Add podium for top 3 ranked players",
+  "Split funny stats between solo flex aram and normal"
 ];
 let all_wip = [
   "Add lp gain slope",
