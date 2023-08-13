@@ -39,7 +39,7 @@ function sum(f_data) {
 function calc_stats(player, category, stat, range, special_case = false) {
 
   let last_30 = player["match_history"]["matches"].slice(0, 30);
-  let prev_30 = player["match_history"]["matches"].slice(30, 60);
+  let prev_30 = player["match_history"]["matches"].slice(20, 50);
 
   let stat_last_30;
   let stat_prev_30;
@@ -119,6 +119,11 @@ function calc_stats(player, category, stat, range, special_case = false) {
 
   return [player.username, stat_last_30, stat_prev_30];
 }
+
+let mostGames = computed(() => {
+  let out = filtered_players.value.map(player => calc_stats(player, "stats", "kills", "per_game"));
+  return out;
+});
 
 //General
 let mostKills = computed(() => {

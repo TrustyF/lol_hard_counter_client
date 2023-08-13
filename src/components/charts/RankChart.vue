@@ -81,6 +81,7 @@ let baseChartOptions = ref({
   ],
   plotOptions: {
     bar: {
+      distributed:false,
       horizontal: false,
       columnWidth: "80%",
       dataLabels: {

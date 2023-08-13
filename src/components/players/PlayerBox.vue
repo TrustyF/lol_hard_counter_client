@@ -97,9 +97,8 @@ function filter_player(input) {
   /*background-color: #2c3e50;*/
 
   background: linear-gradient(-90deg, rgba(44,62,80,1) 40%, rgba(17,26,34,1) 80%);
-  filter: drop-shadow(3px 3px 3px black);
+  filter: drop-shadow(2px 2px 2px black);
   box-shadow: inset 1px 1px 1px #5a7b9b;
-
 
   display: flex;
   flex-flow: row nowrap;
@@ -217,13 +216,11 @@ function filter_player(input) {
 }
 
 .green_shadow {
-  /*color: #00bd00;*/
-  filter: drop-shadow(1px 0px 1px black) drop-shadow(3px 0px 5px #00ff00) drop-shadow(3px 3px 6px #00ff00);
+  filter: drop-shadow(1px 0px 1px black) drop-shadow(3px 0px 3px #00ff00) drop-shadow(3px 3px 6px #00ff00);
 }
 
 .red_shadow {
-  /*color: #ff0000;*/
-  filter: drop-shadow(1px 0px 1px black) drop-shadow(3px 0px 5px #ff0000) drop-shadow(3px 3px 6px #ff0000);
+  filter: drop-shadow(1px 0px 1px black) drop-shadow(3px 0px 3px #ff0000) drop-shadow(3px 3px 6px #ff0000);
 
 }
 

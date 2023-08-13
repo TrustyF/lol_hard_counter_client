@@ -59,7 +59,9 @@ let baseChartOptions = ref({
     opacity: 1
   },
   yaxis: {
-    tickAmount:6,
+    tickAmount: 6,
+    // min: 700,
+    // max: 2800,
     labels: {
       rotate: 0,
       style: {
@@ -72,7 +74,6 @@ let baseChartOptions = ref({
   xaxis: {
     type: "datetime",
     categories: [],
-    tickPlacement: 'on',
     labels: {
       style: {
         colors: "#ababab"
@@ -87,6 +88,11 @@ let baseChartOptions = ref({
   ],
   grid: {
     borderColor: "#282828",
+    row:{
+      // colors: ['#4e413fe8','#7c584fb7','#637088a0','#856240bb','#29667ccf','#2e7a54d0','#4e6e9edc','#8d589adc','#8c4b46ce','#687d88bb'],
+      colors: ['rgba(97,152,234,1)','rgba(76,218,146,1)','rgba(70,183,224,1)','rgba(241,173,106,1)','rgba(164,186,227,1)','rgba(229,162,145,1)','rgba(227,120,111,1)','rgba(176,211,229,1)','rgba(222,183,177,1)',],
+      opacity:0.2,
+    },
     xaxis: {
       lines: {
         show: false
@@ -94,19 +100,20 @@ let baseChartOptions = ref({
     },
     yaxis: {
       lines: {
-        show: true
+        show: false
       }
     },
     padding: { right: 70, left: 10 }
   },
   plotOptions: {
+
     line: {
       distributes: false
     }
   },
   dataLabels: {
     // display: "auto",
-    enabled: true,
+    enabled: false,
     offsetX: 0,
     offsetY: -10,
     textAnchor: "middle",
@@ -150,8 +157,8 @@ baseChartOptions.value["dataLabels"]["formatter"] = (val, opts) => {
     return undefined;
   }
 
-  if (opts['dataPointIndex']===0) {
-    return [opts.w['globals']['initialSeries'][opts['seriesIndex']]["name"]];
+  if (opts["dataPointIndex"] === 0) {
+    return [opts.w["globals"]["initialSeries"][opts["seriesIndex"]]["name"]];
     // return [`${rank_mappings["tier_values"][tier]} ${rank_mappings["division_values"][div]} ${lp} lp`];
   }
 };
@@ -210,13 +217,13 @@ update_chart();
 </script>
 
 <template>
-    <apexchart
-      type="line"
-      height="100%"
-      width="100%"
-      :options="baseChartOptions"
-      :series="baseChartOptions.series"
-    ></apexchart>
+  <apexchart
+    type="line"
+    height="100%"
+    width="100%"
+    :options="baseChartOptions"
+    :series="baseChartOptions.series"
+  ></apexchart>
 </template>
 
 <style scoped>

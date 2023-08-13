@@ -9,7 +9,8 @@ import PlayerSelector from "@/components/players/PlayerSelector.vue";
 
 
 let playerData = inject("playerData");
-
+// let colors = ['#008ffb','#00e396','#feb019','#775dd0','#ff4560','#1dd73c','#ff206e','#5adbff','#eea243','#9046cf']
+let colors = ["#008ffb","#2aedff","#00e396","#67C933","#FFC400","#FF5319","#9C40FF","#FF2546","#df389c"]
 
 </script>
 
@@ -41,7 +42,8 @@ let playerData = inject("playerData");
         <RankHistChart f_chartName="ranked_solo_hist_chart"
                        :f_chartOptions="{
                 'queue':'RANKED_SOLO_5x5',
-                }">
+                'color': colors,
+        }">
         </RankHistChart>
 
         <div
