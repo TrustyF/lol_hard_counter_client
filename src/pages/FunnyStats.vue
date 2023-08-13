@@ -121,7 +121,13 @@ function calc_stats(player, category, stat, range, special_case = false) {
 }
 
 let mostGames = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "kills", "per_game"));
+  let out = playerData.value.map(player => {
+    let norm = player["match_history"]["matches"].filter(value => value["match_info"]["queue"] === "ranked_solo_fives");
+    let solo = player["match_history"]["matches"].filter(value => value["match_info"]["queue"] === "ranked_flex_fives");
+    let flex = player["match_history"]["matches"].filter(value => value["match_info"]["queue"] === "normal_draft_fives");
+    return [player.username, norm.length, solo.length, flex.length, player["match_history"]["matches"].length];
+  });
+  console.log("out", out);
   return out;
 });
 
@@ -272,22 +278,22 @@ let mostObjectivesStolenNoSmite = computed(() => {
   return out;
 });
 let mostHerald = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "teamRiftHeraldKills", "total"));
+  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "teamRiftHeraldKills", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostDragons = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "dragonTakedowns", "total"));
+  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "dragonTakedowns", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostBarons = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "teamBaronKills", "total"));
+  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "teamBaronKills", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostElders = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "teamElderDragonKills", "total"));
+  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "teamElderDragonKills", "per_game"));
   out = calc_diff(out);
   return out;
 });
@@ -311,22 +317,22 @@ let mostVisionScore = computed(() => {
 
 //Kills
 let mostDoubleKills = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "doubleKills", "total"));
+  let out = filtered_players.value.map(player => calc_stats(player, "stats", "doubleKills", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostTripleKills = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "tripleKills", "total"));
+  let out = filtered_players.value.map(player => calc_stats(player, "stats", "tripleKills", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostQuadraKills = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "quadraKills", "total"));
+  let out = filtered_players.value.map(player => calc_stats(player, "stats", "quadraKills", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostPentaKills = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "pentaKills", "total"));
+  let out = filtered_players.value.map(player => calc_stats(player, "stats", "pentaKills", "per_game"));
   out = calc_diff(out);
   return out;
 });
@@ -514,10 +520,10 @@ function map_stats() {
         }
       ],
       "Multi-kills": [
-        { "heading": "Double kills Ⅱ", "value": mostDoubleKills.value, "value_format": "int", "images": undefined },
-        { "heading": "Triple kills Ⅲ", "value": mostTripleKills.value, "value_format": "int", "images": undefined },
-        { "heading": "Quadra kills Ⅳ", "value": mostQuadraKills.value, "value_format": "int", "images": undefined },
-        { "heading": "Penta kills Ⅴ", "value": mostPentaKills.value, "value_format": "int", "images": undefined }
+        { "heading": "Double kills Ⅱ",'scaling':'/ game', "value": mostDoubleKills.value, "value_format": "float2", "images": undefined },
+        { "heading": "Triple kills Ⅲ",'scaling':'/ game', "value": mostTripleKills.value, "value_format": "float2", "images": undefined },
+        { "heading": "Quadra kills Ⅳ",'scaling':'/ game', "value": mostQuadraKills.value, "value_format": "float2", "images": undefined },
+        { "heading": "Penta kills Ⅴ", 'scaling':'/ game',"value": mostPentaKills.value, "value_format": "float2", "images": undefined }
       ],
       "Vision": [
         {
@@ -574,25 +580,29 @@ function map_stats() {
         {
           "heading": "Heralds killed",
           "value": mostHerald.value,
-          "value_format": "int",
+          "scaling": "/ game",
+          "value_format": "float2",
           "images": ["/assets/stat_icons/Eye_of_the_Herald.svg"]
         },
         {
           "heading": "Dragons killed",
           "value": mostDragons.value,
-          "value_format": "int",
+          "scaling": "/ game",
+          "value_format": "float2",
           "images": ["/assets/stat_icons/Infernal_Soul.svg"]
         },
         {
           "heading": "Elders killed",
           "value": mostElders.value,
-          "value_format": "int",
+          "scaling": "/ game",
+          "value_format": "float2",
           "images": ["/assets/stat_icons/Elder.svg"]
         },
         {
           "heading": "Barons killed",
           "value": mostBarons.value,
-          "value_format": "int",
+          "scaling": "/ game",
+          "value_format": "float2",
           "images": ["/assets/stat_icons/Nashor.svg"]
         }
       ],
@@ -623,6 +633,10 @@ function map_stats() {
   }
 }
 
+function convertRange(value, r1, r2) {
+  return (value - r1[0]) * (r2[1] - r2[0]) / (r1[1] - r1[0]) + r2[0];
+}
+
 watch(playerData, () => {
   map_stats();
 });
@@ -641,14 +655,58 @@ map_stats();
       title="changes"
       image="pepedance.webp"
       :changes="[
-        'Funny stats™ ranks are now comparing the last 30 game against the 30 games before that for better accuracy',
-          'Added DAMAGE category',
-          'Added LANE DIFF category',
-          'Added more objectives to OBJECTIVES',
-          'Fixed cc stats'
-          ]"
+            'Funny stats™ ranks are now comparing the last 30 game against the 30 games before that for better accuracy',
+              'Added DAMAGE category',
+              'Added LANE DIFF category',
+              'Added more objectives to OBJECTIVES',
+              'Fixed cc stats',
+              'Added MATCHES BREAKDOWN'
+              ]"
       :close="true"
     ></ChangeLog>
+
+    <h1 class="title">Matches breakdown</h1>
+    <div class="divider"></div>
+    <div
+      style="background-color: #111111;box-shadow: inset 0 0 5px #000000;padding: 20px;margin:10px 0 20px 0;border-radius: 9px">
+
+      <div style="display:flex;flex-flow: row wrap;gap: 10px">
+        <div style="display: flex;flex-flow: row wrap">
+          <div style="background-color: #008efa;width: 10px;height: 10px;margin:2px 3px auto 0;border-radius: 50%"></div>
+          <p style="font-size: 0.7em">SoloQ</p>
+        </div>
+        <div style="display: flex;flex-flow: row wrap">
+          <div style="background-color: #fdc201;width: 10px;height: 10px;margin:2px 3px auto 0;border-radius: 50%"></div>
+          <p style="font-size: 0.7em">FlexQ</p>
+        </div>
+        <div style="display: flex;flex-flow: row wrap">
+          <div style="background-color: #fd2546;width: 10px;height: 10px;margin:2px 3px auto 0;border-radius: 50%"></div>
+          <p style="font-size: 0.7em">Normal</p>
+        </div>
+      </div>
+
+      <div style="display: flex;flex-flow: row wrap;gap: 10px;">
+
+        <div v-for="player in mostGames" :key="player[0]"
+             style="  background: linear-gradient(-90deg, rgba(44,62,80,1) 40%, rgba(17,26,34,1) 80%);
+               filter: drop-shadow(2px 2px 2px black);  box-shadow: inset 1px 1px 1px #5a7b9b;
+               padding: 10px;  border-radius: 5px;">
+          <h1 style="font-size: 1em">{{ player[0] }}</h1>
+
+          <div
+            style="display: flex;flex-flow: row wrap;align-items: start;width: 200px;filter: drop-shadow(2px 2px 1px black);">
+            <div
+              :style="`width: ${Math.floor(convertRange(player[1],[0,player[4]],[0,200]))}px;height: 5px;background-color: #008efa`"></div>
+            <div
+              :style="`width: ${Math.floor(convertRange(player[2],[0,player[4]],[0,200]))}px;height: 5px;background-color: #fdc201`"></div>
+            <div
+              :style="`width: ${Math.floor(convertRange(player[3],[0,player[4]],[0,200]))}px;height: 5px;background-color: #fd2546`"></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
 
     <img class="click_me" src="/extras/click_me3.png" alt="click me">
 
@@ -750,7 +808,7 @@ p {
   overflow-y: scroll;
   /*overflow-x: hidden;*/
   scrollbar-width: none;
-  box-shadow: inset 0px 0px 5px #000000;
+  box-shadow: inset 0 0 5px #000000;
 
 }
 

@@ -7,12 +7,15 @@ let all_changes = [
   "Added LANE DIFF category",
   "Added more objectives to OBJECTIVES",
   "Fixed cc stats",
+  'Added MATCHES BREAKDOWN',
+  "Added colors to rank history",
 ];
 let all_suggestions = [
   "Add podium for top 3 ranked players",
   "Split funny stats between solo flex aram and normal"
 ];
 let all_wip = [
+  "Adding information popup",
   "Splitting funny stats between solo flex aram and normal",
   "Add lp gain slope",
   "Add cope corner",
