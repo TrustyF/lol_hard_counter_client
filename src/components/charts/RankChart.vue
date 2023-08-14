@@ -5,17 +5,12 @@ let props = defineProps(["f_chartName", "f_chartOptions"]);
 
 let playerData = inject("playerData");
 let selectedPlayers = inject("selectedPlayers");
+let rank_mappings = inject("rank_mappings");
 // let playerUsernames = inject("playerUsernames");
 
 let chartName = toRefs(props)["f_chartName"];
 let chartData = toRaw(playerData.value);
 let chartOptions = toRefs(props)["f_chartOptions"];
-
-const rank_mappings = {
-  "tier_values": ["iron", "bronze", "silver", "gold", "platinum", "emerald",
-    "diamond", "master", "grandmaster", "challenger"],
-  "division_values": ["IV", "III", "II", "I"]
-};
 
 // Set options
 let baseChartOptions = ref({
@@ -210,7 +205,7 @@ update_chart();
 <template>
   <apexchart
     type="bar"
-    height="50%"
+    height="100%"
     width="100%"
     :options="baseChartOptions"
     :series="baseChartOptions.series"

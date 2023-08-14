@@ -21,6 +21,11 @@ app.provide("devMode", devMode);
 app.provide("selectedPlayers", selected_players);
 app.provide("playerUsernames", player_usernames);
 app.provide("playerData", player_data);
+app.provide("rank_mappings", {
+  "tier_values": ["iron", "bronze", "silver", "gold", "platinum", "emerald",
+    "diamond", "master", "grandmaster", "challenger"],
+  "division_values": ["IV", "III", "II", "I"]
+});
 
 app.use(router);
 app.use(VueLazyLoad, {});

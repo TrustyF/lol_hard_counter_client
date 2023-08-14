@@ -22,7 +22,7 @@ let baseChartOptions = ref({
   chart: {
     id: "",
     animations: {
-      enabled: true,
+      enabled: false,
       speed: 800,
       animateGradually: {
         enabled: true,
@@ -90,8 +90,8 @@ let baseChartOptions = ref({
     borderColor: "#282828",
     row:{
       // colors: ['#4e413fe8','#7c584fb7','#637088a0','#856240bb','#29667ccf','#2e7a54d0','#4e6e9edc','#8d589adc','#8c4b46ce','#687d88bb'],
-      colors: ['rgba(97,152,234,1)','rgba(76,218,146,1)','rgba(70,183,224,1)','rgba(241,173,106,1)','rgba(164,186,227,1)','rgba(229,162,145,1)','rgba(227,120,111,1)','rgba(176,211,229,1)','rgba(222,183,177,1)',],
-      opacity:0.2,
+      // colors: ['rgba(97,152,234,1)','rgba(76,218,146,1)','rgba(70,183,224,1)','rgba(241,173,106,1)','rgba(164,186,227,1)','rgba(229,162,145,1)','rgba(227,120,111,1)','rgba(176,211,229,1)','rgba(222,183,177,1)',],
+      // opacity:0.2,
     },
     xaxis: {
       lines: {
@@ -100,10 +100,10 @@ let baseChartOptions = ref({
     },
     yaxis: {
       lines: {
-        show: false
+        show: true
       }
     },
-    padding: { right: 70, left: 10 }
+    // padding: { right: 70, left: 10 }
   },
   plotOptions: {
 
@@ -136,7 +136,7 @@ let baseChartOptions = ref({
       opacity: 1
     }
   },
-  markers: { "size": 3 },
+  markers: { "size": 0.5 },
   stroke: { "width": 2 },
   noData: {
     text: "No data"
@@ -218,6 +218,7 @@ update_chart();
 
 <template>
   <apexchart
+    class="test"
     type="line"
     height="100%"
     width="100%"
@@ -227,5 +228,7 @@ update_chart();
 </template>
 
 <style scoped>
-
+.test {
+  /*outline: 1px solid yellow;*/
+}
 </style>

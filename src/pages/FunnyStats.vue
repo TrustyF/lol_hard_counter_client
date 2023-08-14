@@ -1,7 +1,7 @@
 <script setup>
 import { inject, computed, watch, ref, onMounted } from "vue";
-import PlayerBox from "@/components/players/PlayerBox.vue";
 import ChangeLog from "@/components/changelog/ChangeLog.vue";
+import PlayerList from "@/components/players/PlayerList.vue";
 
 let playerData = inject("playerData");
 // const curr_api = inject("curr_api");
@@ -39,7 +39,7 @@ function sum(f_data) {
 function calc_stats(player, category, stat, range, special_case = false) {
 
   let last_30 = player["match_history"]["matches"].slice(0, 30);
-  let prev_30 = player["match_history"]["matches"].slice(20, 50);
+  let prev_30 = player["match_history"]["matches"].slice(10, 40);
 
   let stat_last_30;
   let stat_prev_30;
@@ -127,7 +127,7 @@ let mostGames = computed(() => {
     let flex = player["match_history"]["matches"].filter(value => value["match_info"]["queue"] === "normal_draft_fives");
     return [player.username, norm.length, solo.length, flex.length, player["match_history"]["matches"].length];
   });
-  console.log("out", out);
+  // console.log("out", out);
   return out;
 });
 
@@ -520,10 +520,34 @@ function map_stats() {
         }
       ],
       "Multi-kills": [
-        { "heading": "Double kills Ⅱ",'scaling':'/ game', "value": mostDoubleKills.value, "value_format": "float2", "images": undefined },
-        { "heading": "Triple kills Ⅲ",'scaling':'/ game', "value": mostTripleKills.value, "value_format": "float2", "images": undefined },
-        { "heading": "Quadra kills Ⅳ",'scaling':'/ game', "value": mostQuadraKills.value, "value_format": "float2", "images": undefined },
-        { "heading": "Penta kills Ⅴ", 'scaling':'/ game',"value": mostPentaKills.value, "value_format": "float2", "images": undefined }
+        {
+          "heading": "Double kills Ⅱ",
+          "scaling": "/ game",
+          "value": mostDoubleKills.value,
+          "value_format": "float2",
+          "images": undefined
+        },
+        {
+          "heading": "Triple kills Ⅲ",
+          "scaling": "/ game",
+          "value": mostTripleKills.value,
+          "value_format": "float2",
+          "images": undefined
+        },
+        {
+          "heading": "Quadra kills Ⅳ",
+          "scaling": "/ game",
+          "value": mostQuadraKills.value,
+          "value_format": "float2",
+          "images": undefined
+        },
+        {
+          "heading": "Penta kills Ⅴ",
+          "scaling": "/ game",
+          "value": mostPentaKills.value,
+          "value_format": "float2",
+          "images": undefined
+        }
       ],
       "Vision": [
         {
@@ -652,15 +676,16 @@ map_stats();
   <div v-if="playerData!==undefined">
 
     <ChangeLog
-      title="changes"
+      title="Funny stats™ Changelog"
       image="pepedance.webp"
       :changes="[
-            'Funny stats™ ranks are now comparing the last 30 game against the 30 games before that for better accuracy',
+            'Funny stats™ ranks are now comparing the last 0-30 games against the 10-40 games before that for better accuracy',
               'Added DAMAGE category',
               'Added LANE DIFF category',
               'Added more objectives to OBJECTIVES',
               'Fixed cc stats',
-              'Added MATCHES BREAKDOWN'
+              'Added MATCHES BREAKDOWN',
+              'Fixed CS for junglers',
               ]"
       :close="true"
     ></ChangeLog>
@@ -672,15 +697,18 @@ map_stats();
 
       <div style="display:flex;flex-flow: row wrap;gap: 10px">
         <div style="display: flex;flex-flow: row wrap">
-          <div style="background-color: #008efa;width: 10px;height: 10px;margin:2px 3px auto 0;border-radius: 50%"></div>
+          <div
+            style="background-color: #008efa;width: 10px;height: 10px;margin:2px 3px auto 0;border-radius: 50%"></div>
           <p style="font-size: 0.7em">SoloQ</p>
         </div>
         <div style="display: flex;flex-flow: row wrap">
-          <div style="background-color: #fdc201;width: 10px;height: 10px;margin:2px 3px auto 0;border-radius: 50%"></div>
+          <div
+            style="background-color: #fdc201;width: 10px;height: 10px;margin:2px 3px auto 0;border-radius: 50%"></div>
           <p style="font-size: 0.7em">FlexQ</p>
         </div>
         <div style="display: flex;flex-flow: row wrap">
-          <div style="background-color: #fd2546;width: 10px;height: 10px;margin:2px 3px auto 0;border-radius: 50%"></div>
+          <div
+            style="background-color: #fd2546;width: 10px;height: 10px;margin:2px 3px auto 0;border-radius: 50%"></div>
           <p style="font-size: 0.7em">Normal</p>
         </div>
       </div>
@@ -713,40 +741,17 @@ map_stats();
     <div v-for="heading in Object.keys(stats_mapping)" :key="heading">
       <h1 class="title">{{ heading }}</h1>
       <div class="divider"></div>
-      <div class="funny_wrapper">
-        <div v-for="col in stats_mapping[heading]" :key="col['heading']">
-          <div
-            class="stat_column">
-            <div class="column_heading">
-              <div class="stats_image_wrapper" v-if="col['images']!==undefined">
-                <img v-for="im in col['images']" :src="im" :key="im" alt="stat_image" class="stats_image">
-              </div>
-              <p class="heading_text">{{ col["heading"] }}</p>
-              <p class="heading_scaling">{{ col["scaling"] }}</p>
-            </div>
-            <div class="stats_scroll_box">
-              <div class="stats_list">
-                <PlayerBox v-for="(data,i) in col['value']"
-                           :key="data[0]"
-                           :text="data"
-                           :index="i"
-                           :value_format="col['value_format']">
-                </PlayerBox>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PlayerList
+        :stats="stats_mapping[heading]"
+        :tier_enabled="false"
+        height = '400px'
+      ></PlayerList>
     </div>
 
   </div>
 </template>
 
 <style scoped>
-
-p {
-  margin-bottom: 5px;
-}
 
 .click_me {
   position: absolute;
@@ -760,98 +765,9 @@ p {
   padding-left: 20px;
   width: fit-content;
 }
-
-.stat_column {
-  position: relative;
-}
-
-.stat_column::-webkit-scrollbar {
-  display: none;
-}
-
-.column_heading {
-  position: relative;
-  display: flex;
-  flex-flow: row wrap;
-  height: 25px;
-  gap: 5px;
-  margin-bottom: 5px;
-  /*outline: 1px solid green;*/
-  justify-content: center;
-  /*height: fit-content;*/
-}
-
 .divider {
   height: 1px;
   background-color: white;
   margin-bottom: 20px;
-}
-
-.funny_wrapper {
-  display: flex;
-  flex-flow: row wrap;
-  /*justify-content: space-between;*/
-  gap: 30px;
-  margin-bottom: 40px;
-  width: 100%;
-  /*outline: 1px solid red;*/
-}
-
-.stats_scroll_box {
-  position: relative;
-  min-width: 250px;
-  background-color: #111111;
-  padding: 20px;
-  border-radius: 10px;
-
-  height: 400px;
-  overflow-y: scroll;
-  /*overflow-x: hidden;*/
-  scrollbar-width: none;
-  box-shadow: inset 0 0 5px #000000;
-
-}
-
-.stats_scroll_box::-webkit-scrollbar {
-  display: none;
-}
-
-.stats_image {
-  object-fit: scale-down;
-  height: 20px;
-  width: 20px;
-  margin: auto 0 auto 0;
-  filter: invert();
-  /*border-radius: 5px;*/
-  /*outline: 1px solid red;*/
-}
-
-.stats_image_wrapper {
-  display: flex;
-  gap: 5px;
-  margin: 0 0 auto 0;
-}
-
-.heading_text {
-  position: relative;
-  margin: 0;
-  transform: translate(0, 1px);
-  /*outline: 1px solid red;*/
-}
-
-.heading_scaling {
-  color: #626262;
-  margin: auto 0 auto 0;
-  text-align: center;
-  font-size: 0.75em;
-  /*outline: 1px solid red;*/
-}
-
-.stats_list {
-  display: flex;
-  flex-flow: column nowrap;
-  /*grid-template-columns: repeat(auto-fill, auto);*/
-  justify-content: start;
-  gap: 10px;
 }
 </style>

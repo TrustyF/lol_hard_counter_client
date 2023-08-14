@@ -60,6 +60,7 @@ onMounted(() => {
 }
 .body {
   margin: auto;
+  max-width: 1000px;
   width: 75vw;
   padding-top: 20px;
   /*outline: 1px solid palegreen;*/

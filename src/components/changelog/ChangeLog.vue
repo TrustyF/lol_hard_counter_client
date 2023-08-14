@@ -1,72 +1,64 @@
 <script setup>
-import { inject, onMounted, watch } from "vue";
+import { inject, onMounted, ref, watch } from "vue";
 
-let props = defineProps(["changes","close","image","title"]);
+let props = defineProps(["changes", "close", "image", "title"]);
+
+let isClosed = ref(true);
 
 function hide() {
-  let box = document.getElementsByClassName("box")[0];
-  box.classList.add("hidden");
+  if (props["close"]) {
+    isClosed.value = !isClosed.value;
+  }
 }
 </script>
 
 <template>
   <div class="box">
-    <p v-if="close" class="close_button" @click="hide">x</p>
-    <h1 class="title">{{ title }} </h1>
-    <div class="wrapper">
+    <p v-if="close" class="close_button new_text_edge" @click="hide"> {{ title }} </p>
+    <div class="wrapper" v-if="!isClosed">
       <div v-for="elem in changes" :key="elem" class="container">
         <img class="cute_img" :src="`/assets/gifs/${image}`">
         <p class="change_text">{{ elem }}</p>
       </div>
     </div>
+
   </div>
 </template>
 
 <style scoped>
 .box {
-  margin: 0 0 20px 0;
   /*outline: 1px solid red;*/
-  width: fit-content;
-  max-width: 400px;
-  height: fit-content;
+  width: 100%;
+  height: 10px;
   position: relative;
-  transition: 100ms;
-}
-.hidden {
-  visibility: hidden;
-  opacity: 0;
-  height: 0;
+  z-index: 0;
 }
 
 .title {
   font-size: 1.2em;
-  margin-bottom: 10px;
   font-weight: bold;
   text-decoration: underline;
 }
 
 .wrapper {
+  /*outline: 1px solid green;*/
+  /*overflow: hidden;*/
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column nowrap;
   gap: 10px;
-  position: relative;
-}
-
-.divider {
-  height: 1px;
-  background-color: white;
-  margin-bottom: 20px;
 }
 
 .container {
   padding: 5px;
-  background-color: #193a29;
   width: fit-content;
   border-radius: 10px;
   display: flex;
   justify-items: center;
   align-items: center;
   gap: 5px;
+  background: linear-gradient(-90deg, rgb(25, 58, 42) 50%, rgba(17, 26, 34, 1) 120%);
+  filter: drop-shadow(2px 2px 2px black);
+  box-shadow: inset 1px 1px 1px #5a7b9b;
 }
 
 .cute_img {
@@ -85,23 +77,30 @@ function hide() {
   position: absolute;
   right: 0;
   top: 0;
+
   border-radius: 4px;
-  width: 20px;
-  height: 20px;
-  text-align: center;
+  width: auto;
+  padding: 7px;
+
+  text-align: left;
   vertical-align: center;
-  line-height: 20px;
-  font-family: Farmhouse, sans-serif;
-  font-weight: lighter;
+
+  font-weight: normal;
   font-size: 1em;
-  background-color: #2c3e50;
+  /*background-color: #2c3e50;*/
   cursor: pointer;
   user-select: none;
-  /*outline: 1px solid red;*/
-}
-.close_button:hover{
-  background-color: #456483;
+  white-space: nowrap;
+
+  background: linear-gradient(-90deg, rgba(44, 62, 80, 1) 50%, rgba(17, 26, 34, 1) 120%);
+  filter: drop-shadow(2px 2px 2px black);
+  box-shadow: inset 1px 1px 1px #5a7b9b;
+
 }
 
+.close_button:hover {
+  background: linear-gradient(-90deg, rgba(87, 116, 143, 1) 0%, rgba(17, 26, 34, 1) 100%);
+  cursor: pointer;
+}
 
 </style>

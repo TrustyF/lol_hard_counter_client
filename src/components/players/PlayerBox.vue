@@ -1,10 +1,11 @@
 <script setup>
 import { inject, onMounted, watch, computed } from "vue";
 
-let props = defineProps(["player", "text", "index", "tier_enabled", "value_format"]);
+let props = defineProps(["text", "index", "tier_enabled", "value_format"]);
 
 const curr_api = inject("curr_api");
 let selectedPlayers = inject("selectedPlayers");
+let rank_mappings = inject("rank_mappings");
 
 let username = computed(() => props["text"][0]);
 let value = computed(() => {
@@ -19,12 +20,27 @@ let value = computed(() => {
   if (props["value_format"] === "float3") {
     return parseFloat(val).toFixed(3);
   }
+  if (props["value_format"] === "rank") {
+    if (val <= 0) return "unranked";
+    const lp = val % 100;
+    const div = ((val - lp) % 400) / 100;
+    const tier = (val - lp - ((val - lp) % 400)) / 400;
+    return `${rank_mappings["tier_values"][tier].charAt(0).toUpperCase() + rank_mappings["tier_values"][tier].slice(1)} ${rank_mappings["division_values"][div]} ${lp}`;
+  }
   if (props["value_format"] === "percentage") {
     return parseFloat(val).toFixed(1) + "%";
   } else {
     return parseInt(val);
   }
 
+});
+let rank_img = computed(() => {
+  let val = props["text"][1];
+
+  if (val <= 0) return "unranked";
+  const lp = val % 100;
+  const tier = (val - lp - ((val - lp) % 400)) / 400;
+  return rank_mappings["tier_values"][tier];
 });
 let difference = computed(() => props["text"][3]);
 
@@ -42,22 +58,12 @@ function filter_player(input) {
 </script>
 
 <template>
-  <button v-if="player!==undefined"
-          :class="selectedPlayers.includes(player.username) ? 'player_button hoverable player_hover_background' : 'player_button hoverable'"
-          @click="filter_player(player.username)"
-          :id="player.username">
-    <input v-if="tier_enabled===true" type="image" class="rank_image" :src="`/assets/tiers/${player.rank}.png`"
-           alt="rank" />
-    <input type="image" class="button_image" :src="`${curr_api}/player/profile_icon?player=${player.username}`"
-           alt="icon" />
-    <p class="button_text">{{ player.username }}</p>
-  </button>
-
-
   <button v-if="text!==undefined"
           :class="selectedPlayers.includes(username) ? 'player_button hoverable player_highlight'  : selectedPlayers.length < 1 ? 'player_button hoverable' : 'player_button player_disable'"
           @click="filter_player(username)"
           :id="text">
+    <input v-if="tier_enabled===true" type="image" class="rank_image" :src="`/assets/tiers/${rank_img}.png`"
+           alt="rank" />
 
     <div v-if="difference !== 0" :class=" difference < 0 ? 'difference_box red_shadow' : 'difference_box green_shadow'">
       <img v-if="difference !== 0"
@@ -65,7 +71,6 @@ function filter_player(input) {
            :class="difference > 0 ? 'arrow_green' : 'arrow_red'">
       <p :class="difference > 0 ? 'difference_text green' : 'difference_text red'" v-if="difference!==undefined">
         {{ difference !== 0 ? Math.abs(difference) : "" }}</p>
-      <p v-if="difference === 0" class="difference_none"></p>
     </div>
 
     <img class="button_image" :src="`${curr_api}/player/profile_icon?player=${username}`"
@@ -77,10 +82,7 @@ function filter_player(input) {
       <p class="button_text username_text">{{ username }}</p>
     </div>
 
-
   </button>
-
-
 </template>
 
 <style scoped>
@@ -96,7 +98,7 @@ function filter_player(input) {
   /*background: rgba(44,62,80,1);*/
   /*background-color: #2c3e50;*/
 
-  background: linear-gradient(-90deg, rgba(44,62,80,1) 40%, rgba(17,26,34,1) 80%);
+  background: linear-gradient(-90deg, rgba(44, 62, 80, 1) 40%, rgba(17, 26, 34, 1) 80%);
   filter: drop-shadow(2px 2px 2px black);
   box-shadow: inset 1px 1px 1px #5a7b9b;
 
@@ -116,20 +118,22 @@ function filter_player(input) {
 
   /*line-height: 50px;*/
 }
+
 .player_button:hover {
   /*background-color: #57748f;*/
-  background: linear-gradient(-90deg, rgba(87,116,143,1) 20%, rgba(17,26,34,1) 90%);
+  background: linear-gradient(-90deg, rgba(87, 116, 143, 1) 20%, rgba(17, 26, 34, 1) 90%);
   cursor: pointer;
 }
+
 .player_hover_background {
-  background: linear-gradient(-90deg, rgba(87,116,143,1) 20%, rgba(17,26,34,1) 90%);
+  background: linear-gradient(-90deg, rgba(87, 116, 143, 1) 20%, rgba(17, 26, 34, 1) 90%);
 }
 
 .button_image {
   position: relative;
   height: 50px;
   width: 50px;
-  border-radius:  0 9px 9px 0;
+  border-radius: 0 9px 9px 0;
   margin: auto 0 auto 0;
   /*filter: drop-shadow(2px 0 1px #08121a);*/
   background: #000;
@@ -141,14 +145,15 @@ function filter_player(input) {
   bottom: -50%;
   height: 100px;
   width: 100px;
+  opacity: 50%;
 }
 
 .button_text {
   position: relative;
   line-height: 50px;
-  font-size: 1em;
+  font-size: 1.1em;
   font-weight: bold;
-  text-shadow: 1px 1px 5px black, 1px 1px 10px black;
+  text-shadow: 1px 1px 5px black,2px 2px 3px black, 1px 1px 10px black, -1px -1px 10px black;
   white-space: nowrap;
   /*outline: 1px solid green;*/
 }
@@ -236,12 +241,12 @@ function filter_player(input) {
 
 .player_highlight {
   /*background: #3b5900;*/
-  background: linear-gradient(-90deg, rgba(59,89,0,1) 20%, rgba(17,26,34,1) 90%);
+  background: linear-gradient(-90deg, rgba(59, 89, 0, 1) 20%, rgba(17, 26, 34, 1) 90%);
 }
 
 .player_disable {
   /*background: #192128;*/
-  background: linear-gradient(-90deg, rgba(25,33,40,1) 20%, rgba(17,26,34,1) 90%);
+  background: linear-gradient(-90deg, rgba(25, 33, 40, 1) 20%, rgba(17, 26, 34, 1) 90%);
   color: grey;
 }
 

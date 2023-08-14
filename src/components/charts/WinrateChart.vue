@@ -32,10 +32,10 @@ let baseChartOptions = ref({
     },
     events: {}
   },
-  title:{
-    text:"Winrate",
-    align: 'left',
-    floating: false,
+  title: {
+    text: "Winrate",
+    align: "left",
+    floating: false
   },
   tooltip: {
     theme: "dark",
@@ -77,28 +77,28 @@ let baseChartOptions = ref({
   },
   series: [
     {
-      position:'front',
+      position: "front",
       name: "",
       data: []
     }
   ],
   annotations: {
-    position:'back',
+    position: "back",
 
     yaxis: [{
       y: 45,
       y2: 0,
       opacity: 0.1,
-      borderColor: '#ff0000',
-      fillColor: '#ff0000',
-      strokeDashArray:0,
+      borderColor: "#ff0000",
+      fillColor: "#ff0000",
+      strokeDashArray: 0
     }]
   },
   plotOptions: {
     bar: {
-      distributed:false,
+      distributed: false,
       horizontal: false,
-      columnWidth: '80%',
+      columnWidth: "80%",
       dataLabels: {
         position: "top"
       }
@@ -200,7 +200,7 @@ update_chart();
 <template>
   <apexchart
     type="bar"
-    height="50%"
+    height="100%"
     width="100%"
     :options="baseChartOptions"
     :series="baseChartOptions.series"

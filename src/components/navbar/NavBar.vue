@@ -9,10 +9,10 @@ import { RouterLink } from "vue-router";
       <img class="nav_logo" src="/logos/TTT_square_logo_small.png" alt="ttt logo">
 
       <div class="links_bar">
-        <RouterLink class="link" to="/">Wall of shame</RouterLink>
+        <RouterLink class="link new" to="/">Wall of shame</RouterLink>
         <RouterLink class="link new" to="/funnyStats">Funny stats™</RouterLink>
-        <RouterLink class="link disabled" to="/copeCorner"><img src="/assets/gifs/cope.webp" alt="copium" style="width: 40px;margin-right: 5px">Cope corner (wip)</RouterLink>
-        <RouterLink class="link new" to="/changes">Changes</RouterLink>
+        <RouterLink class="link disabled" to="/copeCorner"><img src="/assets/gifs/cope.webp" alt="copium" style="width: 20px;margin-right: 5px">Cope corner (wip)</RouterLink>
+<!--        <RouterLink class="link new" to="/changes">Changes</RouterLink>-->
       </div>
 
     </div>
@@ -22,7 +22,7 @@ import { RouterLink } from "vue-router";
 <style scoped>
 .base_nav {
   width: 100%;
-  /*height: 70px;*/
+  height: 50px;
   background-color: #16395d;
   /*overflow: hidden;*/
 }
@@ -30,8 +30,9 @@ import { RouterLink } from "vue-router";
 .center_nav {
   margin: auto;
   /*outline: 2px solid green;*/
+  max-width: 1000px;
   width: 75vw;
-  /*height: 100%;*/
+  height: 100%;
 
   display: flex;
   flex-flow: row nowrap;
@@ -49,7 +50,7 @@ import { RouterLink } from "vue-router";
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.2em;
+  font-size: 1em;
 
   color: white;
   /*filter: drop-shadow( 2px -2px 2px #2d4f70);*/
@@ -82,7 +83,8 @@ import { RouterLink } from "vue-router";
 }
 
 .nav_logo {
-  width: 70px;
+  object-fit: contain;
+  /*width: 70px;*/
   height: 100%;
 }
 
