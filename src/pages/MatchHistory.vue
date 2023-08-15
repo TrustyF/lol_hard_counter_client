@@ -4,7 +4,9 @@ import PlayerSelector from "../components/players/PlayerSelector.vue";
 import HistoryBox from "@/components/matchHistory/HistoryBox.vue";
 
 let playerData = inject("playerData");
-let matchHistory = computed(() => playerData.value[0]["match_history"]["matches"]);
+
+let player = computed(() => playerData.value[0]);
+let matchHistory = computed(() => playerData.value[0]["match_history"]);
 
 let selectedPlayer = ref("");
 </script>
@@ -12,13 +14,22 @@ let selectedPlayer = ref("");
 <template>
   <div v-if="playerData!==undefined">
 
-    <div v-for="match in matchHistory" :key="match['match_info']['id']">
-      <HistoryBox :match="match"></HistoryBox>
+    <div class="feed">
+      <div v-for="match in matchHistory" :key="match['match_info']['id']">
+        <HistoryBox
+          :match="match"
+          :player="player"
+        ></HistoryBox>
+      </div>
     </div>
 
   </div>
 </template>
 
 <style scoped>
-
+.feed {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+}
 </style>
