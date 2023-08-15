@@ -27,7 +27,7 @@ function hide() {
 
 <style scoped>
 .box {
-  outline: 1px solid red;
+  /*outline: 1px solid red;*/
   width: 100%;
   min-height: 10px;
   position: relative;

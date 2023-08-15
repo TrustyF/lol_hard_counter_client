@@ -17,7 +17,7 @@ let props = defineProps(["stats", "tier_enabled","height"]);
           <p class="heading_text">{{ col["heading"] }}</p>
           <p class="heading_scaling">{{ col["scaling"] }}</p>
         </div>
-        <div class="stats_scroll_box" :style="`max-height:${height};`">
+        <div class="stats_scroll_box" :style="`height:${height};`">
           <div class="stats_list">
             <PlayerBox v-for="(data,i) in col['value']"
                        :key="data[0]"
@@ -43,7 +43,9 @@ p {
 .funny_wrapper {
   display: flex;
   flex-flow: row wrap;
-  justify-content: space-evenly;
+  justify-content: space-between;
+  /*display: grid;*/
+  /*grid-template-columns: repeat(3,1fr);*/
   gap: 30px;
   margin-bottom: 40px;
   width: 100%;

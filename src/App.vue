@@ -25,7 +25,7 @@ async function get_players() {
 
       // Process the returned JSON data
       .then(data => {
-        if (devMode) console.log(data);
+        console.log("data", data);
         playerData.value = data;
         retryLeft = 0;
       })
@@ -58,6 +58,7 @@ onMounted(() => {
   width: 100%;
   overflow: hidden;
 }
+
 .body {
   margin: auto;
   max-width: 1000px;

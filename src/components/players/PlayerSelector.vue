@@ -1,9 +1,9 @@
 <script setup>
-import { inject, onMounted, watch } from "vue";
+import { inject, onMounted,computed, watch } from "vue";
 import PlayerBox from "@/components/players/PlayerBox.vue";
 
 let playerData = inject("playerData");
-let playerUsernames = inject("playerUsernames");
+let playerUsernames = computed(()=>playerData.value.map(value => [value.username,0,0]))
 
 const rank_mappings = {
   "tier_values": ["iron", "bronze", "silver", "gold", "platinum", "emerald",
@@ -39,8 +39,8 @@ update_player();
 <template>
   <img class="click_me" src="/extras/click_me3.png" alt="click me">
   <div class="players_buttons">
-    <div class="button_wrapper" v-for="player in playerUsernames" :key="player.username">
-      <PlayerBox :player="player" :tier_enabled="true"></PlayerBox>
+    <div class="button_wrapper" v-for="player in playerUsernames" :key="player">
+      <PlayerBox :text="player"></PlayerBox>
     </div>
   </div>
 </template>

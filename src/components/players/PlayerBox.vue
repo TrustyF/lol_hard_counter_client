@@ -99,8 +99,8 @@ function filter_player(input) {
   /*background-color: #2c3e50;*/
 
   background: linear-gradient(-90deg, rgba(44, 62, 80, 1) 40%, rgba(17, 26, 34, 1) 80%);
-  filter: drop-shadow(2px 2px 2px black);
   box-shadow: inset 1px 1px 1px #5a7b9b;
+  filter: drop-shadow(2px 2px 2px black);
 
   display: flex;
   flex-flow: row nowrap;
@@ -111,7 +111,7 @@ function filter_player(input) {
 
   border-radius: 11px;
   border: none;
-  transition: 0.1s;
+  /*transition: 0.1s;*/
 
   font-size: 0.8em;
   font-weight: bold;
@@ -120,14 +120,14 @@ function filter_player(input) {
 }
 
 .player_button:hover {
-  /*background-color: #57748f;*/
-  background: linear-gradient(-90deg, rgba(87, 116, 143, 1) 20%, rgba(17, 26, 34, 1) 90%);
+  background: #57748f;
+  /*background: linear-gradient(-90deg, rgba(87, 116, 143, 1) 20%, rgba(17, 26, 34, 1) 90%);*/
   cursor: pointer;
 }
 
-.player_hover_background {
-  background: linear-gradient(-90deg, rgba(87, 116, 143, 1) 20%, rgba(17, 26, 34, 1) 90%);
-}
+/*.player_hover_background {*/
+/*  background: linear-gradient(-90deg, rgba(87, 116, 143, 1) 20%, rgba(17, 26, 34, 1) 90%);*/
+/*}*/
 
 .button_image {
   position: relative;

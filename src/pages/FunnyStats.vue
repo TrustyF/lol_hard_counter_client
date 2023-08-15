@@ -152,6 +152,11 @@ let mostGold = computed(() => {
   out = calc_diff(out);
   return out;
 });
+let mostWinrate = computed(() => {
+  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "goldPerMinute", "per_game"));
+  out = calc_diff(out);
+  return out;
+});
 let mostFirstBlood = computed(() => {
   let out = filtered_players.value.map(player => calc_stats(player, "stats", "firstBloodKill", "per_game"));
   out = calc_diff(out);
@@ -741,11 +746,13 @@ map_stats();
     <div v-for="heading in Object.keys(stats_mapping)" :key="heading">
       <h1 class="title">{{ heading }}</h1>
       <div class="divider"></div>
+
       <PlayerList
         :stats="stats_mapping[heading]"
         :tier_enabled="false"
-        height = '400px'
+        height="400px"
       ></PlayerList>
+
     </div>
 
   </div>
@@ -765,6 +772,7 @@ map_stats();
   padding-left: 20px;
   width: fit-content;
 }
+
 .divider {
   height: 1px;
   background-color: white;

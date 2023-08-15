@@ -11,7 +11,6 @@ const devMode = import.meta.env.DEV;
 // const devMode = false;
 
 const selected_players = ref([]);
-const player_usernames = ref(undefined);
 const player_data = ref(undefined);
 
 const app = createApp(App);
@@ -19,7 +18,6 @@ const app = createApp(App);
 app.provide("curr_api", devMode ? local_api : server_api);
 app.provide("devMode", devMode);
 app.provide("selectedPlayers", selected_players);
-app.provide("playerUsernames", player_usernames);
 app.provide("playerData", player_data);
 app.provide("rank_mappings", {
   "tier_values": ["iron", "bronze", "silver", "gold", "platinum", "emerald",

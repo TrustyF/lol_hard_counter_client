@@ -9,10 +9,9 @@ import { RouterLink } from "vue-router";
       <img class="nav_logo" src="/logos/TTT_square_logo_small.png" alt="ttt logo">
 
       <div class="links_bar">
-        <RouterLink class="link new" to="/">Wall of shame</RouterLink>
-        <RouterLink class="link new" to="/funnyStats">Funny stats™</RouterLink>
-        <RouterLink class="link disabled" to="/copeCorner"><img src="/assets/gifs/cope.webp" alt="copium" style="width: 20px;margin-right: 5px">Cope corner (wip)</RouterLink>
-<!--        <RouterLink class="link new" to="/changes">Changes</RouterLink>-->
+        <RouterLink class="link" to="/">Wall of shame</RouterLink>
+        <RouterLink class="link" to="/funnyStats">Funny stats™</RouterLink>
+        <RouterLink class="link new" to="/matchHistory">Match history</RouterLink>
       </div>
 
     </div>
