@@ -15,6 +15,7 @@ let selectedPlayer = ref("");
   <div v-if="playerData!==undefined">
 
     <div class="feed">
+
       <div v-for="match in matchHistory" :key="match['match_info']['id']">
         <HistoryBox
           :match="match"
@@ -30,7 +31,7 @@ let selectedPlayer = ref("");
 .feed {
   display: flex;
   flex-flow: column nowrap;
-  gap: 50px;
+  gap: 10px;
   height: 1000px;
   outline: 1px solid red;
 }
