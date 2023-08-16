@@ -85,7 +85,6 @@ p {
   /*overflow-x: hidden;*/
   scrollbar-width: none;
   box-shadow: inset 0 0 5px #000000;
-
 }
 
 .stats_scroll_box::-webkit-scrollbar {

@@ -1,7 +1,7 @@
 <script setup>
 import { inject, onMounted, watch, computed } from "vue";
 
-let props = defineProps(["match", "player"]);
+let props = defineProps(["match"]);
 const curr_api = inject("curr_api");
 let rank_mappings = inject("rank_mappings");
 
@@ -10,7 +10,7 @@ function sum(arr) {
 }
 
 function calc_rank_text(val) {
-  if (val <= 0) return "unranked";
+  if (val <= 0) return ["unranked", undefined, 0];
 
   const lp = val % 100;
   const tier = (val - lp - ((val - lp) % 400)) / 400;
@@ -35,20 +35,26 @@ let team_ranks = computed(() => {
   let side = props["match"]["match_info"]["player_side"];
   let other_side = side === "red" ? "blue" : "red";
   let ranks = props["match"]["match_ranks"];
-  let min_matches = 15;
+  let min_matches = 30;
 
   let my_side_ranks = ranks[side].map(value => {
     if (sum(value["winrate"]) > min_matches) return value["rank"];
+    return 0;
   }).filter(value => value);
 
   let other_side_ranks = ranks[other_side].map(value => {
     if (sum(value["winrate"]) > min_matches) return value["rank"];
+    return 0;
   }).filter(value => value);
 
-  let avg_my_side_rank = Math.round(sum(my_side_ranks) / my_side_ranks.length);
-  let avg_other_side_rank = Math.round(sum(other_side_ranks) / other_side_ranks.length);
+  // console.log(my_side_ranks);
+
+  let avg_my_side_rank = my_side_ranks.length > 0 ? Math.round(sum(my_side_ranks) / my_side_ranks.length) : 0;
+  let avg_other_side_rank = other_side_ranks.length > 0 ? Math.round(sum(other_side_ranks) / other_side_ranks.length) : 0;
 
   return [sum(my_side_ranks), sum(my_side_ranks), avg_my_side_rank, avg_other_side_rank, calc_rank_text(avg_my_side_rank), calc_rank_text(avg_other_side_rank)];
+  // console.log(out);
+  // return out;
 });
 let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3]);
 
@@ -56,16 +62,20 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
 
 <template>
   <div :class="win ? 'match_container lose' : 'match_container win'">
-    <img class="player_icon" :src="`${curr_api}/player/profile_icon?player=${player.username}`"
+    <img class="player_icon" :src="`${curr_api}/player/profile_icon?player=${match['match_info']['player_username']}`"
          alt="icon" />
     <p class="kda_text">{{ kda[0] + "/" + kda[1] + "/" + kda[2] }}</p>
 
+    <div class="horizontal_divider"></div>
+
     <div class="rank_difference_wrapper">
 
-      <div class="rank_your_team">
+      <div class="rank_your_team data_tooltip_activator">
 
-        <div class="info_wrapper">
-          <div class="tooltip">Your team average rank</div>
+        <div class="data_tooltip_wrapper">
+          <div class="data_tooltip">
+            Your team average rank
+          </div>
         </div>
 
         <div class="rank_image_wrapper">
@@ -77,24 +87,29 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
         </div>
       </div>
 
-      <div class="rank_difference">
+      <div class="rank_difference data_tooltip_activator">
 
-        <div class="info_wrapper">
-          <div class="tooltip">Lp difference</div>
+        <div class="data_tooltip_wrapper">
+          <div class="data_tooltip">
+            Average lp difference
+          </div>
         </div>
 
-        <div v-if="avg_team_rank_diff !== 0"
-             :class=" avg_team_rank_diff < 0 ? 'diff_box red_shadow' : 'diff_box green_shadow'">
-          <img :src="avg_team_rank_diff < 0 ? '/assets/ui/arrow_down_single.png' : '/assets/ui/arrow_up_single.png'"
+        <div
+          :class="team_ranks[2] !== 0 && team_ranks[3] !== 0 ? avg_team_rank_diff < 100 ? avg_team_rank_diff > -100 ? 'diff_box' : 'diff_box red_shadow' : 'diff_box green_shadow': 'diff_box'">
+          <img v-if="team_ranks[2] !== 0 && team_ranks[3] !== 0"
+               :src="avg_team_rank_diff < 0 ? '/assets/ui/arrow_down_single.png' : '/assets/ui/arrow_up_single.png'"
                alt="arrow" class="arrow">
-          <p>{{ Math.abs(avg_team_rank_diff) + " lp" }}</p>
+          <p>{{ team_ranks[2] !== 0 && team_ranks[3] !== 0 ? Math.abs(avg_team_rank_diff) + " lp" : "~" }}</p>
         </div>
       </div>
 
-      <div class="rank_enemy_team">
+      <div class="rank_enemy_team data_tooltip_activator">
 
-        <div class="info_wrapper">
-          <div class="tooltip">Enemy team average rank</div>
+        <div class="data_tooltip_wrapper">
+          <div class="data_tooltip">
+            Enemy team average rank
+          </div>
         </div>
 
         <div class="rank_image_wrapper">
@@ -108,8 +123,14 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
 
     </div>
 
-    <p>{{ new Date(match["match_info"]["duration"] * 1000).toISOString().substring(14, 19) }}</p>
-    <!--    <p>{{ match["match_info"]["queue"] }}</p>-->
+    <div class="horizontal_divider"></div>
+
+    <p style="line-height: 50px">{{ new Date(match["match_info"]["duration"] * 1000).toISOString().substring(14, 19)
+      }}</p>
+
+    <div class="horizontal_divider"></div>
+
+    <p style="line-height: 50px;font-size: 0.8em">{{ match["match_info"]["queue"] }}</p>
 
   </div>
 </template>
@@ -119,18 +140,28 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
 
   display: flex;
   flex-flow: row wrap;
+  position: relative;
 
   gap: 5px;
 
-  height: auto;
-  /*overflow: hidden;*/
+  height: fit-content;
+  padding: 0 10px 0 0;
 
   border-radius: 11px;
   font-size: 1.2em;
 
   box-shadow: inset 1px 1px 1px #5a7b9b;
   filter: drop-shadow(2px 2px 2px black);
+  text-shadow: 1px 1px 5px black, 2px 1px 1px black;
   /*outline: 1px solid red;*/
+}
+
+.horizontal_divider {
+  width: 1px;
+  height: 20px;
+  margin: auto 5px auto 5px;
+  background-color: #5a7b9b;
+  /*box-shadow: 1px 1px 1px #5a7b9b;*/
 }
 
 .kda_text {
@@ -138,42 +169,7 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
   min-width: 70px;
   text-align: center;
   inset: 0;
-  outline: 1px solid red;
-}
-
-.info_wrapper {
-  line-height: normal;
-  position: absolute;
-  left: -50%;
-  bottom: 120%;
-
-  opacity: 0;
-  visibility: hidden;
   /*outline: 1px solid red;*/
-  /*margin: 0;*/
-  transition: 50ms;
-}
-
-.tooltip {
-  background-color: #2a2a2a;
-  padding: 5px;
-  min-width: 100px;
-  border-radius: 10px;
-  font-size: 0.6em;
-  text-align: center;
-  box-shadow: inset 1px 1px 1px #5a7b9b;
-  filter: drop-shadow(1px 1px 1px black);
-}
-
-.tooltip::after {
-  content: "";
-  position: absolute;
-  top: 95%;
-  left: 50%;
-  margin-left: -10px;
-  border-width: 10px;
-  border-style: solid;
-  border-color: #2a2a2a transparent transparent transparent;
 }
 
 .player_icon {
@@ -190,15 +186,17 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
 .rank_difference_wrapper {
   display: flex;
   flex-flow: row wrap;
-  min-width: 180px;
+  min-width: 170px;
   text-align: center;
   justify-content: space-between;
-  outline: 1px solid green;
+  /*outline: 1px solid green;*/
 }
 
 .rank_difference {
+  text-align: center;
+
   position: relative;
-  outline: 1px solid purple;
+  /*outline: 1px solid purple;*/
   line-height: 50px;
   padding: 0 5px 0 0;
 }
@@ -239,16 +237,17 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
 
 .rank_your_team {
   position: relative;
-  outline: 1px solid purple;
+  /*outline: 1px solid purple;*/
 }
 
 .rank_your_team:hover .info_wrapper {
   opacity: 100%;
   visibility: visible;
 }
+
 .rank_enemy_team {
   position: relative;
-  outline: 1px solid purple;
+  /*outline: 1px solid purple;*/
 }
 
 .rank_enemy_team:hover .info_wrapper {

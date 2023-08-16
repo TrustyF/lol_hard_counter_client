@@ -7,7 +7,7 @@ let playerData = inject("playerData");
 // const curr_api = inject("curr_api");
 // let selectedPlayers = inject("selectedPlayers");
 
-let filtered_players = computed(() => playerData.value.filter(value => value["match_history"]["matches"].length > 10));
+let filtered_players = computed(() => playerData.value.filter(value => value["match_history"].length > 10));
 
 function calc_diff(player_arr) {
   // console.log('player arr',player_arr);
@@ -36,7 +36,7 @@ function sum(f_data) {
   return f_data.reduce((a, b) => a + (b || 0), 0);
 }
 
-function calc_stats(player, category, stat, range, special_case = false) {
+function calc_stats(player, stat, range, special_case = false) {
 
   let last_30 = player["match_history"]["matches"].slice(0, 30);
   let prev_30 = player["match_history"]["matches"].slice(10, 40);
@@ -46,73 +46,47 @@ function calc_stats(player, category, stat, range, special_case = false) {
 
   if (special_case) {
     if (stat === "timeAlive") {
-      stat_last_30 = sum(last_30.map(value => ((value["player_stats"][category]["timePlayed"] -
-        value["player_stats"][category]["totalTimeSpentDead"]) / value["match_info"]["duration"]) * 100)) / last_30.length;
-      stat_prev_30 = sum(prev_30.map(value => ((value["player_stats"][category]["timePlayed"] -
-        value["player_stats"][category]["totalTimeSpentDead"]) / value["match_info"]["duration"]) * 100)) / last_30.length;
+      stat_last_30 = sum(last_30.map(value => ((value["player_stats"]["timePlayed"] -
+        value["player_stats"]["totalTimeSpentDead"]) / value["match_info"]["duration"]) * 100)) / last_30.length;
+      stat_prev_30 = sum(prev_30.map(value => ((value["player_stats"]["timePlayed"] -
+        value["player_stats"]["totalTimeSpentDead"]) / value["match_info"]["duration"]) * 100)) / last_30.length;
     }
     if (stat === "mostCS") {
-      stat_last_30 = sum(last_30.map(value => ((value["player_stats"]["totalAllyJungleMinionsKilled"] + value["player_stats"]["totalEnemyJungleMinionsKilled"] + value["player_stats"][category]["totalMinionsKilled"])
+      stat_last_30 = sum(last_30.map(value => ((value["player_stats"]["totalAllyJungleMinionsKilled"] + value["player_stats"]["totalEnemyJungleMinionsKilled"] + value["player_stats"]["totalMinionsKilled"])
         / value["match_info"]["duration"]) * 60)) / last_30.length;
-      stat_prev_30 = sum(prev_30.map(value => ((value["player_stats"]["totalAllyJungleMinionsKilled"] + value["player_stats"]["totalEnemyJungleMinionsKilled"] + value["player_stats"][category]["totalMinionsKilled"])
+      stat_prev_30 = sum(prev_30.map(value => ((value["player_stats"]["totalAllyJungleMinionsKilled"] + value["player_stats"]["totalEnemyJungleMinionsKilled"] + value["player_stats"]["totalMinionsKilled"])
         / value["match_info"]["duration"]) * 60)) / last_30.length;
     }
     if (stat === "teamDamagePercentage") {
-      stat_last_30 = sum(last_30.map(value => value["player_stats"][category][stat] * 100)) / last_30.length;
-      stat_prev_30 = sum(prev_30.map(value => value["player_stats"][category][stat] * 100)) / prev_30.length;
+      stat_last_30 = sum(last_30.map(value => value["player_stats"][stat] * 100)) / last_30.length;
+      stat_prev_30 = sum(prev_30.map(value => value["player_stats"][stat] * 100)) / prev_30.length;
     }
     if (stat === "objectivesStolen") {
-      stat_last_30 = sum(last_30.map(value => value["player_stats"][category][stat] - value["player_stats"]["challenges"]["epicMonsterStolenWithoutSmite"]));
-      stat_prev_30 = sum(prev_30.map(value => value["player_stats"][category][stat] - value["player_stats"]["challenges"]["epicMonsterStolenWithoutSmite"]));
+      stat_last_30 = sum(last_30.map(value => value["player_stats"][stat] - value["player_stats"]["challenges"]["epicMonsterStolenWithoutSmite"]));
+      stat_prev_30 = sum(prev_30.map(value => value["player_stats"][stat] - value["player_stats"]["challenges"]["epicMonsterStolenWithoutSmite"]));
     }
 
     return [player.username, stat_last_30, stat_prev_30];
-  }
-
-  if (category === undefined) {
-
-    if (range === "per_game") {
-      stat_last_30 = sum(last_30.map(value => value["player_stats"][stat])) / last_30.length;
-      stat_prev_30 = sum(prev_30.map(value => value["player_stats"][stat])) / prev_30.length;
-    }
-
-    if (range === "per_minute") {
-      stat_last_30 = sum(last_30.map(value => (value["player_stats"][stat] / value["match_info"]["duration"]) * 60)) / last_30.length;
-      stat_prev_30 = sum(prev_30.map(value => (value["player_stats"][stat] / value["match_info"]["duration"]) * 60)) / prev_30.length;
-    }
-
-    if (range === "percent_game") {
-      stat_last_30 = sum(last_30.map(value => (value["player_stats"][stat] / value["match_info"]["duration"]) * 100)) / last_30.length;
-      stat_prev_30 = sum(prev_30.map(value => (value["player_stats"][stat] / value["match_info"]["duration"]) * 100)) / prev_30.length;
-    }
-
-    if (range === "total") {
-      stat_last_30 = sum(last_30.map(value => value["player_stats"][stat]));
-      stat_prev_30 = sum(prev_30.map(value => value["player_stats"][stat]));
-    }
-
-    return [player.username, stat_last_30, stat_prev_30];
-
   }
 
   if (range === "per_game") {
-    stat_last_30 = sum(last_30.map(value => value["player_stats"][category][stat])) / last_30.length;
-    stat_prev_30 = sum(prev_30.map(value => value["player_stats"][category][stat])) / prev_30.length;
+    stat_last_30 = sum(last_30.map(value => value["player_stats"][stat])) / last_30.length;
+    stat_prev_30 = sum(prev_30.map(value => value["player_stats"][stat])) / prev_30.length;
   }
 
   if (range === "per_minute") {
-    stat_last_30 = sum(last_30.map(value => (value["player_stats"][category][stat] / value["match_info"]["duration"]) * 60)) / last_30.length;
-    stat_prev_30 = sum(prev_30.map(value => (value["player_stats"][category][stat] / value["match_info"]["duration"]) * 60)) / prev_30.length;
+    stat_last_30 = sum(last_30.map(value => (value["player_stats"][stat] / value["match_info"]["duration"]) * 60)) / last_30.length;
+    stat_prev_30 = sum(prev_30.map(value => (value["player_stats"][stat] / value["match_info"]["duration"]) * 60)) / prev_30.length;
   }
 
   if (range === "percent_game") {
-    stat_last_30 = sum(last_30.map(value => (value["player_stats"][category][stat] / value["match_info"]["duration"]) * 100)) / last_30.length;
-    stat_prev_30 = sum(prev_30.map(value => (value["player_stats"][category][stat] / value["match_info"]["duration"]) * 100)) / prev_30.length;
+    stat_last_30 = sum(last_30.map(value => (value["player_stats"][stat] / value["match_info"]["duration"]) * 100)) / last_30.length;
+    stat_prev_30 = sum(prev_30.map(value => (value["player_stats"][stat] / value["match_info"]["duration"]) * 100)) / prev_30.length;
   }
 
   if (range === "total") {
-    stat_last_30 = sum(last_30.map(value => value["player_stats"][category][stat]));
-    stat_prev_30 = sum(prev_30.map(value => value["player_stats"][category][stat]));
+    stat_last_30 = sum(last_30.map(value => value["player_stats"][stat]));
+    stat_prev_30 = sum(prev_30.map(value => value["player_stats"][stat]));
   }
 
   // console.log("stats comp", stat, stat_last_30, stat_prev_30);
@@ -121,235 +95,233 @@ function calc_stats(player, category, stat, range, special_case = false) {
 }
 
 let mostGames = computed(() => {
-  let out = playerData.value.map(player => {
-    let norm = player["match_history"]["matches"].filter(value => value["match_info"]["queue"] === "ranked_solo_fives");
-    let solo = player["match_history"]["matches"].filter(value => value["match_info"]["queue"] === "ranked_flex_fives");
-    let flex = player["match_history"]["matches"].filter(value => value["match_info"]["queue"] === "normal_draft_fives");
-    return [player.username, norm.length, solo.length, flex.length, player["match_history"]["matches"].length];
+  return playerData.value.map(player => {
+    let norm = player["match_history"].filter(value => value["match_info"]["queue"] === "ranked_solo_fives");
+    let solo = player["match_history"].filter(value => value["match_info"]["queue"] === "ranked_flex_fives");
+    let flex = player["match_history"].filter(value => value["match_info"]["queue"] === "normal_draft_fives");
+    return [player.username, norm.length, solo.length, flex.length, player["match_history"].length];
   });
-  // console.log("out", out);
-  return out;
 });
 
 //General
 let mostKills = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "kills", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "kills", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostDeaths = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "deaths", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "deaths", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostAssists = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "assists", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "assists", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostGold = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "goldPerMinute", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "goldPerMinute", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostWinrate = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "goldPerMinute", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "goldPerMinute", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostFirstBlood = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "firstBloodKill", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "firstBloodKill", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostCS = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "mostCS", "per_minute", true));
+  let out = filtered_players.value.map(player => calc_stats(player, "mostCS", "per_minute", true));
   out = calc_diff(out);
   return out;
 });
 let mostSkillsDodged = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "dodgeSkillShotsSmallWindow", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "dodgeSkillShotsSmallWindow", "per_game"));
   out = calc_diff(out);
   return out;
 });
 
 //Lane diff
 let mostCSOpponentDiff = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "maxCsAdvantageOnLaneOpponent", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "maxCsAdvantageOnLaneOpponent", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostLevelsOpponentDiff = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "maxLevelLeadLaneOpponent", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "maxLevelLeadLaneOpponent", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostVisionOpponentDiff = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "visionScoreAdvantageLaneOpponent", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "visionScoreAdvantageLaneOpponent", "per_game"));
   out = calc_diff(out);
   return out;
 });
 
 //Damage
 let mostDamageTaken = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "totalDamageTaken", "per_minute"));
+  let out = filtered_players.value.map(player => calc_stats(player, "totalDamageTaken", "per_minute"));
   out = calc_diff(out);
   return out;
 });
 let mostDamageDealt = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "totalDamageDealt", "per_minute"));
+  let out = filtered_players.value.map(player => calc_stats(player, "totalDamageDealt", "per_minute"));
   out = calc_diff(out);
   return out;
 });
 let mostDamageDealtChampions = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "totalDamageDealtToChampions", "per_minute"));
+  let out = filtered_players.value.map(player => calc_stats(player, "totalDamageDealtToChampions", "per_minute"));
   out = calc_diff(out);
   return out;
 });
 let mostTeamDamagePercentage = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "teamDamagePercentage", "per_game", true));
+  let out = filtered_players.value.map(player => calc_stats(player, "teamDamagePercentage", "per_game", true));
   out = calc_diff(out);
   return out;
 });
 let mostDamageMitigated = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "damageSelfMitigated", "per_minute"));
+  let out = filtered_players.value.map(player => calc_stats(player, "damageSelfMitigated", "per_minute"));
   out = calc_diff(out);
   return out;
 });
 let mostHealing = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "totalHeal", "per_minute"));
+  let out = filtered_players.value.map(player => calc_stats(player, "totalHeal", "per_minute"));
   out = calc_diff(out);
   return out;
 });
 let mostHealingOthers = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "totalHealsOnTeammates", "per_minute"));
+  let out = filtered_players.value.map(player => calc_stats(player, "totalHealsOnTeammates", "per_minute"));
   out = calc_diff(out);
   return out;
 });
 let mostShieldingOthers = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "totalDamageShieldedOnTeammates", "per_minute"));
+  let out = filtered_players.value.map(player => calc_stats(player, "totalDamageShieldedOnTeammates", "per_minute"));
   out = calc_diff(out);
   return out;
 });
 
 //Time
 let mostTimeAlive = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "timeAlive", "percent_game", true));
+  let out = filtered_players.value.map(player => calc_stats(player, "timeAlive", "percent_game", true));
   out = calc_diff(out);
   return out;
 });
 let mostTimeDead = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "totalTimeSpentDead", "percent_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "totalTimeSpentDead", "percent_game"));
   out = calc_diff(out);
   return out;
 });
 let mostTimeCCDealt = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "totalTimeCCDealt", "percent_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "totalTimeCCDealt", "percent_game"));
   out = calc_diff(out);
   return out;
 });
 let mostTimeCCTaken = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "timeCCingOthers", "percent_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "timeCCingOthers", "percent_game"));
   out = calc_diff(out);
   return out;
 });
 
 //Towers
 let mostTowers = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "turretTakedowns", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "turretTakedowns", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostTowerDamage = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "damageDealtToTurrets", "per_minute"));
+  let out = filtered_players.value.map(player => calc_stats(player, "damageDealtToTurrets", "per_minute"));
   out = calc_diff(out);
   return out;
 });
 let mostTowersFirst = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "takedownOnFirstTurret", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "takedownOnFirstTurret", "per_game"));
   out = calc_diff(out);
   return out;
 });
 
 //Objectives
 let mostObjectivesStolen = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "objectivesStolen", "total", true));
+  let out = filtered_players.value.map(player => calc_stats(player, "objectivesStolen", "total", true));
   out = calc_diff(out);
   return out;
 });
 let mostObjectivesStolenNoSmite = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "epicMonsterStolenWithoutSmite", "total"));
+  let out = filtered_players.value.map(player => calc_stats(player, "epicMonsterStolenWithoutSmite", "total"));
   out = calc_diff(out);
   return out;
 });
 let mostHerald = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "teamRiftHeraldKills", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "teamRiftHeraldKills", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostDragons = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "dragonTakedowns", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "dragonTakedowns", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostBarons = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "teamBaronKills", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "teamBaronKills", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostElders = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "challenges", "teamElderDragonKills", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "teamElderDragonKills", "per_game"));
   out = calc_diff(out);
   return out;
 });
 
 //Vision
 let mostPinks = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "detectorWardsPlaced", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "detectorWardsPlaced", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostWards = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "wardsPlaced", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "wardsPlaced", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostVisionScore = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "visionScore", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "visionScore", "per_game"));
   out = calc_diff(out);
   return out;
 });
 
 //Kills
 let mostDoubleKills = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "doubleKills", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "doubleKills", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostTripleKills = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "tripleKills", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "tripleKills", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostQuadraKills = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "quadraKills", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "quadraKills", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostPentaKills = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "stats", "pentaKills", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "pentaKills", "per_game"));
   out = calc_diff(out);
   return out;
 });
 
 // Toxic
 let mostMissingPing = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, undefined, "enemyMissingPings", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "enemyMissingPings", "per_game"));
   out = calc_diff(out);
   return out;
 });
 let mostBaitPing = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, undefined, "baitPings", "per_game"));
+  let out = filtered_players.value.map(player => calc_stats(player, "baitPings", "per_game"));
   out = calc_diff(out);
   return out;
 });
