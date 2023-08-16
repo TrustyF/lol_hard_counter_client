@@ -73,8 +73,7 @@ function filter_player(input) {
         {{ difference !== 0 ? Math.abs(difference) : "" }}</p>
     </div>
 
-    <img class="button_image" :src="`${curr_api}/player/profile_icon?player=${username}`"
-         alt="icon" />
+    <img class="button_image" :src="`${curr_api}/player/profile_icon?player=${username}`" alt="icon" />
 
     <div style="display: flex;gap: 10px">
       <p class="button_text">{{ value }}</p>
@@ -153,7 +152,7 @@ function filter_player(input) {
   line-height: 50px;
   font-size: 1.1em;
   font-weight: bold;
-  text-shadow: 1px 1px 5px black,2px 2px 3px black, 1px 1px 10px black, -1px -1px 10px black;
+  text-shadow: 1px 1px 5px black, 2px 2px 3px black, 1px 1px 10px black, -1px -1px 10px black;
   white-space: nowrap;
   /*outline: 1px solid green;*/
 }

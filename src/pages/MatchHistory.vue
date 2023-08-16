@@ -6,7 +6,7 @@ import HistoryBox from "@/components/matchHistory/HistoryBox.vue";
 let playerData = inject("playerData");
 
 let player = computed(() => playerData.value[0]);
-let matchHistory = computed(() => playerData.value[0]["match_history"]);
+let matchHistory = computed(() => playerData.value[0]["match_history"].filter(value => value['match_info']['queue'] === 'ranked_solo_fives'));
 
 let selectedPlayer = ref("");
 </script>
@@ -30,6 +30,8 @@ let selectedPlayer = ref("");
 .feed {
   display: flex;
   flex-flow: column nowrap;
-  gap: 10px;
+  gap: 50px;
+  height: 1000px;
+  outline: 1px solid red;
 }
 </style>
