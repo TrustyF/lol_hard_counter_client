@@ -1,7 +1,7 @@
 <script setup>
 import { inject, onMounted, watch, computed } from "vue";
 
-let props = defineProps(["match"]);
+let props = defineProps(["match", "next_match", "index"]);
 const curr_api = inject("curr_api");
 let rank_mappings = inject("rank_mappings");
 
@@ -58,12 +58,50 @@ let team_ranks = computed(() => {
 });
 let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3]);
 let tag_list = computed(() => {
-  return ["test"];
+  let info = props["match"]["match_info"];
+  let win = info["match_win"];
+  let side = info["player_side"];
+  let out = [];
+
+  // filter useless matches
+  if (team_ranks.value[2] === 0 || team_ranks.value[3] === 0) {
+    return [];
+  }
+  // compute jungle diff
+  if ((info["sides"][side]["objectives"]["dragon"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["dragon"]["kills"]) > 3) out.push(["Jungle diff", "green", "Your team had 3 more drakes"]);
+  if ((info["sides"][side]["objectives"]["dragon"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["dragon"]["kills"]) < -3) out.push(["Jungle diff", "red", "Enemy team had 3 more drakes"]);
+  if ((info["sides"][side]["objectives"]["baron"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["baron"]["kills"]) > 1) out.push(["Worm killer", "green", "Your team had 2 more barons"]);
+  if ((info["sides"][side]["objectives"]["baron"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["baron"]["kills"]) < -1) out.push(["No worm", "red", "Enemy team had 2 more barons"]);
+  if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) > 1) out.push(["Big scuttle", "green", "Your team had 2 more heralds"]);
+  if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) < -1) out.push(["Small scuttle", "red", "Enemy team had 2 more heralds"]);
+
+  // compute matchmaking diff
+  if (avg_team_rank_diff.value > 100 && avg_team_rank_diff.value < 300 && win) out.push(["Easy win", "green", "Your team won with more than 100 lp difference"]);
+  if (avg_team_rank_diff.value > 100 && avg_team_rank_diff.value < 300 && !win) out.push(["Dumb lose", "red", "Your team lost despite more than 100 lp difference"]);
+  if (avg_team_rank_diff.value < -100 && avg_team_rank_diff.value > -300 && win) out.push(["Comeback", "green", "Your team won despite being more than 100 lp down"]);
+  if (avg_team_rank_diff.value < -100 && avg_team_rank_diff.value > -300 && !win) out.push(["Unlucky team", "red", "Your team lost with more than 100 lp down"]);
+
+  if (avg_team_rank_diff.value > 300 && win) out.push(["Free win", "green", "Your team won with more than 300 lp difference"]);
+  if (avg_team_rank_diff.value > 300 && !win) out.push(["Big throw", "red", "Your team lost despite more than 300 lp difference"]);
+  if (avg_team_rank_diff.value < -300 && win) out.push(["Clown fiesta", "green", "Your team won despite being more than 300 lp down"]);
+  if (avg_team_rank_diff.value < -300 && !win) out.push(["Matchmaking diff", "red", "Your team lost with more than 300 lp down"]);
+
+  // compute kills diff
+  if ((info["sides"][side]["objectives"]["champion"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["champion"]["kills"]) > 20 && win) out.push(["Stomp", "green", "Your team had 20 more kills"]);
+  if ((info["sides"][side]["objectives"]["champion"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["champion"]["kills"]) < -20 && !win) out.push(["Stomped", "red", "Enemy team had 20 more kills"]);
+
+  return out;
 });
 
 </script>
 
 <template>
+
+    <div v-if="index===0">
+        <p>{{ match["match_info"]["creation"] }}</p>
+        <div class="horizontal_divider"></div>
+    </div>
+
   <div :class="win ? 'match_container win' : 'match_container lose'">
     <img class="player_icon" :src="`${curr_api}/player/profile_icon?player=${match['match_info']['player_username']}`"
          alt="icon" />
@@ -71,7 +109,7 @@ let tag_list = computed(() => {
     <p style="line-height: 50px;font-size: 1em;min-width: 80px;text-align: center;">
       {{ kda[0] + "/" + kda[1] + "/" + kda[2] }}</p>
 
-    <div class="horizontal_divider"></div>
+    <div class="vertical_divider"></div>
 
     <div class="rank_difference_wrapper">
 
@@ -129,35 +167,54 @@ let tag_list = computed(() => {
 
     </div>
 
-    <div class="horizontal_divider"></div>
+<!--    <div class="vertical_divider"></div>-->
+<!--    <p style="line-height: 50px;font-size: 0.8em;min-width: 50px;text-align: center;">-->
+<!--      {{ new Date(match["match_info"]["duration"] * 1000).toISOString().substring(14, 19) }}</p>-->
 
-    <p style="line-height: 50px;font-size: 0.8em;min-width: 50px;text-align: center;">
-      {{ new Date(match["match_info"]["duration"] * 1000).toISOString().substring(14, 19) }}</p>
+    <div class="vertical_divider"></div>
 
-    <div class="horizontal_divider"></div>
-
-    <p style="line-height: 50px;font-size: 0.8em;min-width: 100px;outline: 1px salmon solid;text-align: center;">
+    <p style="line-height: 50px;font-size: 0.8em;min-width: 100px;text-align: center;">
       {{ match["match_info"]["queue"].split("_").slice(0, 2).join(" ") }}</p>
 
-    <div class="horizontal_divider"></div>
+    <div class="vertical_divider"></div>
 
-    <p style="line-height: 50px;font-size: 0.8em;min-width: 80px;outline: 1px salmon solid;text-align: center;">
-      {{ match["match_info"]["creation"] }}</p>
-
-    <div class="horizontal_divider"></div>
-
-    <div class="tags_list">
-      <div class="tag" v-for="tag in tag_list" :key="tag">
-        <p> {{ tag }}</p>
+    <div style="line-height: 50px;font-size: 0.8em;min-width: 80px;text-align: center;" class="data_tooltip_activator">
+      <div class="data_tooltip_wrapper">
+        <div class="data_tooltip">Your team's kills vs enemy team's kills</div>
       </div>
+
+      {{ match["match_info"]["sides"][match["match_info"]["player_side"]]["objectives"]["champion"]["kills"] +
+    " - " +
+    match["match_info"]["sides"][match["match_info"]["player_side"] === "red" ? "blue" : "red"]["objectives"]["champion"]["kills"]
+      }}
     </div>
 
+    <div class="vertical_divider"></div>
 
+    <div class="tags_list">
+      <div v-for="tag in tag_list" :key="tag">
+        <div :class="`tag tag_${tag[1]} data_tooltip_activator`">
+
+          <div class="data_tooltip_wrapper" v-if="tag[2]!==undefined">
+            <div class="data_tooltip"> {{ tag[2] }}</div>
+          </div>
+
+          <p> {{ tag[0] }}</p>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <div v-if="next_match!==undefined && next_match['match_info']['creation'] !== match['match_info']['creation']">
+    <p style="margin-top: 20px">{{ next_match["match_info"]["creation"] }}</p>
+    <div class="horizontal_divider"></div>
+  </div>
+
 </template>
 
 <style scoped>
 .match_container {
+  user-select: none;
 
   display: flex;
   flex-flow: row wrap;
@@ -177,31 +234,48 @@ let tag_list = computed(() => {
   /*outline: 1px solid red;*/
 }
 
+.horizontal_divider {
+  height: 1px;
+  width: 100%;
+  background-color: #2a2a2a;
+}
+
 .tags_list {
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: row wrap;
   justify-content: center;
+  align-items: center;
+  gap: 5px;
 
-  outline: 1px solid green;
-  }
+  /*height: 50px;*/
+  /*outline: 1px solid green;*/
+}
 
 .tag {
-  font-size: 0.8em;
-  height: 30px;
+  font-size: 0.7em;
+  height: 20px;
 
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
 
-  padding: 10px;
+  padding: 5px;
   /*margin: 0;*/
-  border-radius: 10px;
+  border-radius: 5px;
 
   text-align: center;
+  filter: drop-shadow(1px 1px 2px black);
+}
+
+.tag_green {
+  background-color: green;
+}
+
+.tag_red {
   background-color: red;
 }
 
-.horizontal_divider {
+.vertical_divider {
   width: 1px;
   height: 20px;
   margin: auto 5px auto 5px;
