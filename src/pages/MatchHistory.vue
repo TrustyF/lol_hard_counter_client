@@ -6,7 +6,7 @@ import HistoryBox from "@/components/matchHistory/HistoryBox.vue";
 let playerData = inject("playerData");
 let selectedPlayer = ref(undefined);
 
-
+// let matchHistory = computed(() => player.value["match_history"].filter(value => value["match_info"]["queue"] === "ranked_solo_fives"));
 let player = computed(() => {
   if (selectedPlayer.value !== undefined) {
     let index = playerData.value.map(value => value["username"]).indexOf(selectedPlayer.value);
@@ -14,19 +14,30 @@ let player = computed(() => {
   }
   return undefined;
 });
-// let matchHistory = computed(() => player.value["match_history"].filter(value => value["match_info"]["queue"] === "ranked_solo_fives"));
 let matchHistory = computed(() => {
   if (player.value !== undefined) {
     return player.value["match_history"];
   } else {
-    let out = playerData.value.map(player => player["match_history"]).flat(1).slice(0,30);
-    console.log("out", out);
+    let out = playerData.value.map(player => {
+      return player["match_history"].filter(value => value["match_info"]["queue"] === "ranked_solo_fives");
+    });
+    out = out.flat(1).slice(0, 30);
+    out.sort((a, b) => {
+      a = a["match_info"]["creation"].split("/").reverse().join("");
+      b = b["match_info"]["creation"].split("/").reverse().join("");
+
+      return b.localeCompare(a);
+    });
     return out;
   }
 });
 
 function set_selected_player(val) {
-  selectedPlayer.value = val;
+  if (selectedPlayer.value !== val) {
+    selectedPlayer.value = val;
+  } else {
+    selectedPlayer.value = undefined;
+  }
 }
 
 </script>
@@ -36,15 +47,15 @@ function set_selected_player(val) {
 
     <PlayerSelector @selectedPlayer="set_selected_player"></PlayerSelector>
 
-<!--    todo add global feed-->
+    <!--    todo add global feed-->
     <div class="feed_wrapper">
       <div class="feed">
         <HistoryBox
-          v-for="match in matchHistory" :key="match['match_info']['id']"
+          v-for="match in matchHistory" :key="match['match_info']['id'] + match['match_info']['player_username']"
           :match="match"
         ></HistoryBox>
       </div>
-<!--      <p v-if="player===undefined" style="text-align: center;color: #494949">Please select a player</p>-->
+      <!--      <p v-if="player===undefined" style="text-align: center;color: #494949">Please select a player</p>-->
     </div>
 
   </div>

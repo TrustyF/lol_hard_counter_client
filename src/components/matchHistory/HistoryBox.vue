@@ -64,7 +64,9 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
   <div :class="win ? 'match_container lose' : 'match_container win'">
     <img class="player_icon" :src="`${curr_api}/player/profile_icon?player=${match['match_info']['player_username']}`"
          alt="icon" />
-    <p class="kda_text">{{ kda[0] + "/" + kda[1] + "/" + kda[2] }}</p>
+
+    <p style="line-height: 50px;font-size: 1em;min-width: 80px;text-align: center;">
+      {{ kda[0] + "/" + kda[1] + "/" + kda[2] }}</p>
 
     <div class="horizontal_divider"></div>
 
@@ -100,7 +102,7 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
           <img v-if="team_ranks[2] !== 0 && team_ranks[3] !== 0"
                :src="avg_team_rank_diff < 0 ? '/assets/ui/arrow_down_single.png' : '/assets/ui/arrow_up_single.png'"
                alt="arrow" class="arrow">
-          <p>{{ team_ranks[2] !== 0 && team_ranks[3] !== 0 ? Math.abs(avg_team_rank_diff) + " lp" : "~" }}</p>
+          <p style="font-size: 0.8em">{{ team_ranks[2] !== 0 && team_ranks[3] !== 0 ? Math.abs(avg_team_rank_diff) + " lp" : "~" }}</p>
         </div>
       </div>
 
@@ -125,12 +127,17 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
 
     <div class="horizontal_divider"></div>
 
-    <p style="line-height: 50px">{{ new Date(match["match_info"]["duration"] * 1000).toISOString().substring(14, 19)
-      }}</p>
+    <p style="line-height: 50px;font-size: 0.8em;min-width: 50px;text-align: center;">
+      {{ new Date(match["match_info"]["duration"] * 1000).toISOString().substring(14, 19) }}</p>
 
     <div class="horizontal_divider"></div>
 
-    <p style="line-height: 50px;font-size: 0.8em">{{ match["match_info"]["queue"] }}</p>
+    <p style="line-height: 50px;font-size: 0.8em;min-width: 150px;text-align: center;">
+      {{ match["match_info"]["queue"].split("_").slice(0,2).join(" ") }}</p>
+
+    <div class="horizontal_divider"></div>
+
+    <p style="line-height: 50px;font-size: 0.8em">{{ match["match_info"]["creation"] }}</p>
 
   </div>
 </template>
@@ -164,14 +171,6 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
   /*box-shadow: 1px 1px 1px #5a7b9b;*/
 }
 
-.kda_text {
-  line-height: 50px;
-  min-width: 70px;
-  text-align: center;
-  inset: 0;
-  /*outline: 1px solid red;*/
-}
-
 .player_icon {
   position: relative;
   height: 50px;
@@ -186,7 +185,7 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
 .rank_difference_wrapper {
   display: flex;
   flex-flow: row wrap;
-  min-width: 170px;
+  min-width: 160px;
   text-align: center;
   justify-content: space-between;
   /*outline: 1px solid green;*/
@@ -198,7 +197,7 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
   position: relative;
   /*outline: 1px solid purple;*/
   line-height: 50px;
-  padding: 0 5px 0 0;
+  /*padding: 0 5px 0 0;*/
 }
 
 .rank_difference:hover .info_wrapper {
@@ -215,7 +214,7 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
 .rank_image {
   height: 50px;
   width: 50px;
-  /*outline: 1px solid red;*/
+  /*outline: 1px solid yellow;*/
 }
 
 .rank_image_wrapper {
@@ -230,13 +229,13 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
   text-align: center;
   inset: 0;
   font-size: 0.7em;
-
   /*height: 5px;*/
   /*outline: 1px solid red;*/
 }
 
 .rank_your_team {
   position: relative;
+  transform: translate(0,3px);
   /*outline: 1px solid purple;*/
 }
 
@@ -247,6 +246,7 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
 
 .rank_enemy_team {
   position: relative;
+  transform: translate(0,3px);
   /*outline: 1px solid purple;*/
 }
 
@@ -266,19 +266,21 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
 }
 
 .win {
-  background: linear-gradient(-90deg, rgb(13, 122, 35) 40%, rgba(17, 26, 34, 1) 80%);
+  background: linear-gradient(-90deg, rgb(9, 82, 24) 40%, rgba(17, 26, 34, 1) 80%);
+  /*background: linear-gradient(-90deg, rgb(50, 200, 50) 40%, rgba(17, 26, 34, 1) 80%);*/
 }
 
 .lose {
   background: linear-gradient(-90deg, rgb(122, 13, 29) 40%, rgba(17, 26, 34, 1) 80%);
+  /*background: linear-gradient(-90deg, rgb(200, 50, 50) 40%, rgba(17, 26, 34, 1) 80%);*/
 }
 
 .green_shadow {
-  filter: drop-shadow(1px 0px 1px black) drop-shadow(1px 0px 3px #00ff00);
+  filter: drop-shadow(1px 0px 1px black) drop-shadow(0px 0px 2px #00ff00);
 }
 
 .red_shadow {
-  filter: drop-shadow(1px 0px 1px black) drop-shadow(1px 0px 3px #ff0000);
+  filter: drop-shadow(1px 0px 1px black) drop-shadow(0px 0px 2px #ff0000);
 
 }
 </style>

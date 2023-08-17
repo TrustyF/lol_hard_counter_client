@@ -1,15 +1,21 @@
 <script setup>
-import { inject, onMounted, computed, watch,ref } from "vue";
-import PlayerBox from "@/components/players/PlayerBox.vue";
+import { inject, computed, ref } from "vue";
+// import PlayerBox from "@/components/players/PlayerBox.vue";
 
-let emit = defineEmits(['selectedPlayer'])
+let emit = defineEmits(["selectedPlayer"]);
 let playerData = inject("playerData");
 const curr_api = inject("curr_api");
 let playerUsernames = computed(() => playerData.value.map(value => value.username));
-let selected_player = ref('')
+let selected = ref('');
 
-function emit_selected_player(username){
-  emit('selectedPlayer',username)
+function emit_selected_player(username) {
+  emit("selectedPlayer", username);
+
+  if (selected.value !== username){
+    selected.value = username
+  } else {
+    selected.value = ''
+  }
 }
 
 </script>
@@ -20,7 +26,7 @@ function emit_selected_player(username){
     <div class="button_wrapper" v-for="username in playerUsernames" :key="username">
 
       <button
-        class="player_button hoverable"
+        :class="selected===username ? 'player_button hoverable selected' : 'player_button hoverable'"
         @click="emit_selected_player(username)"
         :id="username">
 
@@ -80,9 +86,11 @@ function emit_selected_player(username){
 }
 
 .player_button:hover {
-  background: #57748f;
-  /*background: linear-gradient(-90deg, rgba(87, 116, 143, 1) 20%, rgba(17, 26, 34, 1) 90%);*/
+  background: linear-gradient(-90deg, rgba(87, 116, 143, 1) 20%, rgba(17, 26, 34, 1) 90%);
   cursor: pointer;
+}
+.selected {
+  background: linear-gradient(-90deg, rgba(87, 116, 143, 1) 20%, rgba(17, 26, 34, 1) 90%);
 }
 
 .button_image {
