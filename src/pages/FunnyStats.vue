@@ -2,12 +2,18 @@
 import { inject, computed, watch, ref, onMounted } from "vue";
 import ChangeLog from "@/components/changelog/ChangeLog.vue";
 import PlayerList from "@/components/players/PlayerList.vue";
+import QueueSelector from "@/components/queue/QueueSelector.vue";
 
 let playerData = inject("playerData");
 // const curr_api = inject("curr_api");
 // let selectedPlayers = inject("selectedPlayers");
+let selectedQueue = ref(undefined);
 
-let filtered_players = computed(() => playerData.value.filter(value => value["match_history"].length > 10));
+
+let filtered_players = computed(() => {
+  let out = playerData.value.filter(value => value["match_history"].length > 10)
+  return out
+});
 
 function calc_diff(player_arr) {
   // console.log('player arr',player_arr);
@@ -35,11 +41,19 @@ function calc_diff(player_arr) {
 function sum(f_data) {
   return f_data.reduce((a, b) => a + (b || 0), 0);
 }
-
+// todo fix queue switch
 function calc_stats(player, stat, range, special_case = false) {
 
-  let last_30 = player["match_history"].slice(0, 30);
-  let prev_30 = player["match_history"].slice(10, 40);
+  let filtered_queue = player["match_history"].filter(value => {
+    if (selectedQueue.value !== undefined) {
+      return value["match_info"]["queue"] === selectedQueue.value;
+    } else {
+      return value
+    }
+  });
+
+  let last_30 = filtered_queue.slice(0, 30);
+  let prev_30 = filtered_queue.slice(10, 40);
 
   let stat_last_30;
   let stat_prev_30;
@@ -124,11 +138,11 @@ let mostGold = computed(() => {
   out = calc_diff(out);
   return out;
 });
-let mostWinrate = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "goldPerMinute", "per_game"));
-  out = calc_diff(out);
-  return out;
-});
+// let mostWinrate = computed(() => {
+//   let out = filtered_players.value.map(player => calc_stats(player, "goldPerMinute", "per_game"));
+//   out = calc_diff(out);
+//   return out;
+// });
 let mostFirstBlood = computed(() => {
   let out = filtered_players.value.map(player => calc_stats(player, "firstBloodKill", "per_game"));
   out = calc_diff(out);
@@ -638,6 +652,15 @@ function convertRange(value, r1, r2) {
   return (value - r1[0]) * (r2[1] - r2[0]) / (r1[1] - r1[0]) + r2[0];
 }
 
+function set_selected_queue(val) {
+  if (selectedQueue.value !== val) {
+    selectedQueue.value = val;
+    console.log("queue set to", val);
+  } else {
+    selectedQueue.value = undefined;
+  }
+}
+
 watch(playerData, () => {
   map_stats();
 });
@@ -656,7 +679,7 @@ map_stats();
       title="Funny stats™ Changelog"
       image="pepedance.webp"
       :changes="[
-            'Funny stats™ ranks are now comparing the last 0-30 games against the 10-40 games before that for better accuracy',
+            'Funny stats™ ranks are now averaging the last 30 games and updating player order based on the last 10 games',
               'Added DAMAGE category',
               'Added LANE DIFF category',
               'Added more objectives to OBJECTIVES',
@@ -712,6 +735,8 @@ map_stats();
       </div>
 
     </div>
+
+    <QueueSelector @selectedQueue="set_selected_queue"></QueueSelector>
 
     <img class="click_me" src="/extras/click_me3.png" alt="click me">
 

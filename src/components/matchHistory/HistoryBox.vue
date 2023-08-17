@@ -68,7 +68,7 @@ let tag_list = computed(() => {
     return [];
   }
   // compute jungle diff
-  if ((info["sides"][side]["objectives"]["dragon"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["dragon"]["kills"]) > 3) out.push(["Jungle diff", "green", "Your team had all 4 drakes"]);
+  if ((info["sides"][side]["objectives"]["dragon"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["dragon"]["kills"]) > 3) out.push(["Jungle gap", "green", "Your team had all 4 drakes"]);
   if ((info["sides"][side]["objectives"]["dragon"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["dragon"]["kills"]) < -3) out.push(["Jungle diff", "red", "Enemy team had all 4 drakes"]);
   if ((info["sides"][side]["objectives"]["baron"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["baron"]["kills"]) > 1) out.push(["Worm killer", "green", "Your team had 2 more barons"]);
   if ((info["sides"][side]["objectives"]["baron"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["baron"]["kills"]) < -1) out.push(["No worm", "red", "Enemy team had 2 more barons"]);
@@ -245,7 +245,7 @@ let tag_list = computed(() => {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  gap: 5px;
+  /*gap: 5px;*/
 
   /*height: 50px;*/
   /*outline: 1px solid green;*/
@@ -260,7 +260,7 @@ let tag_list = computed(() => {
   justify-content: center;
 
   padding: 5px;
-  /*margin: 0;*/
+  margin: 5px;
   border-radius: 5px;
 
   text-align: center;
@@ -275,17 +275,21 @@ let tag_list = computed(() => {
 
 .tag_red {
   box-shadow: inset 1px 1px 1px rgb(252, 135, 144);
-  background-color: #ce1313;
+  /*background-color: #ce1313;*/
+  background: linear-gradient(-90deg, #800a2d 0%, #9A0A0AFF 100%);
 }
 
 .tag_blue {
   box-shadow: inset 1px 1px 1px rgb(135, 248, 252);
-  background-color: #0271b6;
+  /*background-color: #0271b6;*/
+  background: linear-gradient(-90deg, #0b4a72 0%, #0270b6 100%);
 }
 
 .tag_grey {
   box-shadow: inset 1px 1px 1px rgb(227, 226, 226);
-  background-color: #606060;
+  /*background-color: #606060;*/
+  background: linear-gradient(-90deg, #343434 0%, #606060 100%);
+
 }
 
 .vertical_divider {
