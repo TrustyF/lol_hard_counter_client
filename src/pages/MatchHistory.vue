@@ -19,7 +19,8 @@ let matchHistory = computed(() => {
     return player.value["match_history"];
   } else {
     let out = playerData.value.map(player => {
-      return player["match_history"].filter(value => value["match_info"]["queue"] === "ranked_solo_fives");
+      // return player["match_history"].filter(value => value["match_info"]["queue"] === "ranked_solo_fives");
+      return player["match_history"];
     });
     out = out.flat(1).slice(0, 30);
     out.sort((a, b) => {

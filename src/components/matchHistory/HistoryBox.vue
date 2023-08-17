@@ -57,11 +57,14 @@ let team_ranks = computed(() => {
   // return out;
 });
 let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3]);
+let tag_list = computed(() => {
+  return ["test"];
+});
 
 </script>
 
 <template>
-  <div :class="win ? 'match_container lose' : 'match_container win'">
+  <div :class="win ? 'match_container win' : 'match_container lose'">
     <img class="player_icon" :src="`${curr_api}/player/profile_icon?player=${match['match_info']['player_username']}`"
          alt="icon" />
 
@@ -102,7 +105,8 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
           <img v-if="team_ranks[2] !== 0 && team_ranks[3] !== 0"
                :src="avg_team_rank_diff < 0 ? '/assets/ui/arrow_down_single.png' : '/assets/ui/arrow_up_single.png'"
                alt="arrow" class="arrow">
-          <p style="font-size: 0.8em">{{ team_ranks[2] !== 0 && team_ranks[3] !== 0 ? Math.abs(avg_team_rank_diff) + " lp" : "~" }}</p>
+          <p style="font-size: 0.8em">
+            {{ team_ranks[2] !== 0 && team_ranks[3] !== 0 ? Math.abs(avg_team_rank_diff) + " lp" : "~" }}</p>
         </div>
       </div>
 
@@ -132,12 +136,22 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
 
     <div class="horizontal_divider"></div>
 
-    <p style="line-height: 50px;font-size: 0.8em;min-width: 150px;text-align: center;">
-      {{ match["match_info"]["queue"].split("_").slice(0,2).join(" ") }}</p>
+    <p style="line-height: 50px;font-size: 0.8em;min-width: 100px;outline: 1px salmon solid;text-align: center;">
+      {{ match["match_info"]["queue"].split("_").slice(0, 2).join(" ") }}</p>
 
     <div class="horizontal_divider"></div>
 
-    <p style="line-height: 50px;font-size: 0.8em">{{ match["match_info"]["creation"] }}</p>
+    <p style="line-height: 50px;font-size: 0.8em;min-width: 80px;outline: 1px salmon solid;text-align: center;">
+      {{ match["match_info"]["creation"] }}</p>
+
+    <div class="horizontal_divider"></div>
+
+    <div class="tags_list">
+      <div class="tag" v-for="tag in tag_list" :key="tag">
+        <p> {{ tag }}</p>
+      </div>
+    </div>
+
 
   </div>
 </template>
@@ -161,6 +175,30 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
   filter: drop-shadow(2px 2px 2px black);
   text-shadow: 1px 1px 5px black, 2px 1px 1px black;
   /*outline: 1px solid red;*/
+}
+
+.tags_list {
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+
+  outline: 1px solid green;
+  }
+
+.tag {
+  font-size: 0.8em;
+  height: 30px;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+
+  padding: 10px;
+  /*margin: 0;*/
+  border-radius: 10px;
+
+  text-align: center;
+  background-color: red;
 }
 
 .horizontal_divider {
@@ -235,7 +273,7 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
 
 .rank_your_team {
   position: relative;
-  transform: translate(0,3px);
+  transform: translate(0, 3px);
   /*outline: 1px solid purple;*/
 }
 
@@ -246,7 +284,7 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
 
 .rank_enemy_team {
   position: relative;
-  transform: translate(0,3px);
+  transform: translate(0, 3px);
   /*outline: 1px solid purple;*/
 }
 
