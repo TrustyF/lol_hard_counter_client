@@ -150,7 +150,7 @@ body {
     position: fixed;
     z-index: 90;
 
-    transform: translate(-50%,-120%);
+    transform: translate(-50%,-130%);
 
     white-space: nowrap;
 
@@ -161,7 +161,7 @@ body {
     padding: 10px;
     /*min-width: 100px;*/
     border-radius: 10px;
-    font-size: 10px;
+    font-size: 11px;
     text-align: center;
     line-height: normal;
     box-shadow: inset 1px 1px 1px #5a7b9b;

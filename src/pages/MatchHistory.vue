@@ -17,25 +17,34 @@ let player = computed(() => {
   return undefined;
 });
 let matchHistory = computed(() => {
+
+  let out;
+
   if (player.value !== undefined) {
-    return player.value["match_history"];
+    // use specific player history
+    out = player.value["match_history"];
   } else {
-    let out = playerData.value.map(player => {
-
-      if (selectedQueue.value!==undefined){
-        return player["match_history"].filter(value => value["match_info"]["queue"] === selectedQueue.value);
-      }
-      return player["match_history"];
-    });
-    out = out.flat(1).slice(0, 30);
-    out.sort((a, b) => {
-      a = a["match_info"]["creation"].split("/").reverse().join("");
-      b = b["match_info"]["creation"].split("/").reverse().join("");
-
-      return b.localeCompare(a);
-    });
-    return out;
+    // use all history
+    out = playerData.value.map(val => val["match_history"]);
   }
+
+  // prepare for export
+  out = out.flat(1);
+  //sort by date
+  out.sort((a, b) => {
+    a = a["match_info"]["creation"].split("/").reverse().join("");
+    b = b["match_info"]["creation"].split("/").reverse().join("");
+    return b.localeCompare(a);
+  });
+
+  // filter to selected queue type
+  if (selectedQueue.value !== undefined) {
+    out = out.filter(value => value["match_info"]["queue"] === selectedQueue.value);
+  }
+
+  out = out.slice(0, 50);
+
+  return out;
 });
 
 function set_selected_player(val) {
@@ -45,9 +54,11 @@ function set_selected_player(val) {
     selectedPlayer.value = undefined;
   }
 }
+
 function set_selected_queue(val) {
   if (selectedQueue.value !== val) {
     selectedQueue.value = val;
+    console.log("queue set to", val);
   } else {
     selectedQueue.value = undefined;
   }

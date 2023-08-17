@@ -38,8 +38,8 @@ function sum(f_data) {
 
 function calc_stats(player, stat, range, special_case = false) {
 
-  let last_30 = player["match_history"]["matches"].slice(0, 30);
-  let prev_30 = player["match_history"]["matches"].slice(10, 40);
+  let last_30 = player["match_history"].slice(0, 30);
+  let prev_30 = player["match_history"].slice(10, 40);
 
   let stat_last_30;
   let stat_prev_30;
@@ -62,8 +62,8 @@ function calc_stats(player, stat, range, special_case = false) {
       stat_prev_30 = sum(prev_30.map(value => value["player_stats"][stat] * 100)) / prev_30.length;
     }
     if (stat === "objectivesStolen") {
-      stat_last_30 = sum(last_30.map(value => value["player_stats"][stat] - value["player_stats"]["challenges"]["epicMonsterStolenWithoutSmite"]));
-      stat_prev_30 = sum(prev_30.map(value => value["player_stats"][stat] - value["player_stats"]["challenges"]["epicMonsterStolenWithoutSmite"]));
+      stat_last_30 = sum(last_30.map(value => value["player_stats"][stat] - value["player_stats"]["epicMonsterStolenWithoutSmite"]));
+      stat_prev_30 = sum(prev_30.map(value => value["player_stats"][stat] - value["player_stats"]["epicMonsterStolenWithoutSmite"]));
     }
 
     return [player.username, stat_last_30, stat_prev_30];

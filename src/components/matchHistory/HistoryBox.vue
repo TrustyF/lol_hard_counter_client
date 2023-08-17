@@ -68,23 +68,23 @@ let tag_list = computed(() => {
     return [];
   }
   // compute jungle diff
-  if ((info["sides"][side]["objectives"]["dragon"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["dragon"]["kills"]) > 3) out.push(["Jungle diff", "green", "Your team had 3 more drakes"]);
-  if ((info["sides"][side]["objectives"]["dragon"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["dragon"]["kills"]) < -3) out.push(["Jungle diff", "red", "Enemy team had 3 more drakes"]);
+  if ((info["sides"][side]["objectives"]["dragon"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["dragon"]["kills"]) > 3) out.push(["Jungle diff", "green", "Your team had all 4 drakes"]);
+  if ((info["sides"][side]["objectives"]["dragon"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["dragon"]["kills"]) < -3) out.push(["Jungle diff", "red", "Enemy team had all 4 drakes"]);
   if ((info["sides"][side]["objectives"]["baron"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["baron"]["kills"]) > 1) out.push(["Worm killer", "green", "Your team had 2 more barons"]);
   if ((info["sides"][side]["objectives"]["baron"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["baron"]["kills"]) < -1) out.push(["No worm", "red", "Enemy team had 2 more barons"]);
-  if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) > 1) out.push(["Big scuttle", "green", "Your team had 2 more heralds"]);
-  if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) < -1) out.push(["Small scuttle", "red", "Enemy team had 2 more heralds"]);
+  if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) > 1) out.push(["Herald killer", "green", "Your team had all 2 heralds"]);
+  if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) < -1) out.push(["No Herald", "red", "Enemy team had all 2 heralds"]);
 
   // compute matchmaking diff
-  if (avg_team_rank_diff.value > 100 && avg_team_rank_diff.value < 300 && win) out.push(["Easy win", "green", "Your team won with more than 100 lp difference"]);
-  if (avg_team_rank_diff.value > 100 && avg_team_rank_diff.value < 300 && !win) out.push(["Dumb lose", "red", "Your team lost despite more than 100 lp difference"]);
+  if (avg_team_rank_diff.value > 100 && avg_team_rank_diff.value < 300 && win) out.push(["Easy win", "blue", "Your team won with more than 100 lp difference"]);
+  if (avg_team_rank_diff.value > 100 && avg_team_rank_diff.value < 300 && !win) out.push(["Dumb loss", "red", "Your team lost despite more than 100 lp difference"]);
   if (avg_team_rank_diff.value < -100 && avg_team_rank_diff.value > -300 && win) out.push(["Comeback", "green", "Your team won despite being more than 100 lp down"]);
-  if (avg_team_rank_diff.value < -100 && avg_team_rank_diff.value > -300 && !win) out.push(["Unlucky team", "red", "Your team lost with more than 100 lp down"]);
+  if (avg_team_rank_diff.value < -100 && avg_team_rank_diff.value > -300 && !win) out.push(["Unlucky team", "grey", "Your team was not meant to win with more than 100 lp down"]);
 
-  if (avg_team_rank_diff.value > 300 && win) out.push(["Free win", "green", "Your team won with more than 300 lp difference"]);
+  if (avg_team_rank_diff.value > 300 && win) out.push(["Free win", "blue", "Your team won with more than 300 lp difference"]);
   if (avg_team_rank_diff.value > 300 && !win) out.push(["Big throw", "red", "Your team lost despite more than 300 lp difference"]);
   if (avg_team_rank_diff.value < -300 && win) out.push(["Clown fiesta", "green", "Your team won despite being more than 300 lp down"]);
-  if (avg_team_rank_diff.value < -300 && !win) out.push(["Matchmaking diff", "red", "Your team lost with more than 300 lp down"]);
+  if (avg_team_rank_diff.value < -300 && !win) out.push(["Matchmaking diff", "grey", "Winning was impossible with more than 300 lp down"]);
 
   // compute kills diff
   if ((info["sides"][side]["objectives"]["champion"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["champion"]["kills"]) > 20 && win) out.push(["Stomp", "green", "Your team had 20 more kills"]);
@@ -97,10 +97,10 @@ let tag_list = computed(() => {
 
 <template>
 
-    <div v-if="index===0">
-        <p>{{ match["match_info"]["creation"] }}</p>
-        <div class="horizontal_divider"></div>
-    </div>
+  <div v-if="index===0">
+    <p>{{ match["match_info"]["creation"] }}</p>
+    <div class="horizontal_divider"></div>
+  </div>
 
   <div :class="win ? 'match_container win' : 'match_container lose'">
     <img class="player_icon" :src="`${curr_api}/player/profile_icon?player=${match['match_info']['player_username']}`"
@@ -167,9 +167,9 @@ let tag_list = computed(() => {
 
     </div>
 
-<!--    <div class="vertical_divider"></div>-->
-<!--    <p style="line-height: 50px;font-size: 0.8em;min-width: 50px;text-align: center;">-->
-<!--      {{ new Date(match["match_info"]["duration"] * 1000).toISOString().substring(14, 19) }}</p>-->
+    <!--    <div class="vertical_divider"></div>-->
+    <!--    <p style="line-height: 50px;font-size: 0.8em;min-width: 50px;text-align: center;">-->
+    <!--      {{ new Date(match["match_info"]["duration"] * 1000).toISOString().substring(14, 19) }}</p>-->
 
     <div class="vertical_divider"></div>
 
@@ -230,7 +230,7 @@ let tag_list = computed(() => {
 
   box-shadow: inset 1px 1px 1px #5a7b9b;
   filter: drop-shadow(2px 2px 2px black);
-  text-shadow: 1px 1px 5px black, 2px 1px 1px black;
+  text-shadow: 1px 1px 2px black, 0 0 2px black, 0 0 5px black;
   /*outline: 1px solid red;*/
 }
 
@@ -253,7 +253,7 @@ let tag_list = computed(() => {
 
 .tag {
   font-size: 0.7em;
-  height: 20px;
+  height: 22px;
 
   display: flex;
   flex-flow: column nowrap;
@@ -264,15 +264,28 @@ let tag_list = computed(() => {
   border-radius: 5px;
 
   text-align: center;
-  filter: drop-shadow(1px 1px 2px black);
+  filter: drop-shadow(1px 1px 3px black);
 }
 
 .tag_green {
-  background-color: green;
+  /*background-color: #227202;*/
+  box-shadow: inset 1px 1px 1px rgb(48, 229, 89);
+  background: linear-gradient(-90deg, rgb(9, 82, 24) 0%, rgb(10, 154, 42) 100%);
 }
 
 .tag_red {
-  background-color: red;
+  box-shadow: inset 1px 1px 1px rgb(252, 135, 144);
+  background-color: #ce1313;
+}
+
+.tag_blue {
+  box-shadow: inset 1px 1px 1px rgb(135, 248, 252);
+  background-color: #0271b6;
+}
+
+.tag_grey {
+  box-shadow: inset 1px 1px 1px rgb(227, 226, 226);
+  background-color: #606060;
 }
 
 .vertical_divider {
