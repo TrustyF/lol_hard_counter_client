@@ -45,6 +45,7 @@ function emit_selected_player(username) {
 <style scoped>
 
 .players_buttons {
+  position: relative;
   display: flex;
   flex-flow: row wrap;
   gap: 15px;

@@ -27,11 +27,20 @@ function hide() {
 
 <style scoped>
 .box {
+  user-select: none;
   /*outline: 1px solid red;*/
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-end;
+
   width: 100%;
-  min-height: 10px;
+
   position: relative;
-  z-index: 0;
+  right: 0;
+  z-index: 10;
+  padding: 0 0 10px 10px;
+  opacity: 100;
+  visibility: visible;
 }
 
 .title {
@@ -45,16 +54,18 @@ function hide() {
   /*overflow: hidden;*/
   display: flex;
   flex-flow: column nowrap;
+  align-items: flex-end;
   gap: 10px;
 }
 
 .container {
+  display: flex;
+  flex-flow: row nowrap;
+
   padding: 5px;
   width: fit-content;
   border-radius: 10px;
-  display: flex;
-  justify-items: center;
-  align-items: center;
+  text-align: left;
   gap: 5px;
   background: linear-gradient(-90deg, rgb(25, 58, 42) 50%, rgba(17, 26, 34, 1) 120%);
   filter: drop-shadow(2px 2px 2px black);
@@ -74,15 +85,15 @@ function hide() {
 }
 
 .close_button {
-  position: absolute;
-  right: 0;
-  top: 0;
+  /*position: absolute;*/
+  /*right: 0;*/
+  /*top: -50px;*/
+  width: fit-content;
 
   border-radius: 4px;
-  width: auto;
   padding: 7px;
 
-  text-align: left;
+  text-align: center;
   vertical-align: center;
 
   font-weight: normal;
@@ -91,6 +102,8 @@ function hide() {
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
+
+  margin-bottom: 10px;
 
   background: linear-gradient(-90deg, rgba(44, 62, 80, 1) 50%, rgba(17, 26, 34, 1) 120%);
   filter: drop-shadow(2px 2px 2px black);

@@ -48,21 +48,20 @@ let mostFlexRank = computed(() => {
 </script>
 
 <template>
+  <ChangeLog
+    title="WOS Changelog"
+    image="pepedance.webp"
+    :changes="[
+      'Removed player selector, select your account from the list',
+      'Winrate moved to funny stats',
+      'Removed rank graph'
+            ]"
+    :close="true"
+  ></ChangeLog>
 
   <div v-if="playerData!==undefined">
 
     <!--    todo lp gain slope-->
-
-    <ChangeLog
-      title="WOS Changelog"
-      image="pepedance.webp"
-      :changes="[
-        'Removed player selector, select your account from the list',
-        'Winrate moved to funny stats',
-        'Removed rank graph'
-              ]"
-      :close="true"
-    ></ChangeLog>
 
 
     <h1 class="title">Solo Queue</h1>
@@ -104,6 +103,7 @@ let mostFlexRank = computed(() => {
     </div>
 
   </div>
+
 </template>
 
 <style scoped>

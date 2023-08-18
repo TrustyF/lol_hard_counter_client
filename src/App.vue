@@ -58,7 +58,6 @@ onMounted(() => {
   width: 100%;
   overflow: hidden;
 }
-
 .body {
   margin: auto;
   max-width: 1000px;

@@ -3,6 +3,7 @@ import { inject, computed, watch, ref, onMounted } from "vue";
 import PlayerSelector from "../components/players/PlayerSelector.vue";
 import HistoryBox from "@/components/matchHistory/HistoryBox.vue";
 import QueueSelector from "@/components/queue/QueueSelector.vue";
+import ChangeLog from "@/components/changelog/ChangeLog.vue";
 
 let playerData = inject("playerData");
 let selectedPlayer = ref(undefined);
@@ -66,10 +67,23 @@ function set_selected_queue(val) {
 </script>
 
 <template>
+
+  <ChangeLog
+    title="Cope corner Changelog"
+    image="pepedance.webp"
+    :changes="[
+        'Added queue filter',
+        'Added performance score',
+        'Added CS score',
+        'Added performance tags',
+              ]"
+    :close="true"
+  ></ChangeLog>
+
   <div v-if="playerData!==undefined">
 
     <PlayerSelector @selectedPlayer="set_selected_player"></PlayerSelector>
-    <QueueSelector @selectedQueue="set_selected_queue"></QueueSelector>
+    <QueueSelector style="position:relative;" class="new_edge" @selectedQueue="set_selected_queue"></QueueSelector>
 
     <div class="feed_wrapper">
       <div class="feed">
@@ -83,6 +97,7 @@ function set_selected_queue(val) {
     </div>
 
   </div>
+
 </template>
 
 <style scoped>

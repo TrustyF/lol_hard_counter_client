@@ -7,13 +7,10 @@ import QueueSelector from "@/components/queue/QueueSelector.vue";
 let playerData = inject("playerData");
 // const curr_api = inject("curr_api");
 // let selectedPlayers = inject("selectedPlayers");
-let selectedQueue = ref(undefined);
+let selectedQueue = ref("none");
 
 
-let filtered_players = computed(() => {
-  let out = playerData.value.filter(value => value["match_history"].length > 10)
-  return out
-});
+let filtered_players = computed(() => playerData.value);
 
 function calc_diff(player_arr) {
   // console.log('player arr',player_arr);
@@ -41,16 +38,17 @@ function calc_diff(player_arr) {
 function sum(f_data) {
   return f_data.reduce((a, b) => a + (b || 0), 0);
 }
+
 // todo fix queue switch
 function calc_stats(player, stat, range, special_case = false) {
 
-  let filtered_queue = player["match_history"].filter(value => {
-    if (selectedQueue.value !== undefined) {
-      return value["match_info"]["queue"] === selectedQueue.value;
-    } else {
-      return value
-    }
-  });
+  let filtered_queue = player["match_history"];
+
+  if (selectedQueue.value !== "none") {
+    filtered_queue = player["match_history"].filter(value => value["match_info"]["queue"] === selectedQueue.value);
+  }
+
+  if (filtered_queue.length < 10) return [player.username, 0, 0];
 
   let last_30 = filtered_queue.slice(0, 30);
   let prev_30 = filtered_queue.slice(10, 40);
@@ -60,9 +58,9 @@ function calc_stats(player, stat, range, special_case = false) {
 
   if (special_case) {
     if (stat === "timeAlive") {
-      stat_last_30 = sum(last_30.map(value => ((value["player_stats"]["timePlayed"] -
+      stat_last_30 = sum(last_30.map(value => ((value["match_info"]["duration"] -
         value["player_stats"]["totalTimeSpentDead"]) / value["match_info"]["duration"]) * 100)) / last_30.length;
-      stat_prev_30 = sum(prev_30.map(value => ((value["player_stats"]["timePlayed"] -
+      stat_prev_30 = sum(prev_30.map(value => ((value["match_info"]["duration"] -
         value["player_stats"]["totalTimeSpentDead"]) / value["match_info"]["duration"]) * 100)) / last_30.length;
     }
     if (stat === "mostCS") {
@@ -119,7 +117,9 @@ let mostGames = computed(() => {
 
 //General
 let mostKills = computed(() => {
-  let out = filtered_players.value.map(player => calc_stats(player, "kills", "per_game"));
+  let out = filtered_players.value.map(player => {
+    return calc_stats(player, "kills", "per_game");
+  });
   out = calc_diff(out);
   return out;
 });
@@ -341,11 +341,11 @@ let mostBaitPing = computed(() => {
 });
 
 
-let stats_mapping = {};
+let stats_mapping = ref({});
 
 function map_stats() {
   if (playerData.value !== undefined) {
-    stats_mapping = {
+    stats_mapping.value = {
       "General": [
         {
           "heading": "Kills",
@@ -655,40 +655,36 @@ function convertRange(value, r1, r2) {
 function set_selected_queue(val) {
   if (selectedQueue.value !== val) {
     selectedQueue.value = val;
-    console.log("queue set to", val);
+    console.log("queue funny stats set to", val);
   } else {
-    selectedQueue.value = undefined;
+    selectedQueue.value = "none";
   }
 }
 
 watch(playerData, () => {
   map_stats();
 });
-
-//todo add clear information popup
+watch(selectedQueue, () => {
+  map_stats();
+});
 
 map_stats();
-
+//todo add clear information popup
 </script>
 
 <template>
 
-  <div v-if="playerData!==undefined">
-
-    <ChangeLog
-      title="Funny stats™ Changelog"
-      image="pepedance.webp"
-      :changes="[
-            'Funny stats™ ranks are now averaging the last 30 games and updating player order based on the last 10 games',
-              'Added DAMAGE category',
-              'Added LANE DIFF category',
-              'Added more objectives to OBJECTIVES',
-              'Fixed cc stats',
-              'Added MATCHES BREAKDOWN',
-              'Fixed CS for junglers',
+  <ChangeLog
+    title="Funny stats™ Changelog"
+    image="pepedance.webp"
+    :changes="[
+        'Added queue filter'
               ]"
-      :close="true"
-    ></ChangeLog>
+    :close="true"
+  ></ChangeLog>
+
+  <div v-if="playerData!==undefined" class="main_feed">
+
 
     <h1 class="title">Matches breakdown</h1>
     <div class="divider"></div>
@@ -736,7 +732,7 @@ map_stats();
 
     </div>
 
-    <QueueSelector @selectedQueue="set_selected_queue"></QueueSelector>
+    <QueueSelector style="position:relative;" class="new_edge" @selectedQueue="set_selected_queue"></QueueSelector>
 
     <img class="click_me" src="/extras/click_me3.png" alt="click me">
 
@@ -753,6 +749,8 @@ map_stats();
     </div>
 
   </div>
+
+
 </template>
 
 <style scoped>
