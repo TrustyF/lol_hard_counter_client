@@ -33,6 +33,8 @@ function hide() {
   flex-flow: column nowrap;
   align-items: flex-end;
 
+  height: 40px;
+
   width: 100%;
 
   position: relative;
@@ -44,7 +46,7 @@ function hide() {
 }
 
 .title {
-  font-size: 1.2em;
+  font-size: 1em;
   font-weight: bold;
   text-decoration: underline;
 }
@@ -97,7 +99,7 @@ function hide() {
   vertical-align: center;
 
   font-weight: normal;
-  font-size: 1em;
+  font-size: 0.7em;
   /*background-color: #2c3e50;*/
   cursor: pointer;
   user-select: none;
