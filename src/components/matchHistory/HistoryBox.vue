@@ -4,6 +4,7 @@ import { inject, onMounted, watch, computed } from "vue";
 let props = defineProps(["match", "next_match", "index"]);
 const curr_api = inject("curr_api");
 let rank_mappings = inject("rank_mappings");
+let devMode = inject("devMode");
 
 function sum(arr) {
   return arr.reduce((a, b) => a + b, 0);
@@ -75,6 +76,24 @@ let tag_list = computed(() => {
   if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) > 1) out.push(["Herald killer", "green", "Your team had all 2 heralds"]);
   if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) < -1) out.push(["No Herald", "red", "Enemy team had all 2 heralds"]);
 
+  // kills diff
+  if (kda.value[0] - kda.value[1] > 10) out.push(["Carried", "green", "You had 10 more kills than deaths"]);
+  if (kda.value[0] - kda.value[1] < -10) out.push(["Ran it", "red", "You had 10 more deaths than kills"]);
+
+  // stats diff
+  if (props["match"]['player_stats']['maxCsAdvantageOnLaneOpponent'] > 50) out.push(["CS god", "green", "You had 50 more CS than your lane opponent"]);
+  if (props["match"]['player_stats']['maxLevelLeadLaneOpponent'] > 2) out.push(["Wizard", "green", "You had 3 more levels than your lane opponent"]);
+  if (props["match"]['player_stats']['visionScore'] > 50) out.push(["All-seeing", "green", "You had more than 50 vision score"]);
+  if (props["match"]['player_stats']['visionScoreAdvantageLaneOpponent'] > 1) out.push(["Vision diff", "green", "Your average vision score was higher than your lane opponent"]);
+  if (props["match"]['player_stats']['goldPerMinute'] > 500) out.push(["Deep pockets", "green", "You had more than 500 gold/minute"]);
+  if (props["match"]['player_stats']['objectivesStolen'] > 0) out.push(["Objective thief", "green", "You stolen an objective this game"]);
+  if (props["match"]['player_stats']['totalEnemyJungleMinionsKilled'] > 15) out.push(["Invader", "green", "You stole more than 15 enemy camps"]);
+  if (props["match"]['player_stats']['teamDamagePercentage'] < 0.1) out.push(["Where?", "red", "You dealt less than 10% of the team's total damage"]);
+  if (props["match"]['player_stats']['teamDamagePercentage'] > 0.3) out.push(["Demon", "green", "You dealt more than 30% of the team's total damage"]);
+  if ((props["match"]['player_stats']['totalTimeSpentDead'] / props["match"]['match_info']['duration'])*100 > 15) out.push(["AFK", "red", "You spent more than 15% of the game dead"]);
+
+  // out.push([props["match"]['player_stats']['visionScore'],'blue','test'])
+
   // compute matchmaking diff
   if (avg_team_rank_diff.value > 100 && avg_team_rank_diff.value < 300 && win) out.push(["Easy win", "blue", "Your team won with more than 100 lp difference"]);
   if (avg_team_rank_diff.value > 100 && avg_team_rank_diff.value < 300 && !win) out.push(["Dumb loss", "red", "Your team lost despite more than 100 lp difference"]);
@@ -90,7 +109,14 @@ let tag_list = computed(() => {
   if ((info["sides"][side]["objectives"]["champion"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["champion"]["kills"]) > 20 && win) out.push(["Stomp", "green", "Your team had 20 more kills"]);
   if ((info["sides"][side]["objectives"]["champion"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["champion"]["kills"]) < -20 && !win) out.push(["Stomped", "red", "Enemy team had 20 more kills"]);
 
-  return out;
+  return out.slice(0,5);
+});
+let farm_score = computed(() => {
+  let info = props["match"]["player_stats"];
+  return Math.round((((info["totalAllyJungleMinionsKilled"] + info["totalEnemyJungleMinionsKilled"] + info["totalMinionsKilled"]) / props["match"]["match_info"]["duration"]) * 60) * 10) / 10;
+});
+let perf_score = computed(() => {
+  return ((kda.value[0] + (kda.value[2] / 2)) - kda.value[1]);
 });
 
 </script>
@@ -98,7 +124,7 @@ let tag_list = computed(() => {
 <template>
 
   <div v-if="index===0">
-    <p>{{ match["match_info"]["creation"] }}</p>
+    <p>{{ match["match_info"]["creation"].slice(0, 10) }}</p>
     <div class="horizontal_divider"></div>
   </div>
 
@@ -106,8 +132,15 @@ let tag_list = computed(() => {
     <img class="player_icon" :src="`${curr_api}/player/profile_icon?player=${match['match_info']['player_username']}`"
          alt="icon" />
 
-    <p style="line-height: 50px;font-size: 1em;min-width: 80px;text-align: center;">
-      {{ kda[0] + "/" + kda[1] + "/" + kda[2] }}</p>
+    <div
+      style="line-height: 50px;font-size: 1em;min-width: 80px;text-align: center;display: flex;flex-flow: row nowrap;justify-content: center">
+      <!--      <img src="/assets/stat_icons/Keyword_Attack.svg" style="width: 10px;margin-right: 5px;filter: invert()" alt="icon">-->
+      <p> {{ kda[0] }}</p>
+      <p>/</p>
+      <p> {{ kda[1] }}</p>
+      <p>/</p>
+      <p> {{ kda[2] }}</p>
+    </div>
 
     <div class="vertical_divider"></div>
 
@@ -167,27 +200,59 @@ let tag_list = computed(() => {
 
     </div>
 
-    <!--    <div class="vertical_divider"></div>-->
-    <!--    <p style="line-height: 50px;font-size: 0.8em;min-width: 50px;text-align: center;">-->
-    <!--      {{ new Date(match["match_info"]["duration"] * 1000).toISOString().substring(14, 19) }}</p>-->
-
     <div class="vertical_divider"></div>
 
-    <p style="line-height: 50px;font-size: 0.8em;min-width: 100px;text-align: center;">
-      {{ match["match_info"]["queue"].split("_").slice(0, 2).join(" ") }}</p>
-
-    <div class="vertical_divider"></div>
-
-    <div style="line-height: 50px;font-size: 0.8em;min-width: 80px;text-align: center;" class="data_tooltip_activator">
+    <div
+      :style="`line-height:50px;font-size: 0.8em;min-width: 30px;text-align: center;user-select: text;color:${perf_score > 5 ? perf_score > 10 ? '#ffc12e' :'#85ff87': perf_score < -1 ? '#ff8585' : '#939393' };`"
+      class="data_tooltip_activator">
       <div class="data_tooltip_wrapper">
-        <div class="data_tooltip">Your team's kills vs enemy team's kills</div>
+        <div class="data_tooltip" style="color: white">Your performance score</div>
       </div>
 
-      {{ match["match_info"]["sides"][match["match_info"]["player_side"]]["objectives"]["champion"]["kills"] +
-    " - " +
-    match["match_info"]["sides"][match["match_info"]["player_side"] === "red" ? "blue" : "red"]["objectives"]["champion"]["kills"]
-      }}
+      <div style="display:flex;flex-flow:row nowrap;justify-content:center;align-items:center;gap:1px">
+        <p style="text-align: center"> {{ perf_score === 0 ? "~" : perf_score }}</p>
+        <!--        <img src="/assets/stat_icons/Champion.svg" class=""-->
+        <!--             style="width: 10px;height: 10px;filter: invert()"-->
+        <!--             alt="icon">-->
+      </div>
+
     </div>
+
+    <div class="vertical_divider"></div>
+
+    <div
+      :style="`line-height:50px;font-size: 0.8em;min-width: 30px;text-align: center;user-select: text;color:${farm_score > 7 ? '#85ff87': farm_score < 5 ? '#ff8585' : '#939393' };`"
+      class="data_tooltip_activator">
+
+      <div class="data_tooltip_wrapper">
+        <div class="data_tooltip" style="color: white">Your CS performance score</div>
+      </div>
+
+      <div style="display:flex;flex-flow:row nowrap;justify-content:center;align-items:center;gap:1px">
+        <p style="text-align: center"> {{ farm_score }}</p>
+        <img src="/assets/stat_icons/Minion_icon.png" class=""
+             style="width: 10px;height: 10px;filter: invert()"
+             alt="icon">
+      </div>
+
+    </div>
+
+    <div class="vertical_divider"></div>
+
+    <p style="line-height: 50px;font-size: 0.8em;min-width: 70px;text-align: center;">
+      {{ match["match_info"]["queue"].split("_").slice(0, 2).join(" ") }}</p>
+
+<!--    <div class="vertical_divider"></div>-->
+<!--    <div style="line-height: 50px;font-size: 0.8em;min-width: 50px;text-align: center;" class="data_tooltip_activator">-->
+<!--      <div class="data_tooltip_wrapper">-->
+<!--        <div class="data_tooltip">Your team's kills vs enemy team's kills</div>-->
+<!--      </div>-->
+
+<!--      {{ match["match_info"]["sides"][match["match_info"]["player_side"]]["objectives"]["champion"]["kills"] +-->
+<!--    " - " +-->
+<!--    match["match_info"]["sides"][match["match_info"]["player_side"] === "red" ? "blue" : "red"]["objectives"]["champion"]["kills"]-->
+<!--      }}-->
+<!--    </div>-->
 
     <div class="vertical_divider"></div>
 
@@ -205,8 +270,9 @@ let tag_list = computed(() => {
     </div>
   </div>
 
-  <div v-if="next_match!==undefined && next_match['match_info']['creation'] !== match['match_info']['creation']">
-    <p style="margin-top: 20px">{{ next_match["match_info"]["creation"] }}</p>
+  <div
+    v-if="next_match!==undefined && next_match['match_info']['creation'].slice(0,10) !== match['match_info']['creation'].slice(0,10)">
+    <p style="margin-top: 20px">{{ next_match["match_info"]["creation"].slice(0, 10) }}</p>
     <div class="horizontal_divider"></div>
   </div>
 

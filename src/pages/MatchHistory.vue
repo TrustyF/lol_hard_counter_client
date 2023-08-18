@@ -32,8 +32,8 @@ let matchHistory = computed(() => {
   out = out.flat(1);
   //sort by date
   out.sort((a, b) => {
-    a = a["match_info"]["creation"].split("/").reverse().join("");
-    b = b["match_info"]["creation"].split("/").reverse().join("");
+    a = a["match_info"]["creation"].slice(0,10).split("/").reverse().join("") + a["match_info"]["creation"].slice(11);
+    b = b["match_info"]["creation"].slice(0,10).split("/").reverse().join("") + b["match_info"]["creation"].slice(11);
     return b.localeCompare(a);
   });
 
@@ -71,7 +71,6 @@ function set_selected_queue(val) {
     <PlayerSelector @selectedPlayer="set_selected_player"></PlayerSelector>
     <QueueSelector @selectedQueue="set_selected_queue"></QueueSelector>
 
-    <!--    todo add global feed-->
     <div class="feed_wrapper">
       <div class="feed">
         <HistoryBox
@@ -81,7 +80,6 @@ function set_selected_queue(val) {
           :index="i"
         ></HistoryBox>
       </div>
-      <!--      <p v-if="player===undefined" style="text-align: center;color: #494949">Please select a player</p>-->
     </div>
 
   </div>

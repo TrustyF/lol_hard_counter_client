@@ -189,6 +189,9 @@ body {
     transition: 0.1s;
 
 }
+.preview {
+    outline: 1px solid red;
+}
 
 @font-face {
     font-family: 'Farmhouse';

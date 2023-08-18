@@ -86,11 +86,11 @@ function emit_selected_player(username) {
 }
 
 .player_button:hover {
-  background: linear-gradient(-90deg, rgba(87, 116, 143, 1) 20%, rgba(17, 26, 34, 1) 90%);
+  background: linear-gradient(-90deg, rgb(111, 151, 189) 20%, rgba(17, 26, 34, 1) 90%);
   cursor: pointer;
 }
 .selected {
-  background: linear-gradient(-90deg, rgba(87, 116, 143, 1) 20%, rgba(17, 26, 34, 1) 90%);
+  background: linear-gradient(-90deg, rgb(111, 151, 189) 20%, rgba(17, 26, 34, 1) 90%);
 }
 
 .button_image {
