@@ -61,7 +61,14 @@ let avg_team_rank_diff = computed(() => team_ranks.value[2] - team_ranks.value[3
 let tag_list = computed(() => {
   let info = props["match"]["match_info"];
   let win = info["match_win"];
+
   let side = info["player_side"];
+  let opposite_side = side === "red" ? "blue" : "red";
+
+  let stats = props["match"]['player_stats']
+  let my_objectives = info["sides"][side]["objectives"]
+  let opposite_objectives = info["sides"][opposite_side]["objectives"]
+
   let out = [];
 
   // filter useless matches
@@ -69,45 +76,47 @@ let tag_list = computed(() => {
     return [];
   }
   // compute jungle diff
-  if ((info["sides"][side]["objectives"]["dragon"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["dragon"]["kills"]) > 3) out.push(["Jungle gap", "green", "Your team had all 4 drakes"]);
-  if ((info["sides"][side]["objectives"]["dragon"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["dragon"]["kills"]) < -3) out.push(["Jungle diff", "red", "Enemy team had all 4 drakes"]);
-  if ((info["sides"][side]["objectives"]["baron"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["baron"]["kills"]) > 1) out.push(["Worm killer", "green", "Your team had 2 more barons"]);
-  if ((info["sides"][side]["objectives"]["baron"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["baron"]["kills"]) < -1) out.push(["No worm", "red", "Enemy team had 2 more barons"]);
-  if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) > 1) out.push(["Herald killer", "green", "Your team had all 2 heralds"]);
-  if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) < -1) out.push(["No Herald", "red", "Enemy team had all 2 heralds"]);
+  if ((my_objectives["dragon"]["kills"] - opposite_objectives["dragon"]["kills"]) > 3) out.push(["Jungle gap", "green", "Your team had all 4 drakes"]);
+  if ((my_objectives["dragon"]["kills"] - opposite_objectives["dragon"]["kills"]) < -3) out.push(["Jungle diff", "red", "Enemy team had all 4 drakes"]);
+  if ((my_objectives["baron"]["kills"] - opposite_objectives["baron"]["kills"]) > 1) out.push(["Worm killer", "purple", `Your team had ${(my_objectives["baron"]["kills"] - opposite_objectives["baron"]["kills"]) } barons`]);
+  if ((my_objectives["baron"]["kills"] - opposite_objectives["baron"]["kills"]) < -1) out.push(["No worm", "red", "Enemy team had 2 more barons"]);
+  // if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) > 1) out.push(["Herald killer", "green", "Your team had all 2 heralds"]);
+  // if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) < -1) out.push(["No Herald", "red", "Enemy team had all 2 heralds"]);
 
   // kills diff
-  if (kda.value[0] - kda.value[1] > 10) out.push(["Carried", "green", "You had 10 more kills than deaths"]);
-  if (kda.value[0] - kda.value[1] < -10) out.push(["Ran it", "red", "You had 10 more deaths than kills"]);
+  if (kda.value[0] - kda.value[1] > 10) out.push(["Carry", "gold", `You had ${kda.value[0] - kda.value[1]} more kills than deaths`]);
+  if (kda.value[0] - kda.value[1] < -10) out.push(["Ran it", "red", `You had ${Math.abs(kda.value[0] - kda.value[1])} more deaths than kills`]);
 
   // stats diff
-  if (props["match"]['player_stats']['maxCsAdvantageOnLaneOpponent'] > 50) out.push(["CS god", "green", "You had 50 more CS than your lane opponent"]);
-  if (props["match"]['player_stats']['maxLevelLeadLaneOpponent'] > 2) out.push(["Wizard", "green", "You had 3 more levels than your lane opponent"]);
-  if (props["match"]['player_stats']['visionScore'] > 50) out.push(["All-seeing", "green", "You had more than 50 vision score"]);
-  if (props["match"]['player_stats']['visionScoreAdvantageLaneOpponent'] > 1) out.push(["Vision diff", "green", "Your average vision score was higher than your lane opponent"]);
-  if (props["match"]['player_stats']['goldPerMinute'] > 500) out.push(["Deep pockets", "green", "You had more than 500 gold/minute"]);
-  if (props["match"]['player_stats']['objectivesStolen'] > 0) out.push(["Objective thief", "green", "You stolen an objective this game"]);
-  if (props["match"]['player_stats']['totalEnemyJungleMinionsKilled'] > 15) out.push(["Invader", "green", "You stole more than 15 enemy camps"]);
-  if (props["match"]['player_stats']['teamDamagePercentage'] < 0.1) out.push(["Where?", "red", "You dealt less than 10% of the team's total damage"]);
-  if (props["match"]['player_stats']['teamDamagePercentage'] > 0.3) out.push(["Demon", "green", "You dealt more than 30% of the team's total damage"]);
-  if ((props["match"]['player_stats']['totalTimeSpentDead'] / props["match"]['match_info']['duration'])*100 > 15) out.push(["AFK", "red", "You spent more than 15% of the game dead"]);
+  if (stats['maxCsAdvantageOnLaneOpponent'] > 50) out.push(["CS god", "gold", `You had ${Math.round(stats['maxCsAdvantageOnLaneOpponent'])} more CS than your lane opponent`]);
+  if (stats['maxLevelLeadLaneOpponent'] > 2) out.push(["Wizard", "gold", `You had  ${(stats['maxLevelLeadLaneOpponent'])} more levels than your lane opponent`]);
+  if ((stats['visionScore']/info['duration'])*60 > 1.5) out.push(["All-seeing", "green", `You had ${Math.round(((stats['visionScore']/info['duration'])*60)*10)/10} vision score/min`]);
+  if (stats['visionScoreAdvantageLaneOpponent'] > 2) out.push(["Vision diff", "gold", `Your vision score was ${Math.round(stats['visionScoreAdvantageLaneOpponent'])} higher than your lane opponent`]);
+  if (stats['goldPerMinute'] > 500) out.push(["Deep pockets", "green", `You had ${Math.round(stats['goldPerMinute'])} gold/minute`]);
+  if (stats['objectivesStolen'] > 0) out.push(["Objective thief", "green", `You stole ${Math.round(stats['objectivesStolen'])} objective(s) this game`]);
+  if (stats['totalEnemyJungleMinionsKilled'] > 15) out.push(["Invader", "green", `You stole ${Math.round(stats['totalEnemyJungleMinionsKilled'])} enemy camps`]);
+  if (stats['teamDamagePercentage'] < 0.1) out.push(["Where ?", "red", `You only dealt ${Math.round(stats['teamDamagePercentage']*100)}% of the team's total damage`]);
+  if (stats['teamDamagePercentage'] > 0.3) out.push(["Demon", "gold", `You dealt ${Math.round(stats['teamDamagePercentage']*100)}% of the team's total damage`]);
+  if ((stats['totalTimeSpentDead'] / info['duration'])*100 > 15) out.push(["AFK", "red", `You spent ${Math.round((stats['totalTimeSpentDead']/ info['duration'])*100)}% of the game dead`]);
+  if ((info['duration'])/60 > 50) out.push(["Rod of ages", "grey", `The game lasted ${Math.round((info['duration'])/60)} minutes`]);
 
-  // out.push([props["match"]['player_stats']['visionScore'],'blue','test'])
+  // out.push([(stats['visionScore']/info['duration'])*60,'blue','test'])
+  // out.push([info['duration']/60,'blue','test'])
 
   // compute matchmaking diff
-  if (avg_team_rank_diff.value > 100 && avg_team_rank_diff.value < 300 && win) out.push(["Easy win", "blue", "Your team won with more than 100 lp difference"]);
-  if (avg_team_rank_diff.value > 100 && avg_team_rank_diff.value < 300 && !win) out.push(["Dumb loss", "red", "Your team lost despite more than 100 lp difference"]);
-  if (avg_team_rank_diff.value < -100 && avg_team_rank_diff.value > -300 && win) out.push(["Comeback", "green", "Your team won despite being more than 100 lp down"]);
-  if (avg_team_rank_diff.value < -100 && avg_team_rank_diff.value > -300 && !win) out.push(["Unlucky team", "grey", "Your team was not meant to win with more than 100 lp down"]);
+  // if (avg_team_rank_diff.value > 100 && avg_team_rank_diff.value < 300 && win) out.push(["Easy win", "blue", `Your team won with more than 100 lp difference`]);
+  if (avg_team_rank_diff.value > 100 && avg_team_rank_diff.value < 300 && !win) out.push(["Dumb loss", "red", `Your team lost despite more than 100 lp difference`]);
+  // if (avg_team_rank_diff.value < -100 && avg_team_rank_diff.value > -300 && win) out.push(["Reversal", "green", `Your team won despite being more than 100 lp down`]);
+  if (avg_team_rank_diff.value < -100 && avg_team_rank_diff.value > -300 && !win) out.push(["Unlucky team", "grey", `Your team was not meant to win with more than 100 lp down`]);
 
   if (avg_team_rank_diff.value > 300 && win) out.push(["Free win", "blue", "Your team won with more than 300 lp difference"]);
   if (avg_team_rank_diff.value > 300 && !win) out.push(["Big throw", "red", "Your team lost despite more than 300 lp difference"]);
   if (avg_team_rank_diff.value < -300 && win) out.push(["Clown fiesta", "green", "Your team won despite being more than 300 lp down"]);
-  if (avg_team_rank_diff.value < -300 && !win) out.push(["Matchmaking diff", "grey", "Winning was impossible with more than 300 lp down"]);
+  if (avg_team_rank_diff.value < -300 && !win) out.push(["Matchmaking diff", "dark_grey", "Winning was impossible with more than 300 lp down"]);
 
   // compute kills diff
-  if ((info["sides"][side]["objectives"]["champion"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["champion"]["kills"]) > 20 && win) out.push(["Stomp", "green", "Your team had 20 more kills"]);
-  if ((info["sides"][side]["objectives"]["champion"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["champion"]["kills"]) < -20 && !win) out.push(["Stomped", "red", "Enemy team had 20 more kills"]);
+  if ((my_objectives["champion"]["kills"] - opposite_objectives["champion"]["kills"]) > 20 && win) out.push(["Stomp", "green", `Your team had ${my_objectives["champion"]["kills"] - opposite_objectives["champion"]["kills"]} more kills`]);
+  if ((my_objectives["champion"]["kills"] - opposite_objectives["champion"]["kills"]) < -20 && !win) out.push(["Stomped", "red", `Enemy team had ${Math.abs(my_objectives["champion"]["kills"] - opposite_objectives["champion"]["kills"])} more kills`]);
 
   return out.slice(0,5);
 });
@@ -132,8 +141,10 @@ let perf_score = computed(() => {
     <img class="player_icon" :src="`${curr_api}/player/profile_icon?player=${match['match_info']['player_username']}`"
          alt="icon" />
 
+
+
     <div
-      style="line-height: 50px;font-size: 1em;min-width: 80px;text-align: center;display: flex;flex-flow: row nowrap;justify-content: center">
+      style="line-height: 50px;font-size: 1em;z-index: 10;min-width: 80px;text-align: center;display: flex;flex-flow: row nowrap;justify-content: center">
       <!--      <img src="/assets/stat_icons/Keyword_Attack.svg" style="width: 10px;margin-right: 5px;filter: invert()" alt="icon">-->
       <p> {{ kda[0] }}</p>
       <p>/</p>
@@ -203,7 +214,7 @@ let perf_score = computed(() => {
     <div class="vertical_divider"></div>
 
     <div
-      :style="`line-height:50px;font-size: 0.8em;min-width: 30px;text-align: center;user-select: text;color:${perf_score > 5 ? perf_score > 10 ? '#ffc12e' :'#85ff87': perf_score < -1 ? '#ff8585' : '#939393' };`"
+      :style="`line-height:50px;font-size: 0.8em;min-width: 30px;text-align: center;color:${perf_score > 5 ? perf_score > 10 ? '#fdd300' :'#85ff87': perf_score < -1 ? '#ff8585' : '#939393' };`"
       class="data_tooltip_activator">
       <div class="data_tooltip_wrapper">
         <div class="data_tooltip" style="color: white">Your performance score</div>
@@ -221,7 +232,7 @@ let perf_score = computed(() => {
     <div class="vertical_divider"></div>
 
     <div
-      :style="`line-height:50px;font-size: 0.8em;min-width: 30px;text-align: center;user-select: text;color:${farm_score > 7 ? '#85ff87': farm_score < 5 ? '#ff8585' : '#939393' };`"
+      :style="`line-height:50px;font-size: 0.8em;min-width: 30px;text-align: center;color:${farm_score > 7 ? '#85ff87': farm_score < 5 ? '#ff8585' : '#939393' };`"
       class="data_tooltip_activator">
 
       <div class="data_tooltip_wrapper">
@@ -268,6 +279,9 @@ let perf_score = computed(() => {
         </div>
       </div>
     </div>
+
+    <img class="champion_icon" :src="`/assets/champions/${match['player_stats']['championName']}.png`"
+         alt="champ icon" />
   </div>
 
   <div
@@ -288,7 +302,7 @@ let perf_score = computed(() => {
 
   gap: 5px;
 
-  height: fit-content;
+  /*height: 100px;*/
   padding: 0 10px 0 0;
 
   border-radius: 11px;
@@ -339,6 +353,12 @@ let perf_score = computed(() => {
   background: linear-gradient(-90deg, rgb(9, 82, 24) 0%, rgb(10, 154, 42) 100%);
 }
 
+.tag_orange {
+  box-shadow: inset 1px 1px 1px #ffc46e;
+  /*background-color: #ce1313;*/
+  background: linear-gradient(-90deg, #8d5b0e 0%, #e38d0d 100%);
+}
+
 .tag_red {
   box-shadow: inset 1px 1px 1px rgb(252, 135, 144);
   /*background-color: #ce1313;*/
@@ -351,11 +371,28 @@ let perf_score = computed(() => {
   background: linear-gradient(-90deg, #0b4a72 0%, #0270b6 100%);
 }
 
+.tag_purple {
+  box-shadow: inset 1px 1px 1px #e13df3;
+  /*background-color: #0271b6;*/
+  background: linear-gradient(-90deg, #710c7c 0%, #a402b6 100%);
+}
+
+.tag_gold {
+  box-shadow: inset 1px 1px 1px #f6e799;
+  /*background-color: #0271b6;*/
+  background: linear-gradient(-90deg, #b76902 0%, #efac08 100%);
+}
+
 .tag_grey {
   box-shadow: inset 1px 1px 1px rgb(227, 226, 226);
   /*background-color: #606060;*/
   background: linear-gradient(-90deg, #343434 0%, #606060 100%);
+}
 
+.tag_dark_grey {
+  box-shadow: inset 1px 1px 1px rgb(227, 226, 226);
+  /*background-color: #606060;*/
+  background: linear-gradient(-90deg, #0e0e0e 0%, #232323 100%);
 }
 
 .vertical_divider {
@@ -375,6 +412,19 @@ let perf_score = computed(() => {
   /*filter: drop-shadow(2px 0 1px #08121a);*/
   background: #000;
   /*outline: 1px solid red;*/
+}
+.champion_icon {
+  object-fit: cover;
+  position: absolute;
+  right: -5px;
+  top: 0;
+  clip-path: inset(0 5px 0 0 round 10px);
+  height: 100%;
+  width: 100px;
+  margin: auto 0 auto 0;
+  mask-image: linear-gradient(to left, rgba(0,0,0,1), rgba(0,0,0,0));
+  background: #000;
+  opacity: 75%;
 }
 
 .rank_difference_wrapper {

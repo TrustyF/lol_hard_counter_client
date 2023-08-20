@@ -68,22 +68,22 @@ function set_selected_queue(val) {
 
 <template>
 
-  <ChangeLog
-    title="Cope corner Changelog"
-    image="pepedance.webp"
-    :changes="[
-        'Added queue filter',
-        'Added performance score',
-        'Added CS score',
-        'Added performance tags',
-              ]"
-    :close="true"
-  ></ChangeLog>
+<!--  <ChangeLog-->
+<!--    title="Cope corner Changelog"-->
+<!--    image="pepedance.webp"-->
+<!--    :changes="[-->
+<!--        'Added queue filter',-->
+<!--        'Added performance score',-->
+<!--        'Added CS score',-->
+<!--        'Added performance tags',-->
+<!--              ]"-->
+<!--    :close="true"-->
+<!--  ></ChangeLog>-->
 
   <div v-if="playerData!==undefined">
 
     <PlayerSelector @selectedPlayer="set_selected_player"></PlayerSelector>
-    <QueueSelector style="position:relative;" class="new_edge" @selectedQueue="set_selected_queue"></QueueSelector>
+    <QueueSelector style="position:relative;" @selectedQueue="set_selected_queue"></QueueSelector>
 
     <div class="feed_wrapper">
       <div class="feed">

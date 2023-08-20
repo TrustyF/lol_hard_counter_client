@@ -138,11 +138,6 @@ let mostGold = computed(() => {
   out = calc_diff(out);
   return out;
 });
-// let mostWinrate = computed(() => {
-//   let out = filtered_players.value.map(player => calc_stats(player, "goldPerMinute", "per_game"));
-//   out = calc_diff(out);
-//   return out;
-// });
 let mostFirstBlood = computed(() => {
   let out = filtered_players.value.map(player => calc_stats(player, "firstBloodKill", "per_game"));
   out = calc_diff(out);
@@ -674,14 +669,14 @@ map_stats();
 
 <template>
 
-  <ChangeLog
-    title="Funny stats™ Changelog"
-    image="pepedance.webp"
-    :changes="[
-        'Added queue filter'
-              ]"
-    :close="true"
-  ></ChangeLog>
+<!--  <ChangeLog-->
+<!--    title="Funny stats™ Changelog"-->
+<!--    image="pepedance.webp"-->
+<!--    :changes="[-->
+<!--        'Added queue filter'-->
+<!--              ]"-->
+<!--    :close="true"-->
+<!--  ></ChangeLog>-->
 
   <div v-if="playerData!==undefined" class="main_feed">
 
@@ -732,7 +727,7 @@ map_stats();
 
     </div>
 
-    <QueueSelector style="position:relative;" class="new_edge" @selectedQueue="set_selected_queue"></QueueSelector>
+    <QueueSelector style="position:relative;" @selectedQueue="set_selected_queue"></QueueSelector>
 
     <img class="click_me" src="/extras/click_me3.png" alt="click me">
 

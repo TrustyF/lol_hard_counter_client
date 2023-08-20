@@ -26,6 +26,24 @@ let mostSoloRank = computed(() => {
   console.log("out_mapped", out_mapped);
   return out_mapped;
 });
+let mostSoloWinRate = computed(() => {
+  let raw = playerData.value.map(value => [
+    value["username"],
+    (value["ranked"]["RANKED_SOLO_5x5"]["winrate"][0] / (value["ranked"]["RANKED_SOLO_5x5"]["winrate"][0] + value["ranked"]["RANKED_SOLO_5x5"]["winrate"][1])) * 100,
+    0,
+    0
+  ]);
+  let sorted_wr = raw.sort((a, b) => b[1] - a[1]);
+
+  let out_mapped = [{
+    "heading": "Winrate",
+    "value": sorted_wr.filter(value => value[1]),
+    "value_format": "percentage"
+    // "images": ["/assets/stat_icons/Keyword_Quick_Attack.svg"]
+  }];
+  console.log("out_mapped", out_mapped);
+  return out_mapped;
+});
 let mostFlexRank = computed(() => {
   let raw = playerData.value.map(value => [
     value["username"],
@@ -48,16 +66,16 @@ let mostFlexRank = computed(() => {
 </script>
 
 <template>
-  <ChangeLog
-    title="WOS Changelog"
-    image="pepedance.webp"
-    :changes="[
-      'Removed player selector, select your account from the list',
-      'Winrate moved to funny stats',
-      'Removed rank graph'
-            ]"
-    :close="true"
-  ></ChangeLog>
+<!--  <ChangeLog-->
+<!--    title="WOS Changelog"-->
+<!--    image="pepedance.webp"-->
+<!--    :changes="[-->
+<!--      'Removed player selector, select your account from the list',-->
+<!--      'Winrate moved to funny stats',-->
+<!--      'Removed rank graph'-->
+<!--            ]"-->
+<!--    :close="true"-->
+<!--  ></ChangeLog>-->
 
   <div v-if="playerData!==undefined">
 
@@ -76,7 +94,7 @@ let mostFlexRank = computed(() => {
         <RankHistChart f_chartName="ranked_solo_hist_chart" style="flex: 1;min-width: 400px"
                        :f_chartOptions="{
                         'queue':'RANKED_SOLO_5x5',
-                        'color': colors,
+                        'color': colors
                 }">
         </RankHistChart>
 
@@ -95,7 +113,7 @@ let mostFlexRank = computed(() => {
         <RankHistChart f_chartName="ranked_solo_hist_chart" style="flex: 1;min-width: 400px"
                        :f_chartOptions="{
                         'queue':'RANKED_FLEX_SR',
-                        'color': colors,
+                        'color': colors
                 }">
         </RankHistChart>
 

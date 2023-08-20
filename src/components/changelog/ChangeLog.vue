@@ -39,7 +39,7 @@ function hide() {
 
   position: relative;
   right: 0;
-  z-index: 10;
+  z-index: 50;
   padding: 0 0 10px 10px;
   opacity: 100;
   visibility: visible;
