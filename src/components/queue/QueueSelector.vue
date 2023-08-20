@@ -47,6 +47,7 @@ function update_server() {
       console.log(data);
       button.classList.remove("loading");
       server_busy.value = false;
+      window.location.reload()
     })
 
     // Handle any errors that occurred during the fetch

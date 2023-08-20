@@ -23,7 +23,7 @@ let mostSoloRank = computed(() => {
     "value_format": "rank"
     // "images": ["/assets/stat_icons/Keyword_Quick_Attack.svg"]
   }];
-  console.log("out_mapped", out_mapped);
+  // console.log("out_mapped", out_mapped);
   return out_mapped;
 });
 let mostSoloWinRate = computed(() => {
@@ -90,6 +90,7 @@ let mostFlexRank = computed(() => {
                     :stats="mostSoloRank"
                     :tier_enabled="true"
                     height="auto"
+                    :lp_diff="true"
         ></PlayerList>
         <RankHistChart f_chartName="ranked_solo_hist_chart" style="flex: 1;min-width: 400px"
                        :f_chartOptions="{
@@ -109,6 +110,7 @@ let mostFlexRank = computed(() => {
                     :stats="mostFlexRank"
                     :tier_enabled="true"
                     height="auto"
+                    :lp_diff="true"
         ></PlayerList>
         <RankHistChart f_chartName="ranked_solo_hist_chart" style="flex: 1;min-width: 400px"
                        :f_chartOptions="{

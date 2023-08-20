@@ -1,7 +1,7 @@
 <script setup>
 import { inject, onMounted, watch, computed } from "vue";
 
-let props = defineProps(["text", "index", "tier_enabled", "value_format"]);
+let props = defineProps(["text", "index", "tier_enabled", "value_format", "lp_diff"]);
 
 const curr_api = inject("curr_api");
 let selectedPlayers = inject("selectedPlayers");
@@ -39,7 +39,7 @@ let value = computed(() => {
 let valueDiff = computed(() => {
   let val1 = props["text"][1];
   let val2 = props["text"][2];
-  let diff = val1 - val2
+  let diff = val1 - val2;
   return diff;
 });
 let rank_img = computed(() => {
@@ -73,15 +73,18 @@ function filter_player(input) {
     <input v-if="tier_enabled===true" type="image" class="rank_image" :src="`/assets/tiers/${rank_img}.png`"
            alt="rank" />
 
-<!--    <div v-if="difference !== 0" :class=" difference < 0 ? 'difference_box red_shadow' : 'difference_box green_shadow'">-->
-<!--      <img v-if="difference !== 0"-->
-<!--           :src="difference < 0 ? '/assets/ui/arrow_down_single.png' : '/assets/ui/arrow_up_single.png'" alt="arrow"-->
-<!--           :class="difference > 0 ? 'arrow_green' : 'arrow_red'">-->
-<!--      <p :class="difference > 0 ? 'difference_text green' : 'difference_text red'" v-if="difference!==undefined">-->
-<!--        {{ difference !== 0 ? Math.abs(difference) : "" }}</p>-->
-<!--    </div>-->
 
-    <div v-if="Math.abs(valueDiff) > (value/10)" :class=" valueDiff < 0 ? 'difference_box red_shadow' : 'difference_box green_shadow'">
+    <div v-if="difference !== 0 && lp_diff===true"
+         :class=" difference < 0 ? 'difference_box red_shadow' : 'difference_box green_shadow'">
+      <img v-if="difference !== 0"
+           :src="difference < 0 ? '/assets/ui/arrow_down_single.png' : '/assets/ui/arrow_up_single.png'" alt="arrow"
+           :class="difference > 0 ? 'arrow_green' : 'arrow_red'">
+      <p :class="difference > 0 ? 'difference_text green' : 'difference_text red'" v-if="difference!==undefined">
+        {{ difference !== 0 ? Math.abs(difference) + " lp" : "" }}</p>
+    </div>
+
+    <div v-if="Math.abs(valueDiff) > (value/10)"
+         :class=" valueDiff < 0 ? 'difference_box red_shadow' : 'difference_box green_shadow'">
       <img v-if="valueDiff !== 0"
            :src="valueDiff < 0 ? '/assets/ui/arrow_down_single.png' : '/assets/ui/arrow_up_single.png'" alt="arrow"
            :class="valueDiff > 0 ? 'arrow_green' : 'arrow_red'">
@@ -93,7 +96,7 @@ function filter_player(input) {
 
     <div style="display: flex;gap: 10px">
       <p class="button_text">{{ calculate_value_format(value) }}</p>
-<!--      <p class="button_text">|</p>-->
+      <!--      <p class="button_text">|</p>-->
       <p class="button_text">-</p>
       <p class="button_text username_text">{{ username }}</p>
     </div>

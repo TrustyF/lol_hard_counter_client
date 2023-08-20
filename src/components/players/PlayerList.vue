@@ -2,7 +2,7 @@
 // import { inject, onMounted, ref, watch } from "vue";
 import PlayerBox from "@/components/players/PlayerBox.vue";
 
-let props = defineProps(["stats", "tier_enabled", "height"]);
+let props = defineProps(["stats", "tier_enabled", "height",'lp_diff']);
 </script>
 
 <template>
@@ -24,6 +24,7 @@ let props = defineProps(["stats", "tier_enabled", "height"]);
                        :index="i"
                        :value_format="col['value_format']"
                        :tier_enabled="tier_enabled"
+                       :lp_diff="lp_diff"
             ></PlayerBox>
           </div>
         </div>
