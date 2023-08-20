@@ -48,10 +48,15 @@ function calc_stats(player, stat, range, special_case = false) {
     filtered_queue = player["match_history"].filter(value => value["match_info"]["queue"] === selectedQueue.value);
   }
 
+  if (selectedQueue.value === "ranked_solo_fives") {
+    if (filtered_queue.length < 20) return [player.username, 0, 0];
+  }
   if (filtered_queue.length < 10) return [player.username, 0, 0];
 
   let last_30 = filtered_queue.slice(0, 30);
   let prev_30 = filtered_queue.slice(10, 40);
+
+  console.log('length',last_30.length,prev_30.length);
 
   let stat_last_30;
   let stat_prev_30;
@@ -76,6 +81,10 @@ function calc_stats(player, stat, range, special_case = false) {
     if (stat === "objectivesStolen") {
       stat_last_30 = sum(last_30.map(value => value["player_stats"][stat] - value["player_stats"]["epicMonsterStolenWithoutSmite"]));
       stat_prev_30 = sum(prev_30.map(value => value["player_stats"][stat] - value["player_stats"]["epicMonsterStolenWithoutSmite"]));
+    }
+    if (stat === "kda") {
+      stat_last_30 = sum(last_30.map(value => ((value["player_stats"]["kills"] + value["player_stats"]["assists"]) / Math.max(value["player_stats"]["deaths"], 1)) / last_30.length));
+      stat_prev_30 = sum(prev_30.map(value => ((value["player_stats"]["kills"] + value["player_stats"]["assists"]) / Math.max(value["player_stats"]["deaths"], 1)) / prev_30.length));
     }
 
     return [player.username, stat_last_30, stat_prev_30];
@@ -130,6 +139,11 @@ let mostDeaths = computed(() => {
 });
 let mostAssists = computed(() => {
   let out = filtered_players.value.map(player => calc_stats(player, "assists", "per_game"));
+  out = calc_diff(out);
+  return out;
+});
+let mostKDA = computed(() => {
+  let out = filtered_players.value.map(player => calc_stats(player, "kda", "per_game", true));
   out = calc_diff(out);
   return out;
 });
@@ -364,12 +378,19 @@ function map_stats() {
           "images": ["/assets/stat_icons/assist.svg"]
         },
         {
-          "heading": "First blood",
+          "heading": "KDA",
           "scaling": "/ game",
-          "value": mostFirstBlood.value,
+          "value": mostKDA.value,
           "value_format": "float",
-          "images": ["/assets/stat_icons/firstblood.svg"]
+          "images": ["/assets/stat_icons/Keyword_Quick_Attack.svg","/assets/stat_icons/skull.svg","/assets/stat_icons/assist.svg"]
         },
+        // {
+        //   "heading": "First blood",
+        //   "scaling": "/ game",
+        //   "value": mostFirstBlood.value,
+        //   "value_format": "float2",
+        //   "images": ["/assets/stat_icons/firstblood.svg"]
+        // },
         {
           "heading": "Gold",
           "scaling": "/ min",
@@ -384,27 +405,27 @@ function map_stats() {
           "value_format": "float",
           "images": ["/assets/stat_icons/minion.svg"]
         },
-        {
-          "heading": "Skillshots dodged",
-          "scaling": "/ game",
-          "value": mostSkillsDodged.value,
-          "value_format": "float",
-          "images": ["/assets/stat_icons/dodge.svg"]
-        }
+        // {
+        //   "heading": "Skillshots dodged",
+        //   "scaling": "/ game",
+        //   "value": mostSkillsDodged.value,
+        //   "value_format": "float",
+        //   "images": ["/assets/stat_icons/dodge.svg"]
+        // }
       ],
       "Damage": [
         {
           "heading": "Damage dealt",
           "scaling": "/ minute",
           "value": mostDamageDealt.value,
-          "value_format": "float",
+          "value_format": "int",
           "images": ["/assets/stat_icons/Critical_strike.svg"]
         },
         {
           "heading": "Damage dealt to champions",
           "scaling": "/ minute",
           "value": mostDamageDealtChampions.value,
-          "value_format": "float",
+          "value_format": "int",
           "images": ["/assets/stat_icons/Critical_strike.svg", "/assets/stat_icons/Champion.svg"]
         },
         {
@@ -414,42 +435,42 @@ function map_stats() {
           "value_format": "percentage",
           "images": ["/assets/stat_icons/Critical_strike.svg", "/assets/stat_icons/Keyword_Landmark.svg"]
         },
-        {
-          "heading": "Damage taken",
-          "scaling": "/ minute",
-          "value": mostDamageTaken.value,
-          "value_format": "float",
-          "images": ["/assets/stat_icons/Keyword_Block.svg"]
-        },
-
-        {
-          "heading": "Damage mitigated",
-          "scaling": "/ minute",
-          "value": mostDamageMitigated.value,
-          "value_format": "float",
-          "images": ["/assets/stat_icons/Keyword_Barrier.svg"]
-        },
-        {
-          "heading": "Healing self",
-          "scaling": "/ minute",
-          "value": mostHealing.value,
-          "value_format": "float",
-          "images": ["/assets/stat_icons/Healing.svg"]
-        },
-        {
-          "heading": "Healing others",
-          "scaling": "/ minute",
-          "value": mostHealingOthers.value,
-          "value_format": "float",
-          "images": ["/assets/stat_icons/Keyword_Fated.svg"]
-        },
-        {
-          "heading": "Shielding others",
-          "scaling": "/ minute",
-          "value": mostShieldingOthers.value,
-          "value_format": "float",
-          "images": ["/assets/stat_icons/Keyword_SpellShield.svg"]
-        }
+        // {
+        //   "heading": "Damage taken",
+        //   "scaling": "/ minute",
+        //   "value": mostDamageTaken.value,
+        //   "value_format": "int",
+        //   "images": ["/assets/stat_icons/Keyword_Block.svg"]
+        // },
+        //
+        // {
+        //   "heading": "Damage mitigated",
+        //   "scaling": "/ minute",
+        //   "value": mostDamageMitigated.value,
+        //   "value_format": "int",
+        //   "images": ["/assets/stat_icons/Keyword_Barrier.svg"]
+        // },
+        // {
+        //   "heading": "Healing self",
+        //   "scaling": "/ minute",
+        //   "value": mostHealing.value,
+        //   "value_format": "int",
+        //   "images": ["/assets/stat_icons/Healing.svg"]
+        // },
+        // {
+        //   "heading": "Healing others",
+        //   "scaling": "/ minute",
+        //   "value": mostHealingOthers.value,
+        //   "value_format": "int",
+        //   "images": ["/assets/stat_icons/Keyword_Fated.svg"]
+        // },
+        // {
+        //   "heading": "Shielding others",
+        //   "scaling": "/ minute",
+        //   "value": mostShieldingOthers.value,
+        //   "value_format": "int",
+        //   "images": ["/assets/stat_icons/Keyword_SpellShield.svg"]
+        // }
       ],
       "Lane diff": [
         {
@@ -669,14 +690,14 @@ map_stats();
 
 <template>
 
-<!--  <ChangeLog-->
-<!--    title="Funny stats™ Changelog"-->
-<!--    image="pepedance.webp"-->
-<!--    :changes="[-->
-<!--        'Added queue filter'-->
-<!--              ]"-->
-<!--    :close="true"-->
-<!--  ></ChangeLog>-->
+    <ChangeLog
+      title="Funny stats™ Changelog"
+      image="pepedance.webp"
+      :changes="[
+          'Reworked to show difference in values instead of ranks'
+                ]"
+      :close="true"
+    ></ChangeLog>
 
   <div v-if="playerData!==undefined" class="main_feed">
 
@@ -727,7 +748,7 @@ map_stats();
 
     </div>
 
-    <QueueSelector style="position:relative;" @selectedQueue="set_selected_queue"></QueueSelector>
+    <QueueSelector style="position:relative;" @selectedQueue="set_selected_queue" :update_button="false"></QueueSelector>
 
     <img class="click_me" src="/extras/click_me3.png" alt="click me">
 

@@ -141,7 +141,8 @@ let perf_score = computed(() => {
     <img class="player_icon" :src="`${curr_api}/player/profile_icon?player=${match['match_info']['player_username']}`"
          alt="icon" />
 
-
+    <img class="champion_icon" :src="`/assets/champions/${match['player_stats']['championName']}.png`"
+         alt="champ icon" />
 
     <div
       style="line-height: 50px;font-size: 1em;z-index: 10;min-width: 80px;text-align: center;display: flex;flex-flow: row nowrap;justify-content: center">
@@ -280,8 +281,6 @@ let perf_score = computed(() => {
       </div>
     </div>
 
-    <img class="champion_icon" :src="`/assets/champions/${match['player_stats']['championName']}.png`"
-         alt="champ icon" />
   </div>
 
   <div
@@ -422,9 +421,10 @@ let perf_score = computed(() => {
   height: 100%;
   width: 100px;
   margin: auto 0 auto 0;
-  mask-image: linear-gradient(to left, rgba(0,0,0,1), rgba(0,0,0,0));
+  mask-image: linear-gradient(to left, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 100%);
   background: #000;
-  opacity: 75%;
+  z-index: 0;
+  opacity: 50%;
 }
 
 .rank_difference_wrapper {

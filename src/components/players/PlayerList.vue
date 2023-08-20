@@ -2,7 +2,7 @@
 // import { inject, onMounted, ref, watch } from "vue";
 import PlayerBox from "@/components/players/PlayerBox.vue";
 
-let props = defineProps(["stats", "tier_enabled","height"]);
+let props = defineProps(["stats", "tier_enabled", "height"]);
 </script>
 
 <template>
@@ -19,8 +19,7 @@ let props = defineProps(["stats", "tier_enabled","height"]);
         </div>
         <div class="stats_scroll_box" :style="`height:${height};`">
           <div class="stats_list">
-            <PlayerBox v-for="(data,i) in col['value']"
-                       :key="data[0]"
+            <PlayerBox v-for="(data,i) in col['value']" :key="data[0]"
                        :text="data"
                        :index="i"
                        :value_format="col['value_format']"
@@ -43,7 +42,7 @@ p {
 .funny_wrapper {
   display: flex;
   flex-flow: row wrap;
-  justify-content: space-between;
+  justify-content: center;
   /*display: grid;*/
   /*grid-template-columns: repeat(3,1fr);*/
   gap: 30px;
@@ -54,6 +53,7 @@ p {
 
 .stat_column {
   position: relative;
+  min-width: 300px;
   /*outline: 1px solid red;*/
 }
 

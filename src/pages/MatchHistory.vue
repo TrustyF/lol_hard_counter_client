@@ -33,8 +33,8 @@ let matchHistory = computed(() => {
   out = out.flat(1);
   //sort by date
   out.sort((a, b) => {
-    a = a["match_info"]["creation"].slice(0,10).split("/").reverse().join("") + a["match_info"]["creation"].slice(11);
-    b = b["match_info"]["creation"].slice(0,10).split("/").reverse().join("") + b["match_info"]["creation"].slice(11);
+    a = a["match_info"]["creation"].slice(0, 10).split("/").reverse().join("") + a["match_info"]["creation"].slice(11);
+    b = b["match_info"]["creation"].slice(0, 10).split("/").reverse().join("") + b["match_info"]["creation"].slice(11);
     return b.localeCompare(a);
   });
 
@@ -68,17 +68,17 @@ function set_selected_queue(val) {
 
 <template>
 
-<!--  <ChangeLog-->
-<!--    title="Cope corner Changelog"-->
-<!--    image="pepedance.webp"-->
-<!--    :changes="[-->
-<!--        'Added queue filter',-->
-<!--        'Added performance score',-->
-<!--        'Added CS score',-->
-<!--        'Added performance tags',-->
-<!--              ]"-->
-<!--    :close="true"-->
-<!--  ></ChangeLog>-->
+  <ChangeLog
+    title="Cope corner Changelog"
+    image="pepedance.webp"
+    :changes="[
+        'Added color variations for tags',
+        'Added champion icons',
+        'Certain tags have been made more strict to appear',
+        'Added refresh button',
+              ]"
+    :close="true"
+  ></ChangeLog>
 
   <div v-if="playerData!==undefined">
 
