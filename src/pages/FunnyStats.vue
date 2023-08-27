@@ -39,7 +39,6 @@ function sum(f_data) {
   return f_data.reduce((a, b) => a + (b || 0), 0);
 }
 
-// todo fix queue switch
 function calc_stats(player, stat, range, special_case = false) {
 
   let filtered_queue = player["match_history"];
@@ -53,10 +52,18 @@ function calc_stats(player, stat, range, special_case = false) {
   }
   if (filtered_queue.length < 10) return [player.username, 0, 0];
 
+  //sort by date
+  filtered_queue.sort((a, b) => {
+    a = a["match_info"]["creation"].slice(0, 10).split("/").reverse().join("") + a["match_info"]["creation"].slice(11);
+    b = b["match_info"]["creation"].slice(0, 10).split("/").reverse().join("") + b["match_info"]["creation"].slice(11);
+    return b.localeCompare(a);
+  });
+
   let last_30 = filtered_queue.slice(0, 30);
   let prev_30 = filtered_queue.slice(10, 40);
 
   console.log('length',last_30.length,prev_30.length);
+  console.log('last',stat,player['username'],last_30);
 
   let stat_last_30;
   let stat_prev_30;

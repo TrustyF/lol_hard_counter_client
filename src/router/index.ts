@@ -14,12 +14,12 @@ const router = createRouter({
     {
       path: '/funnyStats',
       name: 'funny stats',
-      component: FunnyStats
+      component: () => import('@/pages/FunnyStats.vue')
     },
     {
       path: '/matchHistory',
       name: 'match history',
-      component: MatchHistory
+      component: () => import('@/pages/MatchHistory.vue')
     },
   ]
 })
