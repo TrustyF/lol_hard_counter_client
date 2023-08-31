@@ -115,7 +115,7 @@ function set_selected_queue(val) {
 .feed {
   display: flex;
   flex-flow: column wrap;
-  gap: 10px;
+  gap: 15px;
   /*overflow: visible;*/
   /*outline: 1px solid red;*/
 }

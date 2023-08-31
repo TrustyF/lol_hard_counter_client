@@ -65,9 +65,9 @@ let tag_list = computed(() => {
   let side = info["player_side"];
   let opposite_side = side === "red" ? "blue" : "red";
 
-  let stats = props["match"]['player_stats']
-  let my_objectives = info["sides"][side]["objectives"]
-  let opposite_objectives = info["sides"][opposite_side]["objectives"]
+  let stats = props["match"]["player_stats"];
+  let my_objectives = info["sides"][side]["objectives"];
+  let opposite_objectives = info["sides"][opposite_side]["objectives"];
 
   let out = [];
 
@@ -78,7 +78,7 @@ let tag_list = computed(() => {
   // compute jungle diff
   if ((my_objectives["dragon"]["kills"] - opposite_objectives["dragon"]["kills"]) > 3) out.push(["Jungle gap", "green", "Your team had all 4 drakes"]);
   if ((my_objectives["dragon"]["kills"] - opposite_objectives["dragon"]["kills"]) < -3) out.push(["Jungle diff", "red", "Enemy team had all 4 drakes"]);
-  if ((my_objectives["baron"]["kills"] - opposite_objectives["baron"]["kills"]) > 1) out.push(["Worm killer", "purple", `Your team had ${(my_objectives["baron"]["kills"] - opposite_objectives["baron"]["kills"]) } barons`]);
+  if ((my_objectives["baron"]["kills"] - opposite_objectives["baron"]["kills"]) > 1) out.push(["Worm killer", "purple", `Your team had ${(my_objectives["baron"]["kills"] - opposite_objectives["baron"]["kills"])} barons`]);
   if ((my_objectives["baron"]["kills"] - opposite_objectives["baron"]["kills"]) < -1) out.push(["No worm", "red", "Enemy team had 2 more barons"]);
   // if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) > 1) out.push(["Herald killer", "green", "Your team had all 2 heralds"]);
   // if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) < -1) out.push(["No Herald", "red", "Enemy team had all 2 heralds"]);
@@ -88,17 +88,17 @@ let tag_list = computed(() => {
   if (kda.value[0] - kda.value[1] < -10) out.push(["Ran it", "red", `You had ${Math.abs(kda.value[0] - kda.value[1])} more deaths than kills`]);
 
   // stats diff
-  if (stats['maxCsAdvantageOnLaneOpponent'] > 50) out.push(["CS god", "gold", `You had ${Math.round(stats['maxCsAdvantageOnLaneOpponent'])} more CS than your lane opponent`]);
-  if (stats['maxLevelLeadLaneOpponent'] > 2) out.push(["Wizard", "gold", `You had  ${(stats['maxLevelLeadLaneOpponent'])} more levels than your lane opponent`]);
-  if ((stats['visionScore']/info['duration'])*60 > 1.5) out.push(["All-seeing", "green", `You had ${Math.round(((stats['visionScore']/info['duration'])*60)*10)/10} vision score/min`]);
-  if (stats['visionScoreAdvantageLaneOpponent'] > 2) out.push(["Vision diff", "gold", `Your vision score was ${Math.round(stats['visionScoreAdvantageLaneOpponent'])} higher than your lane opponent`]);
-  if (stats['goldPerMinute'] > 500) out.push(["Deep pockets", "green", `You had ${Math.round(stats['goldPerMinute'])} gold/minute`]);
-  if (stats['objectivesStolen'] > 0) out.push(["Objective thief", "green", `You stole ${Math.round(stats['objectivesStolen'])} objective(s) this game`]);
-  if (stats['totalEnemyJungleMinionsKilled'] > 15) out.push(["Invader", "green", `You stole ${Math.round(stats['totalEnemyJungleMinionsKilled'])} enemy camps`]);
-  if (stats['teamDamagePercentage'] < 0.1) out.push(["Where ?", "red", `You only dealt ${Math.round(stats['teamDamagePercentage']*100)}% of the team's total damage`]);
-  if (stats['teamDamagePercentage'] > 0.3) out.push(["Demon", "gold", `You dealt ${Math.round(stats['teamDamagePercentage']*100)}% of the team's total damage`]);
-  if ((stats['totalTimeSpentDead'] / info['duration'])*100 > 15) out.push(["AFK", "red", `You spent ${Math.round((stats['totalTimeSpentDead']/ info['duration'])*100)}% of the game dead`]);
-  if ((info['duration'])/60 > 50) out.push(["Rod of ages", "grey", `The game lasted ${Math.round((info['duration'])/60)} minutes`]);
+  if (stats["maxCsAdvantageOnLaneOpponent"] > 50) out.push(["CS god", "gold", `You had ${Math.round(stats["maxCsAdvantageOnLaneOpponent"])} more CS than your lane opponent`]);
+  if (stats["maxLevelLeadLaneOpponent"] > 2) out.push(["Wizard", "gold", `You had  ${(stats["maxLevelLeadLaneOpponent"])} more levels than your lane opponent`]);
+  if ((stats["visionScore"] / info["duration"]) * 60 > 1.5) out.push(["All-seeing", "green", `You had ${Math.round(((stats["visionScore"] / info["duration"]) * 60) * 10) / 10} vision score/min`]);
+  if (stats["visionScoreAdvantageLaneOpponent"] > 2) out.push(["Vision diff", "gold", `Your vision score was ${Math.round(stats["visionScoreAdvantageLaneOpponent"])} higher than your lane opponent`]);
+  if (stats["goldPerMinute"] > 500) out.push(["Deep pockets", "green", `You had ${Math.round(stats["goldPerMinute"])} gold/minute`]);
+  if (stats["objectivesStolen"] > 0) out.push(["Objective thief", "green", `You stole ${Math.round(stats["objectivesStolen"])} objective(s) this game`]);
+  if (stats["totalEnemyJungleMinionsKilled"] > 15) out.push(["Invader", "green", `You stole ${Math.round(stats["totalEnemyJungleMinionsKilled"])} enemy camps`]);
+  if (stats["teamDamagePercentage"] < 0.1) out.push(["Where ?", "red", `You only dealt ${Math.round(stats["teamDamagePercentage"] * 100)}% of the team's total damage`]);
+  if (stats["teamDamagePercentage"] > 0.3) out.push(["Demon", "gold", `You dealt ${Math.round(stats["teamDamagePercentage"] * 100)}% of the team's total damage`]);
+  if ((stats["totalTimeSpentDead"] / info["duration"]) * 100 > 15) out.push(["AFK", "red", `You spent ${Math.round((stats["totalTimeSpentDead"] / info["duration"]) * 100)}% of the game dead`]);
+  if ((info["duration"]) / 60 > 50) out.push(["Rod of ages", "grey", `The game lasted ${Math.round((info["duration"]) / 60)} minutes`]);
 
   // out.push([(stats['visionScore']/info['duration'])*60,'blue','test'])
   // out.push([info['duration']/60,'blue','test'])
@@ -118,7 +118,7 @@ let tag_list = computed(() => {
   if ((my_objectives["champion"]["kills"] - opposite_objectives["champion"]["kills"]) > 20 && win) out.push(["Stomp", "green", `Your team had ${my_objectives["champion"]["kills"] - opposite_objectives["champion"]["kills"]} more kills`]);
   if ((my_objectives["champion"]["kills"] - opposite_objectives["champion"]["kills"]) < -20 && !win) out.push(["Stomped", "red", `Enemy team had ${Math.abs(my_objectives["champion"]["kills"] - opposite_objectives["champion"]["kills"])} more kills`]);
 
-  return out.slice(0,5);
+  return out.slice(0, 5);
 });
 let farm_score = computed(() => {
   let info = props["match"]["player_stats"];
@@ -126,6 +126,14 @@ let farm_score = computed(() => {
 });
 let perf_score = computed(() => {
   return ((kda.value[0] + (kda.value[2] / 2)) - kda.value[1]);
+});
+
+let linked_match = computed(() => {
+  if (props["next_match"] !== undefined) {
+    return props["next_match"]["match_info"]["id"] === props["match"]["match_info"]["id"];
+  } else {
+    return false;
+  }
 });
 
 </script>
@@ -254,17 +262,17 @@ let perf_score = computed(() => {
     <p style="line-height: 50px;font-size: 0.8em;min-width: 70px;text-align: center;">
       {{ match["match_info"]["queue"].split("_").slice(0, 2).join(" ") }}</p>
 
-<!--    <div class="vertical_divider"></div>-->
-<!--    <div style="line-height: 50px;font-size: 0.8em;min-width: 50px;text-align: center;" class="data_tooltip_activator">-->
-<!--      <div class="data_tooltip_wrapper">-->
-<!--        <div class="data_tooltip">Your team's kills vs enemy team's kills</div>-->
-<!--      </div>-->
+    <!--    <div class="vertical_divider"></div>-->
+    <!--    <div style="line-height: 50px;font-size: 0.8em;min-width: 50px;text-align: center;" class="data_tooltip_activator">-->
+    <!--      <div class="data_tooltip_wrapper">-->
+    <!--        <div class="data_tooltip">Your team's kills vs enemy team's kills</div>-->
+    <!--      </div>-->
 
-<!--      {{ match["match_info"]["sides"][match["match_info"]["player_side"]]["objectives"]["champion"]["kills"] +-->
-<!--    " - " +-->
-<!--    match["match_info"]["sides"][match["match_info"]["player_side"] === "red" ? "blue" : "red"]["objectives"]["champion"]["kills"]-->
-<!--      }}-->
-<!--    </div>-->
+    <!--      {{ match["match_info"]["sides"][match["match_info"]["player_side"]]["objectives"]["champion"]["kills"] +-->
+    <!--    " - " +-->
+    <!--    match["match_info"]["sides"][match["match_info"]["player_side"] === "red" ? "blue" : "red"]["objectives"]["champion"]["kills"]-->
+    <!--      }}-->
+    <!--    </div>-->
 
     <div class="vertical_divider"></div>
 
@@ -289,6 +297,10 @@ let perf_score = computed(() => {
     <div class="horizontal_divider"></div>
   </div>
 
+  <div v-if="linked_match"
+       style="height: 20px;position: relative;margin: -24px;width: 95%;transform: translate(5%,0);">
+  </div>
+
 </template>
 
 <style scoped>
@@ -300,6 +312,7 @@ let perf_score = computed(() => {
   position: relative;
 
   gap: 5px;
+  z-index: 2;
 
   /*height: 100px;*/
   padding: 0 10px 0 0;
@@ -412,6 +425,7 @@ let perf_score = computed(() => {
   background: #000;
   /*outline: 1px solid red;*/
 }
+
 .champion_icon {
   object-fit: cover;
   position: absolute;
@@ -421,7 +435,7 @@ let perf_score = computed(() => {
   height: 100%;
   width: 100px;
   margin: auto 0 auto 0;
-  mask-image: linear-gradient(to left, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 100%);
+  mask-image: linear-gradient(to left, rgba(0, 0, 0, 1) 20%, rgba(0, 0, 0, 0) 100%);
   background: #000;
   z-index: 0;
   opacity: 50%;
