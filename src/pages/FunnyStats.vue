@@ -698,14 +698,14 @@ map_stats();
 
 <template>
 
-  <ChangeLog
-    title="Funny stats™ Changelog"
-    image="pepedance.webp"
-    :changes="[
-          'Reworked to show difference in values instead of ranks'
-                ]"
-    :close="true"
-  ></ChangeLog>
+<!--  <ChangeLog-->
+<!--    title="Funny stats™ Changelog"-->
+<!--    image="pepedance.webp"-->
+<!--    :changes="[-->
+<!--          'Reworked to show difference in values instead of ranks'-->
+<!--                ]"-->
+<!--    :close="true"-->
+<!--  ></ChangeLog>-->
 
   <div v-if="playerData!==undefined" class="main_feed">
 

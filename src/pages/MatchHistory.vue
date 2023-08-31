@@ -68,17 +68,17 @@ function set_selected_queue(val) {
 
 <template>
 
-  <ChangeLog
-    title="Cope corner Changelog"
-    image="pepedance.webp"
-    :changes="[
-        'Added color variations for tags',
-        'Added champion icons',
-        'Certain tags have been made more strict to appear',
-        'Added refresh button',
-              ]"
-    :close="true"
-  ></ChangeLog>
+<!--  <ChangeLog-->
+<!--    title="Cope corner Changelog"-->
+<!--    image="pepedance.webp"-->
+<!--    :changes="[-->
+<!--        'Added color variations for tags',-->
+<!--        'Added champion icons',-->
+<!--        'Certain tags have been made more strict to appear',-->
+<!--        'Added refresh button',-->
+<!--              ]"-->
+<!--    :close="true"-->
+<!--  ></ChangeLog>-->
 
   <div v-if="playerData!==undefined">
 
