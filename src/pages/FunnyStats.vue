@@ -59,11 +59,12 @@ function calc_stats(player, stat, range, special_case = false) {
     return b.localeCompare(a);
   });
 
-  let last_30 = filtered_queue.slice(0, 30);
-  let prev_30 = filtered_queue.slice(10, 40);
+  let last_30 = filtered_queue.slice(0, Math.min(filtered_queue.length / 2, 50));
+  let prev_30 = filtered_queue.slice(Math.min(filtered_queue.length / 2, 50), Math.min(filtered_queue.length , 100));
+  // let prev_30 = filtered_queue.slice(50, 80);
 
-  console.log('length',last_30.length,prev_30.length);
-  console.log('last',stat,player['username'],last_30);
+  // console.log("length", last_30.length, prev_30.length,filtered_queue.length / 2);
+  // console.log('last',stat,player['username'],last_30);
 
   let stat_last_30;
   let stat_prev_30;
@@ -389,7 +390,7 @@ function map_stats() {
           "scaling": "/ game",
           "value": mostKDA.value,
           "value_format": "float",
-          "images": ["/assets/stat_icons/Keyword_Quick_Attack.svg","/assets/stat_icons/skull.svg","/assets/stat_icons/assist.svg"]
+          "images": ["/assets/stat_icons/Keyword_Quick_Attack.svg", "/assets/stat_icons/skull.svg", "/assets/stat_icons/assist.svg"]
         },
         // {
         //   "heading": "First blood",
@@ -411,7 +412,7 @@ function map_stats() {
           "value": mostCS.value,
           "value_format": "float",
           "images": ["/assets/stat_icons/minion.svg"]
-        },
+        }
         // {
         //   "heading": "Skillshots dodged",
         //   "scaling": "/ game",
@@ -441,7 +442,7 @@ function map_stats() {
           "value": mostTeamDamagePercentage.value,
           "value_format": "percentage",
           "images": ["/assets/stat_icons/Critical_strike.svg", "/assets/stat_icons/Keyword_Landmark.svg"]
-        },
+        }
         // {
         //   "heading": "Damage taken",
         //   "scaling": "/ minute",
@@ -697,14 +698,14 @@ map_stats();
 
 <template>
 
-    <ChangeLog
-      title="Funny stats™ Changelog"
-      image="pepedance.webp"
-      :changes="[
+  <ChangeLog
+    title="Funny stats™ Changelog"
+    image="pepedance.webp"
+    :changes="[
           'Reworked to show difference in values instead of ranks'
                 ]"
-      :close="true"
-    ></ChangeLog>
+    :close="true"
+  ></ChangeLog>
 
   <div v-if="playerData!==undefined" class="main_feed">
 
@@ -755,7 +756,8 @@ map_stats();
 
     </div>
 
-    <QueueSelector style="position:relative;" @selectedQueue="set_selected_queue" :update_button="false"></QueueSelector>
+    <QueueSelector style="position:relative;" @selectedQueue="set_selected_queue"
+                   :update_button="false"></QueueSelector>
 
     <img class="click_me" src="/extras/click_me3.png" alt="click me">
 

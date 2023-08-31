@@ -7,8 +7,8 @@ import VueApexCharts from "vue3-apexcharts";
 
 const local_api = "http://localhost:5000";
 const server_api = "https://ttt-trustyfox.pythonanywhere.com";
-const devMode = import.meta.env.DEV;
-// const devMode = false;
+// const devMode = import.meta.env.DEV;
+const devMode = false;
 
 const selected_players = ref([]);
 const player_data = ref(undefined);
