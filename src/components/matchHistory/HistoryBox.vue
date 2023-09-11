@@ -71,18 +71,6 @@ let tag_list = computed(() => {
 
   let out = [];
 
-  // filter useless matches
-  if (team_ranks.value[2] === 0 || team_ranks.value[3] === 0) {
-    return [];
-  }
-  // compute jungle diff
-  if ((my_objectives["dragon"]["kills"] - opposite_objectives["dragon"]["kills"]) > 3) out.push(["Jungle gap", "green", "Your team had all 4 drakes"]);
-  if ((my_objectives["dragon"]["kills"] - opposite_objectives["dragon"]["kills"]) < -3) out.push(["Jungle diff", "red", "Enemy team had all 4 drakes"]);
-  if ((my_objectives["baron"]["kills"] - opposite_objectives["baron"]["kills"]) > 1) out.push(["Worm killer", "purple", `Your team had ${(my_objectives["baron"]["kills"] - opposite_objectives["baron"]["kills"])} barons`]);
-  if ((my_objectives["baron"]["kills"] - opposite_objectives["baron"]["kills"]) < -1) out.push(["No worm", "red", "Enemy team had 2 more barons"]);
-  // if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) > 1) out.push(["Herald killer", "green", "Your team had all 2 heralds"]);
-  // if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) < -1) out.push(["No Herald", "red", "Enemy team had all 2 heralds"]);
-
   // kills diff
   if (kda.value[0] - kda.value[1] > 10) out.push(["Carry", "gold", `You had ${kda.value[0] - kda.value[1]} more kills than deaths`]);
   if (kda.value[0] - kda.value[1] < -10) out.push(["Ran it", "red", `You had ${Math.abs(kda.value[0] - kda.value[1])} more deaths than kills`]);
@@ -95,30 +83,54 @@ let tag_list = computed(() => {
   if (stats["goldPerMinute"] > 500) out.push(["Deep pockets", "green", `You had ${Math.round(stats["goldPerMinute"])} gold/minute`]);
   if (stats["objectivesStolen"] > 0) out.push(["Objective thief", "green", `You stole ${Math.round(stats["objectivesStolen"])} objective(s) this game`]);
   if (stats["totalEnemyJungleMinionsKilled"] > 15) out.push(["Invader", "green", `You stole ${Math.round(stats["totalEnemyJungleMinionsKilled"])} enemy camps`]);
-  if (stats["teamDamagePercentage"] < 0.1) out.push(["Where ?", "red", `You only dealt ${Math.round(stats["teamDamagePercentage"] * 100)}% of the team's total damage`]);
+  if (stats["teamDamagePercentage"] < 0.1) out.push(["No damage", "red", `You only dealt ${Math.round(stats["teamDamagePercentage"] * 100)}% of the team's total damage`]);
   if (stats["teamDamagePercentage"] > 0.3) out.push(["Demon", "gold", `You dealt ${Math.round(stats["teamDamagePercentage"] * 100)}% of the team's total damage`]);
-  if ((stats["totalTimeSpentDead"] / info["duration"]) * 100 > 15) out.push(["AFK", "red", `You spent ${Math.round((stats["totalTimeSpentDead"] / info["duration"]) * 100)}% of the game dead`]);
+  if ((stats["totalTimeSpentDead"] / info["duration"]) * 100 > 15) out.push(["Grey screen", "grey", `You spent ${Math.round((stats["totalTimeSpentDead"] / info["duration"]) * 100)}% of the game dead`]);
   if ((info["duration"]) / 60 > 50) out.push(["Rod of ages", "grey", `The game lasted ${Math.round((info["duration"]) / 60)} minutes`]);
 
   // out.push([(stats['visionScore']/info['duration'])*60,'blue','test'])
   // out.push([info['duration']/60,'blue','test'])
 
-  // compute matchmaking diff
-  // if (avg_team_rank_diff.value > 100 && avg_team_rank_diff.value < 300 && win) out.push(["Easy win", "blue", `Your team won with more than 100 lp difference`]);
-  if (avg_team_rank_diff.value > 100 && avg_team_rank_diff.value < 300 && !win) out.push(["Dumb loss", "red", `Your team lost despite more than 100 lp difference`]);
-  // if (avg_team_rank_diff.value < -100 && avg_team_rank_diff.value > -300 && win) out.push(["Reversal", "green", `Your team won despite being more than 100 lp down`]);
-  if (avg_team_rank_diff.value < -100 && avg_team_rank_diff.value > -300 && !win) out.push(["Unlucky team", "grey", `Your team was not meant to win with more than 100 lp down`]);
-
-  if (avg_team_rank_diff.value > 300 && win) out.push(["Free win", "blue", "Your team won with more than 300 lp difference"]);
-  if (avg_team_rank_diff.value > 300 && !win) out.push(["Big throw", "red", "Your team lost despite more than 300 lp difference"]);
-  if (avg_team_rank_diff.value < -300 && win) out.push(["Clown fiesta", "green", "Your team won despite being more than 300 lp down"]);
-  if (avg_team_rank_diff.value < -300 && !win) out.push(["Matchmaking diff", "dark_grey", "Winning was impossible with more than 300 lp down"]);
 
   // compute kills diff
   if ((my_objectives["champion"]["kills"] - opposite_objectives["champion"]["kills"]) > 20 && win) out.push(["Stomp", "green", `Your team had ${my_objectives["champion"]["kills"] - opposite_objectives["champion"]["kills"]} more kills`]);
   if ((my_objectives["champion"]["kills"] - opposite_objectives["champion"]["kills"]) < -20 && !win) out.push(["Stomped", "red", `Enemy team had ${Math.abs(my_objectives["champion"]["kills"] - opposite_objectives["champion"]["kills"])} more kills`]);
 
-  return out.slice(0, 5);
+  // compute kill participation
+  if (((kda.value[0] + kda.value[2]) / my_objectives["champion"]["kills"]) < 0.2) {
+    out.push(["No participation", "red", `Your kill participation was ${Math.round((kda.value[0] + kda.value[2]) / my_objectives["champion"]["kills"] * 100)}%`]);
+  } else {
+    if (((kda.value[0] + kda.value[2]) / my_objectives["champion"]["kills"]) < 0.35) out.push(["Low participation", "grey", `Your kill participation was ${Math.round((kda.value[0] + kda.value[2]) / my_objectives["champion"]["kills"] * 100)}%`]);
+  }
+  if (((kda.value[0] + kda.value[2]) / my_objectives["champion"]["kills"]) > 0.65) out.push(["Everywhere", "gold", `Your kill participation was ${Math.round((kda.value[0] + kda.value[2]) / my_objectives["champion"]["kills"] * 100)}%`]);
+
+
+  // filter useless matches
+  if (team_ranks.value[2] !== 0 && team_ranks.value[3] !== 0) {
+
+    // compute matchmaking diff
+    // if (avg_team_rank_diff.value > 100 && avg_team_rank_diff.value < 300 && win) out.push(["Easy win", "blue", `Your team won with more than 100 lp difference`]);
+    if (avg_team_rank_diff.value > 100 && avg_team_rank_diff.value < 300 && !win) out.push(["Dumb loss", "red", `Your team lost despite more than 100 lp difference`]);
+    // if (avg_team_rank_diff.value < -100 && avg_team_rank_diff.value > -300 && win) out.push(["Reversal", "green", `Your team won despite being more than 100 lp down`]);
+    if (avg_team_rank_diff.value < -100 && avg_team_rank_diff.value > -300 && !win) out.push(["Unlucky team", "grey", `Your team was not meant to win with more than 100 lp down`]);
+
+    if (avg_team_rank_diff.value > 300 && win) out.push(["Free win", "blue", "Your team won with more than 300 lp difference"]);
+    if (avg_team_rank_diff.value > 300 && !win) out.push(["Big throw", "red", "Your team lost despite more than 300 lp difference"]);
+    if (avg_team_rank_diff.value < -300 && win) out.push(["Clown fiesta", "green", "Your team won despite being more than 300 lp down"]);
+    if (avg_team_rank_diff.value < -300 && !win) out.push(["Matchmaking diff", "dark_grey", "Winning was impossible with more than 300 lp down"]);
+  }
+
+  // compute jungle diff
+  if ((my_objectives["dragon"]["kills"] - opposite_objectives["dragon"]["kills"]) > 3) out.push(["Jungle gap", "green", "Your team had all 4 drakes"]);
+  if ((my_objectives["dragon"]["kills"] - opposite_objectives["dragon"]["kills"]) < -3) out.push(["Jungle diff", "red", "Enemy team had all 4 drakes"]);
+  if ((my_objectives["baron"]["kills"] - opposite_objectives["baron"]["kills"]) > 1) out.push(["Worm killer", "purple", `Your team had ${(my_objectives["baron"]["kills"] - opposite_objectives["baron"]["kills"])} barons`]);
+  if ((my_objectives["baron"]["kills"] - opposite_objectives["baron"]["kills"]) < -1) out.push(["No worm", "red", "Enemy team had 2 more barons"]);
+  // if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) > 1) out.push(["Herald killer", "green", "Your team had all 2 heralds"]);
+  // if ((info["sides"][side]["objectives"]["riftHerald"]["kills"] - info["sides"][side === "red" ? "blue" : "red"]["objectives"]["riftHerald"]["kills"]) < -1) out.push(["No Herald", "red", "Enemy team had all 2 heralds"]);
+
+
+  return out.slice(0, 4);
+  // return out
 });
 let farm_score = computed(() => {
   let info = props["match"]["player_stats"];
@@ -435,7 +447,7 @@ let linked_match = computed(() => {
   height: 100%;
   width: 100px;
   margin: auto 0 auto 0;
-  mask-image: linear-gradient(to left, rgba(0, 0, 0, 1) 20%, rgba(0, 0, 0, 0) 100%);
+  mask-image: linear-gradient(to left, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 90%);
   background: #000;
   z-index: 0;
   opacity: 50%;

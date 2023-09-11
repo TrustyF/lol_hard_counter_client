@@ -26,9 +26,4 @@ coverage
 *.njsproj
 *.sln
 *.sw?
-/public/assets/champions/
-/public/assets/tiers/
-/src/assets/
-/public/assets/profileicon/
-/public/assets/
 /.firebase/
